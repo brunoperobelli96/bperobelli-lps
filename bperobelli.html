@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bruno Perobelli — IA aplicada a negócios</title>
+
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital@1&family=Outfit:wght@300;400;500;600;800;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+  <style>
+    :root {
+      --bg:           #FFFFFF;
+      --surface:      #FFFFFF;
+      --dark:         #0D1B2A;
+      --border:       #E2E5EA;
+      --border-soft:  #EDEFF2;
+      --accent:       #4F35C2;
+      --accent-muted: rgba(79,53,194,0.07);
+      --accent-mid:   rgba(79,53,194,0.15);
+      --text:         #0F1724;
+      --text-mid:     #3D4D60;
+      --text-soft:    #7A8899;
+      --text-muted:   #A8B5C0;
+      --ease:         cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: auto; background: #ffffff; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── PARTICLE CANVAS ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 480px) { #bg-canvas { display: none; } }
+
+    /* ── PROGRESS ── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 200;
+      transition: width 0.08s linear;
+    }
+
+    /* ── CURSOR ── */
+    .cursor-dot {
+      position: fixed;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--accent);
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease), height 0.3s var(--ease), opacity 0.3s ease;
+    }
+
+    body.cursor-hover .cursor-ring { width: 52px; height: 52px; opacity: 0.6; }
+
+    @media (hover: none) {
+      .cursor-dot, .cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-color: var(--border);
+      box-shadow: 0 1px 24px rgba(0,0,0,0.04);
+    }
+
+    .nav-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-size: 14px; font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      opacity: 0;
+    }
+
+    .nav-logo .sep    { color: var(--border); margin: 0 8px; font-weight: 300; }
+    .nav-logo .handle { color: var(--accent); }
+
+    .nav-cta {
+      font-size: 12px; font-weight: 600;
+      color: var(--accent); text-decoration: none;
+      border: 1.5px solid rgba(79,53,194,0.25);
+      padding: 9px 20px; border-radius: 100px;
+      transition: background 0.25s var(--ease), border-color 0.25s, transform 0.25s;
+      opacity: 0;
+    }
+
+    .nav-cta:hover {
+      background: var(--accent-muted);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 140px 0 100px;
+      position: relative;
+    }
+
+    .hero-inner { width: 100%; position: relative; z-index: 1; }
+
+    .hero-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 40px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      opacity: 0;
+    }
+
+    .hero-tag {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
+      opacity: 0;
+    }
+
+    .hero-title {
+      font-size: clamp(44px, 7.5vw, 80px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    .hero-title em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: clamp(15px, 2vw, 18px); font-weight: 400;
+      color: var(--text-soft); line-height: 1.7;
+      max-width: 480px; margin-bottom: 52px;
+      opacity: 0;
+    }
+
+    .hero-sub strong { color: var(--text-mid); font-weight: 600; }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; opacity: 0; }
+
+    .btn-solid {
+      font-size: 14px; font-weight: 600; color: #fff;
+      background: var(--accent); border: none; border-radius: 100px;
+      padding: 15px 32px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      box-shadow: 0 4px 20px rgba(79,53,194,0.35);
+    }
+
+    .btn-solid:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(79,53,194,0.45); }
+
+    .btn-outline {
+      font-size: 14px; font-weight: 600;
+      color: var(--text-mid); background: var(--surface);
+      border: 1.5px solid var(--border); border-radius: 100px;
+      padding: 15px 32px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.3s var(--ease);
+    }
+
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* ── SECTIONS ── */
+    section { padding-block: 96px; }
+    @media (max-width: 768px) { section { padding-block: 60px; } }
+
+    .hairline { height: 1px; background: var(--border); position: relative; z-index: 1; }
+
+    .eyebrow {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 40px;
+      display: flex; align-items: center; gap: 14px;
+      opacity: 0;
+    }
+
+    .eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── BIO ── */
+    .bio-body {
+      font-size: clamp(17px, 2.2vw, 21px); font-weight: 300;
+      line-height: 1.78; color: var(--text-mid);
+      max-width: 640px; opacity: 0;
+    }
+
+    .bio-body p + p { margin-top: 24px; }
+    .bio-body strong { color: var(--text); font-weight: 700; }
+
+    .bio-pull {
+      margin-top: 56px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(24px, 3.5vw, 34px);
+      line-height: 1.3; color: var(--accent);
+      max-width: 560px;
+      border-left: 2px solid var(--accent);
+      padding-left: 28px;
+      opacity: 0;
+    }
+
+    /* ── PILLARS ── */
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 680px) { .pillars { grid-template-columns: 1fr; } }
+
+    .pillar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.3s;
+      position: relative; overflow: hidden;
+      opacity: 0;
+    }
+
+    .pillar::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s var(--ease);
+    }
+
+    .pillar:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); border-color: rgba(79,53,194,0.2); }
+    .pillar:hover::before { transform: scaleX(1); }
+
+    .pillar-icon {
+      width: 36px; height: 36px;
+      color: var(--accent); opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    .pillar-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+
+    .pillar-desc { font-size: 13.5px; color: var(--text-soft); line-height: 1.65; }
+
+    /* ── DIAGNOSTIC ── */
+    .diag-wrap {
+      background: var(--dark);
+      position: relative; overflow: hidden;
+      padding-block: 96px;
+    }
+
+    @media (max-width: 768px) { .diag-wrap { padding-block: 60px; } }
+
+    .diag-wrap::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,53,194,0.22) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .diag-inner { position: relative; z-index: 1; opacity: 0; }
+
+    .diag-eyebrow {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 24px;
+    }
+
+    .diag-title {
+      font-size: clamp(28px, 4.5vw, 48px);
+      font-weight: 900; line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #fff; max-width: 520px; margin-bottom: 20px;
+    }
+
+    .diag-title em {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-weight: 400;
+      color: #B8CADA;
+    }
+
+    .diag-desc {
+      font-size: 15px; color: #B8CADA;
+      line-height: 1.7; max-width: 460px; margin-bottom: 40px;
+    }
+
+    .btn-white {
+      font-size: 14px; font-weight: 700;
+      color: var(--dark); background: #fff;
+      border: none; border-radius: 100px;
+      padding: 15px 32px; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .btn-white:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.25); }
+
+    /* ── LINKS ── */
+    .links-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .link-item {
+      display: flex; align-items: center; gap: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 24px;
+      text-decoration: none; color: var(--text);
+      transition: all 0.3s var(--ease);
+      opacity: 0;
+    }
+
+    .link-item:hover {
+      border-color: rgba(79,53,194,0.3);
+      box-shadow: 0 8px 28px rgba(79,53,194,0.07);
+      transform: translateX(5px);
+    }
+
+    .link-ico {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--bg); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: var(--text-soft);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    .link-item:hover .link-ico { background: var(--accent-muted); color: var(--accent); border-color: rgba(79,53,194,0.2); }
+
+    .link-info { flex: 1; }
+    .link-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .link-handle { font-size: 12px; color: var(--text-muted); }
+
+    .link-arrow {
+      color: var(--text-muted); font-size: 18px;
+      transition: color 0.3s, transform 0.3s var(--ease);
+    }
+
+    .link-item:hover .link-arrow { color: var(--accent); transform: translateX(4px); }
+
+    /* ── FOOTER ── */
+    footer { padding-block: 40px 56px; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+
+    .footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    .footer-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .footer-sub  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .footer-url  { font-size: 12px; color: var(--text-muted); }
+
+    /* ── MOBILE NAV ── */
+    .nav-ham {
+      display: none; flex-direction: column;
+      gap: 5px; cursor: pointer; padding: 6px;
+    }
+
+    .nav-ham span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--text);
+      transition: all 0.3s var(--ease);
+    }
+
+    .nav-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg); z-index: 90;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 32px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.4s var(--ease);
+    }
+
+    .nav-overlay.open { opacity: 1; pointer-events: all; }
+
+    .nav-overlay a {
+      font-size: 28px; font-weight: 800;
+      color: var(--text); text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-overlay a:hover { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .nav-ham { display: flex; }
+      .nav-cta  { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Progress -->
+  <div id="progress"></div>
+
+  <!-- Cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Mobile overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <a href="#bio"      onclick="closeMenu()">Sobre</a>
+    <a href="#trabalho" onclick="closeMenu()">O que faço</a>
+    <a href="#links"    onclick="closeMenu()">Links</a>
+    <a href="https://theGarageia.com.br" target="_blank">theGarage ↗</a>
+  </div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">Bruno Perobelli<span class="sep">|</span><span class="handle">@bperobelli</span></div>
+      <a href="https://theGarageia.com.br" target="_blank" class="nav-cta">theGarage ↗</a>
+      <div class="nav-ham" id="ham" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-avatar">BP</div>
+        <p class="hero-tag">Head IA LAB · theGarage</p>
+        <h1 class="hero-title" id="heroTitle">
+          IA que gera<br><em>resultado real.</em>
+        </h1>
+        <p class="hero-sub">
+          Ajudo empresas a <strong>revisar seus processos</strong>, eliminar ineficiências
+          e implementar inteligência artificial de forma prática, com resultado mensurável.
+        </p>
+        <div class="hero-actions">
+          <a href="https://theGarageia.com.br" target="_blank" class="btn-solid">Agendar diagnóstico →</a>
+          <a href="https://instagram.com/bperobelli" target="_blank" class="btn-outline">@bperobelli</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="hairline"></div>
+
+  <!-- BIO -->
+  <section id="bio">
+    <div class="container">
+      <p class="eyebrow">Sobre</p>
+      <div class="bio-body">
+        <p>Quase 10 anos no mercado financeiro me ensinaram a pensar sempre em resultado.
+        Nos últimos 2 anos, trouxe essa visão para o mundo da tecnologia com uma convicção:
+        <strong>toda empresa tem processos que podem ser repensados com IA.</strong></p>
+        <p>Hoje sou Head do IA LAB no theGarage, ajudando empresas a revisar seus processos,
+        eliminar ineficiências e implementar inteligência artificial de forma prática,
+        com resultado real.</p>
+      </div>
+      <div class="bio-pull">
+        "Toda empresa tem processos que podem ser repensados com IA."
+      </div>
+    </div>
+  </section>
+
+  <div class="hairline"></div>
+
+  <!-- O QUE FAÇO -->
+  <section id="trabalho">
+    <div class="container">
+      <p class="eyebrow">O que faço</p>
+      <div class="pillars">
+
+        <div class="pillar">
+          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+            <line x1="8" y1="11" x2="14" y2="11"/>
+            <line x1="11" y1="8" x2="11" y2="14"/>
+          </svg>
+          <div class="pillar-title">Diagnóstico</div>
+          <p class="pillar-desc">Mapeio os processos da empresa, encontro os gargalos e identifico onde a IA pode gerar mais impacto e resultado.</p>
+        </div>
+
+        <div class="pillar">
+          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <div class="pillar-title">Implementação</div>
+          <p class="pillar-desc">Estruturo e coordeno o time para implementar soluções de IA adaptadas à realidade e ao ritmo da empresa.</p>
+        </div>
+
+        <div class="pillar">
+          <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+            <polyline points="17 6 23 6 23 12"/>
+          </svg>
+          <div class="pillar-title">Resultado</div>
+          <p class="pillar-desc">Acompanho a execução com a visão de quem veio do mercado financeiro: foco em entrega e impacto real.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGNÓSTICO DARK -->
+  <div class="diag-wrap">
+    <div class="container">
+      <div class="diag-inner">
+        <p class="diag-eyebrow">Para empresas</p>
+        <h2 class="diag-title">Sua empresa ainda não<br>implementou <em>IA nos processos?</em></h2>
+        <p class="diag-desc">Marque um diagnóstico gratuito com o time do theGarage. Em uma conversa, identificamos onde a IA pode gerar resultado real no seu negócio.</p>
+        <a href="https://theGarageia.com.br" target="_blank" class="btn-white">Marcar diagnóstico →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hairline"></div>
+
+  <!-- LINKS -->
+  <section id="links">
+    <div class="container">
+      <p class="eyebrow">Encontre-me</p>
+      <div class="links-list">
+
+        <a href="https://instagram.com/bperobelli" target="_blank" class="link-item">
+          <div class="link-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="link-info">
+            <div class="link-name">Instagram</div>
+            <div class="link-handle">@bperobelli</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+
+        <a href="https://www.linkedin.com/in/bruno-perobelli-12998317b" target="_blank" class="link-item">
+          <div class="link-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+              <rect x="2" y="9" width="4" height="12"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </div>
+          <div class="link-info">
+            <div class="link-name">LinkedIn</div>
+            <div class="link-handle">Bruno Perobelli</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+
+        <a href="https://theGarageia.com.br" target="_blank" class="link-item">
+          <div class="link-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div class="link-info">
+            <div class="link-name">theGarage IA</div>
+            <div class="link-handle">theGarageia.com.br</div>
+          </div>
+          <span class="link-arrow">→</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div>
+          <div class="footer-name">Bruno Perobelli</div>
+          <div class="footer-sub">Head IA LAB · theGarage</div>
+        </div>
+        <div class="footer-url">bperobelli.com.br</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  // ── MOBILE MENU ──
+  function toggleMenu() { document.getElementById('navOverlay').classList.toggle('open'); }
+  function closeMenu()  { document.getElementById('navOverlay').classList.remove('open'); }
+
+  // ── CURSOR ──
+  const dot  = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    if (dot) dot.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+  });
+
+  (function animRing() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    if (ring) ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+    requestAnimationFrame(animRing);
+  })();
+
+  document.querySelectorAll('a, button, .pillar').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+
+  // ── PROGRESS + NAV ──
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // ── PARTICLE NETWORK ──
+  (function initParticles() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+
+    // Particles live in "world space" taller than the viewport
+    const WORLD_H    = 4000;
+    const N_PARTICLES = 110;
+    const MAX_DIST    = 180;
+    const ACCENT_R    = 79, ACCENT_G = 53, ACCENT_B = 194;
+
+    const particles = Array.from({ length: N_PARTICLES }, () => ({
+      x:  Math.random() * W,
+      y:  Math.random() * WORLD_H,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      r:  Math.random() * 2 + 1
+    }));
+
+    // Smooth scrollY with lerp
+    let targetScroll  = 0;
+    let currentScroll = 0;
+
+    // Mouse tracking (screen space)
+    let mouseX = -9999, mouseY = -9999;
+    let smoothMX = -9999, smoothMY = -9999;
+    const MOUSE_REPEL  = 100;  // repulsion radius
+    const MOUSE_CONNECT = 200; // connection line radius
+
+    window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
+    window.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
+
+    window.addEventListener('scroll', () => { targetScroll = window.scrollY; }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width  = W;
+      canvas.height = H;
+    });
+
+    function draw() {
+      // Lerp scroll for smooth parallax
+      currentScroll += (targetScroll - currentScroll) * 0.06;
+      const camY = currentScroll * 0.38;
+
+      // Lerp mouse
+      smoothMX += (mouseX - smoothMX) * 0.08;
+      smoothMY += (mouseY - smoothMY) * 0.08;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Update particle positions + mouse repulsion
+      particles.forEach(p => {
+        const sy = p.y - camY;
+        const dx = p.x - smoothMX;
+        const dy = sy - smoothMY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < MOUSE_REPEL && dist > 0) {
+          const force = (MOUSE_REPEL - dist) / MOUSE_REPEL * 0.6;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
+        }
+
+        // Dampen velocity back to natural drift
+        p.vx *= 0.97;
+        p.vy *= 0.97;
+
+        // Clamp max speed
+        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (speed > 2.5) { p.vx = (p.vx / speed) * 2.5; p.vy = (p.vy / speed) * 2.5; }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -10) p.x = W + 10;
+        if (p.x > W + 10) p.x = -10;
+        if (p.y < 0) p.y = WORLD_H;
+        if (p.y > WORLD_H) p.y = 0;
+      });
+
+      // Only process particles near visible viewport
+      const visible = particles.filter(p => {
+        const sy = p.y - camY;
+        return sy > -MAX_DIST && sy < H + MAX_DIST;
+      });
+
+      // Draw connections between particles
+      for (let i = 0; i < visible.length; i++) {
+        for (let j = i + 1; j < visible.length; j++) {
+          const pi = visible[i], pj = visible[j];
+          const dx = pi.x - pj.x;
+          const dy = (pi.y - camY) - (pj.y - camY);
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DIST) {
+            const alpha = 0.18 * (1 - dist / MAX_DIST);
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${ACCENT_R},${ACCENT_G},${ACCENT_B},${alpha})`;
+            ctx.lineWidth = 0.7;
+            ctx.moveTo(pi.x, pi.y - camY);
+            ctx.lineTo(pj.x, pj.y - camY);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw lines from mouse to nearby particles
+      if (smoothMX > -1000) {
+        visible.forEach(p => {
+          const sy = p.y - camY;
+          const dx = p.x - smoothMX;
+          const dy = sy - smoothMY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MOUSE_CONNECT) {
+            const alpha = 0.30 * (1 - dist / MOUSE_CONNECT);
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${ACCENT_R},${ACCENT_G},${ACCENT_B},${alpha})`;
+            ctx.lineWidth = 0.9;
+            ctx.moveTo(smoothMX, smoothMY);
+            ctx.lineTo(p.x, sy);
+            ctx.stroke();
+          }
+        });
+      }
+
+      // Draw dots
+      visible.forEach(p => {
+        const sy = p.y - camY;
+        const dx = p.x - smoothMX;
+        const dy = sy - smoothMY;
+        const near = Math.sqrt(dx * dx + dy * dy) < MOUSE_REPEL * 1.5;
+        ctx.beginPath();
+        ctx.arc(p.x, sy, near ? p.r * 1.6 : p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${ACCENT_R},${ACCENT_G},${ACCENT_B},${near ? 0.7 : 0.45})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  })();
+
+  // ── LENIS ──
+  if (typeof Lenis !== 'undefined') {
+    const lenis = new Lenis({ duration: 1.2, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    (function raf(time) { lenis.raf(time); requestAnimationFrame(raf); })(0);
+  }
+
+  // ── GSAP ──
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Nav
+    gsap.to('.nav-logo', { opacity: 1, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+    gsap.to('.nav-cta',  { opacity: 1, duration: 0.8, delay: 0.35, ease: 'power3.out' });
+
+    // Hero sequence
+    gsap.to('.hero-avatar', { opacity: 1, y: 0, duration: 0.7, delay: 0.3, ease: 'power3.out' });
+    gsap.to('.hero-tag',    { opacity: 1, y: 0, duration: 0.7, delay: 0.5, ease: 'power3.out' });
+
+    if (typeof SplitType !== 'undefined') {
+      const split = new SplitType('#heroTitle', { types: 'words' });
+      // Wrap each word in overflow hidden span
+      split.words.forEach(w => {
+        const wrapper = document.createElement('span');
+        wrapper.style.cssText = 'display:inline-block;overflow:hidden;vertical-align:bottom;';
+        w.parentNode.insertBefore(wrapper, w);
+        wrapper.appendChild(w);
+      });
+
+      gsap.from(split.words, {
+        yPercent: 110, opacity: 0,
+        duration: 0.9, stagger: 0.08, delay: 0.7,
+        ease: 'power4.out',
+        onComplete: () => {
+          gsap.to('.hero-sub',     { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' });
+          gsap.to('.hero-actions', { opacity: 1, y: 0, duration: 0.7, delay: 0.15, ease: 'power3.out' });
+        }
+      });
+    } else {
+      gsap.to('#heroTitle',    { opacity: 1, duration: 0.7, delay: 0.7 });
+      gsap.to('.hero-sub',     { opacity: 1, duration: 0.6, delay: 1.1 });
+      gsap.to('.hero-actions', { opacity: 1, duration: 0.6, delay: 1.3 });
+    }
+
+    // Scroll reveals
+    document.querySelectorAll('.eyebrow').forEach(el => {
+      gsap.to(el, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%' } });
+    });
+
+    gsap.to('.bio-body', { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+      scrollTrigger: { trigger: '.bio-body', start: 'top 86%' } });
+
+    gsap.to('.bio-pull', { opacity: 1, x: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '.bio-pull', start: 'top 88%' } });
+
+    gsap.to('.pillar', {
+      opacity: 1, y: 0, stagger: 0.13, duration: 0.8, ease: 'power3.out',
+      scrollTrigger: { trigger: '.pillars', start: 'top 82%' }
+    });
+
+    gsap.to('.diag-inner', { opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: '.diag-inner', start: 'top 82%' } });
+
+    gsap.to('.link-item', {
+      opacity: 1, y: 0, stagger: 0.1, duration: 0.7, ease: 'power3.out',
+      scrollTrigger: { trigger: '.links-list', start: 'top 84%' }
+    });
+
+  } else {
+    // Fallback
+    document.querySelectorAll('.eyebrow, .bio-body, .bio-pull, .pillar, .diag-inner, .link-item').forEach(el => {
+      el.style.opacity = '1'; el.style.transform = 'none';
+    });
+    ['.nav-logo','.nav-cta','.hero-avatar','.hero-tag','.hero-sub','.hero-actions'].forEach(s => {
+      const el = document.querySelector(s);
+      if (el) { el.style.opacity = '1'; el.style.transform = 'none'; }
+    });
+  }
+  </script>
+
+</body>
+</html>
