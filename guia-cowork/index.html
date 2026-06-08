@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Claude Cowork: O Guia Completo — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #00e5b4;
+      --accent-dim: rgba(0,229,180,0.10);
+      --accent-border: rgba(0,229,180,0.22);
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SKIP ── */
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #000;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem;
+      color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(0,229,180,0.18); border-color: rgba(0,229,180,0.45); }
+
+    /* ── WRAP ── */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 120px; padding-bottom: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(110px); pointer-events: none; z-index: 0;
+    }
+    .hero-blob.b1 {
+      width: 480px; height: 480px;
+      background: rgba(0,229,180,0.07);
+      top: -80px; right: -120px;
+    }
+    .hero-blob.b2 {
+      width: 320px; height: 320px;
+      background: rgba(138,69,251,0.09);
+      bottom: 40px; left: -60px;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    @media(min-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 320px; gap: 64px; align-items: start; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 500px; line-height: 1.65; margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline);
+      flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* ── GUIDE CARD ── */
+    .guide-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .guide-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .guide-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .guide-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+    .guide-card-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .guide-card-list li {
+      display: flex; align-items: flex-start; gap: 9px;
+      font-size: 0.855rem; color: var(--text-muted);
+    }
+    .guide-card-list li svg { width: 13px; height: 13px; color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #00ffca; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(0,229,180,0.28); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* ── SECTIONS ── */
+    section { padding-block: 60px; }
+    @media(min-width: 768px) { section { padding-block: 96px; } }
+    @media(min-width: 1024px) { section { padding-block: 128px; } }
+
+    .section-head { max-width: 600px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── SETUP CARDS ── */
+    .setup { background: var(--bg); }
+    .setup-grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+    }
+    @media(min-width: 640px) { .setup-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .setup-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .setup-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 24px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .setup-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .setup-card-num {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .setup-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .setup-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.58; }
+    .setup-icon { width: 32px; height: 32px; color: var(--accent); opacity: 0.65; margin-bottom: 14px; }
+
+    /* scroll offset para nav fixo */
+    #setup, #passos, #casos, #cta {
+      scroll-margin-top: 72px;
+    }
+
+    /* ── STEPS ── */
+    .steps { background: var(--bg); }
+    .steps-grid {
+      display: grid; grid-template-columns: 1fr; gap: 48px; align-items: start;
+    }
+    @media(min-width: 1024px) { .steps-grid { grid-template-columns: 340px 1fr; gap: 72px; } }
+
+    .steps-aside .lead { font-size: 0.95rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 20px; }
+
+    .note {
+      display: flex; gap: 12px;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 10px; padding: 14px 18px; margin-top: 20px;
+    }
+    .note svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .note p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.55; }
+    .note strong { color: var(--text); }
+
+    .steps-list { display: flex; flex-direction: column; }
+
+    .step-item {
+      display: grid; grid-template-columns: 36px 1fr; gap: 18px;
+      padding: 24px 0; border-bottom: 1px solid var(--hairline);
+    }
+    .step-item:last-child { border-bottom: none; }
+
+    .step-num-wrap { display: flex; flex-direction: column; align-items: center; }
+    .step-num {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1.5px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800; color: var(--accent);
+      background: var(--accent-dim); flex-shrink: 0;
+    }
+    .step-line {
+      width: 1px; flex: 1; background: var(--hairline);
+      margin-top: 8px; min-height: 20px;
+    }
+    .step-item:last-child .step-line { display: none; }
+
+    .step-body { padding-top: 4px; }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .step-body p { font-size: 0.855rem; color: var(--text-muted); line-height: 1.6; }
+
+    .code-block {
+      background: rgba(0,0,20,0.6);
+      border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 14px 18px;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.78rem; line-height: 1.55;
+      color: #a8f0d8; white-space: pre-wrap; word-break: break-word;
+    }
+
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .check-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.84rem; color: var(--text-muted);
+    }
+    .check-list li svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+    /* ── USE CASES ── */
+    .use-cases { background: var(--bg-elevated); }
+    .uc-grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+    }
+    @media(min-width: 640px) { .uc-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .uc-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .uc-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 28px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .uc-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .uc-icon { width: 36px; height: 36px; color: var(--accent); opacity: 0.7; margin-bottom: 14px; }
+    .uc-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .uc-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .uc-prompt {
+      background: rgba(0,0,20,0.6); border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 12px 14px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.76rem; color: #a8f0d8; line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* ── FADE IN ── */
+    .fade-in { opacity: 0; transform: translateY(28px); }
+
+    @media(max-width: 639px) {
+      .nav-badge span { display: none; }
+      .hero-meta .sep { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo" aria-label="Voltar ao site principal">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <a href="#cta" class="nav-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      <span>Guia gratuito</span>
+    </a>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Guia completo · Claude Cowork</span>
+            <h1>
+              Pare de perguntar.<br>
+              Comece a <span class="accent">delegar.</span>
+            </h1>
+            <p class="sub">A maioria usa o Claude como uma barra de busca sofisticada. O Cowork é outra coisa: você dá uma missão, ele executa, e entrega o arquivo pronto na sua pasta.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('passos')">
+                Ver os 10 passos
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('setup')">O que você precisa antes</button>
+            </div>
+            <div class="hero-meta">
+              <div class="item">
+                <span class="k">10 passos</span>
+                <span class="v">do básico ao fluxo recorrente</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">+20 prompts</span>
+                <span class="v">prontos para copiar e usar</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">0 enrolação</span>
+                <span class="v">só o que realmente funciona</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDE CARD -->
+          <div class="guide-card fade-in">
+            <div class="guide-card-label">O que você vai aprender</div>
+            <h3>Do primeiro uso a fluxos que rodam sozinhos</h3>
+            <ul class="guide-card-list">
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Pré-requisitos e configuração correta
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Como estruturar prompts que funcionam
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Fazer o Cowork planejar antes de executar
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Pesquisa, conteúdo e entregáveis para clientes
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Construir fluxos repetíveis semana a semana
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SETUP -->
+    <section class="setup" id="setup">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Antes de começar</span>
+          <h2 class="h2">O que você precisa ter em mãos</h2>
+          <p class="lead">Pular a configuração é o erro mais comum de quem desiste achando que "não funcionou". Três minutos aqui economizam horas depois.</p>
+        </div>
+
+        <div class="setup-grid">
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <div class="setup-card-num">01 · Plano pago</div>
+            <h3>Pro, Max, Team ou Enterprise</h3>
+            <p>O Cowork não está no plano gratuito. Ele consome mais do seu limite — coordena múltiplos passos e lê arquivos. Teste com tarefas pequenas antes de decidir qual plano usar.</p>
+          </div>
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <div class="setup-card-num">02 · App desktop</div>
+            <h3>macOS ou Windows — sem browser</h3>
+            <p>Baixe em <strong>claude.com/download</strong>, instale e faça login. A aba "Cowork" aparece no menu lateral. Não funciona pelo navegador.</p>
+          </div>
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <div class="setup-card-num">03 · Pasta de trabalho</div>
+            <h3>O espaço que você autoriza</h3>
+            <p>O Claude só vê o que você define. Crie uma pasta <em>Claude Cowork</em> na raiz com subpastas por projeto. Fora dessa área, ele não acessa nada.</p>
+          </div>
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg>
+            <div class="setup-card-num">04 · Modo de aprovação</div>
+            <h3>Ativo por padrão — mantenha assim</h3>
+            <p>Deixe o modo de aprovação ativo no início. 5 minutos executando na direção errada sem interrupção = 5 minutos de trabalho descartável.</p>
+          </div>
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <div class="setup-card-num">05 · Formatos suportados</div>
+            <h3>O que ele consegue ler</h3>
+            <p>Word, PDF, TXT, Markdown, JSON, CSV, Excel, PowerPoint, imagens e código. Formatos não suportados: exporte antes de incluir na pasta.</p>
+          </div>
+          <div class="setup-card fade-in">
+            <svg class="setup-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <div class="setup-card-num">06 · Segurança</div>
+            <h3>O que não colocar na pasta</h3>
+            <p>Não inclua senhas, dados de clientes ou contratos que o Claude não precisa ver. Leia sempre o plano antes de aprovar a execução.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEPS -->
+    <section class="steps" id="passos">
+      <div class="wrap">
+        <div class="steps-grid">
+          <div class="steps-aside fade-in">
+            <span class="eyebrow">Como usar de verdade</span>
+            <h2 class="h2" style="font-size:clamp(1.7rem,3.8vw,2.8rem);font-weight:800;letter-spacing:-0.04em;line-height:1.1;margin-bottom:14px;">Os 10 passos</h2>
+            <p class="lead">A ordem importa. Cada passo constrói sobre o anterior. Quem pula a configuração e já quer delegar projetos grandes aprende da forma mais cara: refazendo.</p>
+            <div class="note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <p>Template base: <strong>tarefa + materiais + entregável + formato</strong>. Quando os quatro estão presentes, o Cowork tem tudo que precisa.</p>
+            </div>
+          </div>
+
+          <div class="steps-list fade-in">
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">1</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Dê uma tarefa clara, não um pedido vago</h3>
+                <p>Seja específico em quatro dimensões: a tarefa, os materiais, o entregável e o formato. O modelo preenche lacunas por conta própria — e geralmente errado.</p>
+                <div class="code-block">"Sua missão é [tarefa]. Use [arquivos/pasta]. Crie [entregável final]. Formate como [formato]. Antes de começar, faça um plano e me diga o que vai fazer."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">2</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Comece com algo pequeno</h3>
+                <p>Resista à tentação de testar com um projeto grande. Comece com uma pasta pequena, um tipo de entregável, um objetivo claro.</p>
+                <div class="code-block">"Percorra essa pasta e me diga o que tem aqui. Agrupe os arquivos por categoria, sinalize o que for importante e sugira o que eu deveria fazer com cada grupo."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">3</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Faça ele planejar antes de tocar em qualquer coisa</h3>
+                <p>Este é o passo mais impactante — e o mais ignorado. Dez minutos na direção errada = dez minutos de output descartável.</p>
+                <div class="code-block">"Antes de começar, escreva um plano resumido. Diga quais arquivos vai analisar, quais passos vai seguir e qual será o entregável final. Aguarde minha aprovação antes de continuar."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">4</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Dê uma pasta, não um muro de texto</h3>
+                <p>O Cowork performa melhor com arquivos organizados. Estrutura sugerida:</p>
+                <div class="code-block">Nome do Projeto/
+  Anotações Brutas/
+  Pesquisa/
+  Entregável Final/</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">5</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Use para pesquisa</h3>
+                <p>Defina o escopo, os critérios e o formato do output. O entregável é diretamente utilizável — não um bloco de texto que ainda exige organização.</p>
+                <div class="code-block">"Pesquise [mercado/ferramenta]. Encontre as principais opções, preços, prós e contras. Monte uma tabela comparativa e me dê uma recomendação final."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">6</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Use para conteúdo</h3>
+                <p>O Cowork funciona como uma camada entre o material bruto e o conteúdo finalizado. Não é ajuda para pensar — é delegação da execução.</p>
+                <div class="code-block">"Percorra minhas anotações e encontre 10 ideias para vídeos curtos. Para cada uma, crie um gancho, script de 60s, título e CTA no meu estilo."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">7</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Use para trabalho com clientes</h3>
+                <p>Para consultores e freelancers, o Cowork reduz o tempo em entregáveis repetitivos. O ganho não é só velocidade — é consistência no padrão de qualidade.</p>
+                <div class="code-block">"Pegue as anotações desta call e crie uma proposta profissional: problema, solução, cronograma, opções de preço e próximos passos. Tom claro e confiante."</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">8</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Peça o produto final, não sugestões</h3>
+                <p>"Me dê sugestões de proposta" e "Crie a proposta final" são fundamentalmente diferentes. O objetivo é sempre o segundo.</p>
+                <ul class="check-list">
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>"Crie a proposta final para o cliente."</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>"Crie o calendário editorial final."</li>
+                  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>"Crie o relatório de resumo final."</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">9</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Peça uma revisão crítica antes de entregar</h3>
+                <p>Um filtro rápido que frequentemente identifica ao menos um ponto que passaria despercebido numa revisão humana apressada.</p>
+                <div class="code-block">"Revise seu output final. O que está fraco, o que pode estar impreciso e o que você melhoraria antes de eu enviar isso para um cliente?"</div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-num-wrap">
+                <div class="step-num">10</div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <h3>Construa fluxos que você possa repetir</h3>
+                <p>O maior salto não acontece no primeiro uso — acontece quando os prompts estão calibrados o suficiente para virar sistemas. Fluxo semanal de conteúdo, auditoria de clientes, pesquisa, propostas. É assim que se extrai valor real do Cowork.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USE CASES -->
+    <section class="use-cases" id="casos">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Aplicações práticas</span>
+          <h2 class="h2">4 prompts para testar agora</h2>
+          <p class="lead">Crie uma pasta "Teste Cowork", coloque anotações e um PDF. Depois use um desses prompts — e observe como o Cowork pensa antes de executar.</p>
+        </div>
+
+        <div class="uc-grid">
+          <div class="uc-card fade-in">
+            <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <h3>Diagnóstico de pasta</h3>
+            <p>O melhor primeiro teste. Revela como o Cowork processa informação e qual entregável gera mais valor com o material que você já tem.</p>
+            <div class="uc-prompt">"Revise tudo nesta pasta. Me diga o que cada arquivo contém, agrupe por temas e crie o output mais forte que você identificar — script, artigo, checklist ou briefing."</div>
+          </div>
+          <div class="uc-card fade-in">
+            <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            <h3>Pesquisa de mercado</h3>
+            <p>Defina escopo, critérios e formato. O entregável resultante é diretamente utilizável — não um bloco de texto que exige reorganização manual.</p>
+            <div class="uc-prompt">"Pesquise [mercado ou ferramenta]. Encontre as principais opções, preços, prós e contras. Monte uma tabela comparativa e me dê uma recomendação final com justificativa."</div>
+          </div>
+          <div class="uc-card fade-in">
+            <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            <h3>Calendário editorial</h3>
+            <p>Transforma anotações brutas em calendário estruturado com ganchos e CTAs — sem ter que organizar linha por linha.</p>
+            <div class="uc-prompt">"Use as anotações desta pasta. Crie um calendário editorial com 10 ideias de post, ganchos, descrições curtas e a melhor plataforma para cada uma. Formate como tabela."</div>
+          </div>
+          <div class="uc-card fade-in">
+            <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <h3>Proposta para cliente</h3>
+            <p>Das anotações de call para proposta profissional. Com cronograma, opções de preço e próximos passos — pronto para enviar.</p>
+            <div class="uc-prompt">"Pegue as anotações desta call e crie uma proposta completa: problema identificado, solução recomendada, cronograma, opções de preço e próximos passos. Tom claro e confiante."</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Guia gratuito · <a href="https://theGarageia.com.br" target="_blank" rel="noopener noreferrer">theGarage IA LAB</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const offset = 72;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero elements
+      gsap.from('.hero h1', { opacity: 0, y: 30, duration: 1, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.15 });
+      gsap.from('.hero .sub', { opacity: 0, y: 20, duration: 0.9, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.35 });
+      gsap.from('.hero-cta', { opacity: 0, y: 16, duration: 0.8, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.5 });
+      gsap.from('.hero-meta', { opacity: 0, y: 14, duration: 0.8, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.65 });
+      gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.05 });
+
+      // Scroll reveals
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.8,
+          ease: 'cubic-bezier(0.22,1,0.36,1)',
+          scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+        });
+      });
+    } else {
+      // Fallback: show everything if GSAP fails
+      document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = 1;
+        el.style.transform = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
