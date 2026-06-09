@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Cursos Gratuitos do Claude — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #FFB547;
+      --accent-dim: rgba(255,181,71,0.10);
+      --accent-border: rgba(255,181,71,0.22);
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #000;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem;
+      color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(255,181,71,0.18); border-color: rgba(255,181,71,0.45); }
+
+    /* ── WRAP ── */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 120px; padding-bottom: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(110px); pointer-events: none; z-index: 0;
+    }
+    .hero-blob.b1 {
+      width: 500px; height: 500px;
+      background: rgba(255,181,71,0.06);
+      top: -80px; right: -120px;
+    }
+    .hero-blob.b2 {
+      width: 320px; height: 320px;
+      background: rgba(138,69,251,0.09);
+      bottom: 40px; left: -60px;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    @media(min-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 300px; gap: 64px; align-items: start; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 500px; line-height: 1.65; margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline);
+      flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* ── STAT CARD ── */
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .stat-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .stat-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 20px; line-height: 1.3; }
+
+    .stat-row {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .stat-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 14px; border-bottom: 1px solid var(--hairline);
+    }
+    .stat-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .stat-item .s-label { font-size: 0.83rem; color: var(--text-muted); }
+    .stat-item .s-val { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #ffc96e; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(255,181,71,0.28); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* ── SECTIONS ── */
+    section { padding-block: 60px; }
+    @media(min-width: 768px) { section { padding-block: 88px; } }
+
+    .section-head { max-width: 640px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── FILTER TABS ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px;
+    }
+    .filter-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      border: 1px solid var(--hairline); background: transparent;
+      color: var(--text-muted); letter-spacing: 0.02em;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .filter-btn:hover { border-color: var(--accent-border); color: var(--text); }
+    .filter-btn.active {
+      background: var(--accent-dim); border-color: var(--accent-border);
+      color: var(--accent);
+    }
+    .filter-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor; opacity: 0.6;
+    }
+
+    /* ── COURSE GRID ── */
+    .courses { background: var(--bg); }
+
+    .course-grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+    }
+    @media(min-width: 640px) { .course-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .course-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .course-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+      text-decoration: none; color: inherit;
+    }
+    .course-card:hover { border-color: var(--accent-border); transform: translateY(-4px); }
+    .course-card[data-hidden] { display: none; }
+
+    .course-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 3px 8px;
+      border-radius: 4px; border: 1px solid;
+    }
+    .tag-product {
+      color: var(--accent); border-color: var(--accent-border);
+      background: var(--accent-dim);
+    }
+    .tag-cat {
+      color: var(--text-faint); border-color: var(--hairline);
+      background: transparent;
+    }
+
+    .course-card h3 {
+      font-size: 1rem; font-weight: 700; line-height: 1.3;
+      color: var(--text);
+    }
+    .course-card p {
+      font-size: 0.84rem; color: var(--text-muted);
+      line-height: 1.6; flex: 1;
+    }
+
+    .course-meta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      padding-top: 12px; border-top: 1px solid var(--hairline);
+      margin-top: auto;
+    }
+    .course-meta-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.76rem; color: var(--text-faint);
+    }
+    .course-meta-item svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .course-meta-item strong { color: var(--text-muted); font-weight: 600; }
+
+    .course-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 700; color: var(--accent);
+      margin-top: 4px;
+      transition: gap 0.25s var(--ease);
+    }
+    .course-card:hover .course-cta { gap: 10px; }
+    .course-cta svg { width: 13px; height: 13px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    .tag-rec {
+      color: var(--accent); border-color: var(--accent-border);
+      background: var(--accent-dim);
+      font-size: 0.6rem;
+    }
+
+    /* ── SCROLL ANCHORS ── */
+    #cursos { scroll-margin-top: 72px; }
+
+    /* ── FADE ── */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+
+    @media(max-width: 639px) {
+      .hero-meta .sep { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <a href="https://claude.com/resources/courses" target="_blank" rel="noopener noreferrer" class="nav-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+      Ver no claude.com
+    </a>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Anthropic Academy · Cursos gratuitos</span>
+            <h1>
+              18 cursos oficiais.<br>
+              Todos <span class="accent">gratuitos.</span>
+            </h1>
+            <p class="sub">A Anthropic disponibilizou uma biblioteca completa de cursos com vídeo e avaliações — de IA para iniciantes até MCP e Claude Code para devs. Aqui você encontra todos, com resumo e link direto.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('cursos')">
+                Ver todos os cursos
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <a href="https://claude.com/resources/courses" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">Ir para o site oficial</a>
+            </div>
+            <div class="hero-meta">
+              <div class="item">
+                <span class="k">18 cursos</span>
+                <span class="v">disponíveis agora</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">4 trilhas</span>
+                <span class="v">AI Fluency, Code, Platform, MCP</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">100% grátis</span>
+                <span class="v">sem cadastro em muitos deles</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAT CARD -->
+          <div class="stat-card fade-in">
+            <div class="stat-card-label">Visão geral dos cursos</div>
+            <h3>Do zero ao avançado em IA com Claude</h3>
+            <div class="stat-row">
+              <div class="stat-item">
+                <span class="s-label">AI Fluency</span>
+                <span class="s-val">7 cursos</span>
+              </div>
+              <div class="stat-item">
+                <span class="s-label">Claude Code</span>
+                <span class="s-val">4 cursos</span>
+              </div>
+              <div class="stat-item">
+                <span class="s-label">Claude Platform</span>
+                <span class="s-val">3 cursos</span>
+              </div>
+              <div class="stat-item">
+                <span class="s-label">MCP</span>
+                <span class="s-val">2 cursos</span>
+              </div>
+              <div class="stat-item">
+                <span class="s-label">Claude Cowork</span>
+                <span class="s-val">1 curso</span>
+              </div>
+              <div class="stat-item">
+                <span class="s-label">Claude.ai</span>
+                <span class="s-val">1 curso</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- COURSES -->
+    <section class="courses" id="cursos">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Biblioteca completa</span>
+          <h2 class="h2">Todos os 18 cursos</h2>
+          <p class="lead">Filtre por trilha ou navegue por todos. Cada card traz um resumo do que você aprende e o link direto para o curso no site da Anthropic.</p>
+        </div>
+
+        <!-- FILTER -->
+        <div class="filter-bar" role="group" aria-label="Filtrar por trilha">
+          <button class="filter-btn active" onclick="filterCourses('all', this)">
+            <span class="filter-dot"></span> Todos os 18
+          </button>
+          <button class="filter-btn" onclick="filterCourses('recommended', this)">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Recomendados
+          </button>
+          <button class="filter-btn" onclick="filterCourses('AI Fluency', this)">
+            <span class="filter-dot"></span> AI Fluency
+          </button>
+          <button class="filter-btn" onclick="filterCourses('Claude Code', this)">
+            <span class="filter-dot"></span> Claude Code
+          </button>
+          <button class="filter-btn" onclick="filterCourses('Claude Platform', this)">
+            <span class="filter-dot"></span> Claude Platform
+          </button>
+          <button class="filter-btn" onclick="filterCourses('MCP', this)">
+            <span class="filter-dot"></span> MCP
+          </button>
+          <button class="filter-btn" onclick="filterCourses('Claude Cowork', this)">
+            <span class="filter-dot"></span> Cowork
+          </button>
+          <button class="filter-btn" onclick="filterCourses('Claude.ai', this)">
+            <span class="filter-dot"></span> Claude.ai
+          </button>
+        </div>
+
+        <div class="course-grid" id="course-grid">
+
+          <!-- 1 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/claude-101" target="_blank" rel="noopener noreferrer" data-product="Claude.ai" data-recommended="true">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude.ai</span>
+              <span class="tag tag-cat">Professional</span>
+              <span class="tag tag-rec">⭐ Recomendado</span>
+            </div>
+            <h3>Claude 101</h3>
+            <p>Ponto de partida para quem está começando com o Claude. Cobre os fundamentos de como conversar, dar contexto e extrair resultados consistentes no dia a dia.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>12 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1h de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 2 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-fluency-framework-foundations" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Professional</span>
+            </div>
+            <h3>AI Fluency: Framework &amp; Foundations</h3>
+            <p>Curso base da trilha de fluência em IA. Ensina o framework conceitual para pensar e trabalhar com IA de forma estratégica — não só operacional.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>14 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1.1h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 3 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-fluency-for-small-businesses" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Professional</span>
+            </div>
+            <h3>AI Fluency for Small Businesses</h3>
+            <p>Voltado para pequenos negócios que querem usar IA de forma prática. Mostra como aplicar o Claude em operações reais sem precisar de time técnico.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>9 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>0.9h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 4 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-fluency-for-nonprofits" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Nonprofits</span>
+            </div>
+            <h3>AI Fluency for Nonprofits</h3>
+            <p>Trilha especial para organizações sem fins lucrativos. Aborda uso de IA para comunicação, captação, relatórios e gestão com recursos limitados.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>9 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>54min de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 5 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-capabilities-and-limitations" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Education</span>
+            </div>
+            <h3>AI Capabilities and Limitations</h3>
+            <p>Entenda o que a IA realmente faz e onde ela falha. Curso direto para quem quer saber o que pode (e o que não pode) delegar para modelos de linguagem.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>13 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>15min de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 6 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-fluency-for-educators" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Education</span>
+            </div>
+            <h3>AI Fluency for Educators</h3>
+            <p>Para professores e coordenadores que querem integrar IA no ambiente educacional — criação de materiais, feedback, planejamento e mais.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>4 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>24min de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 7 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/ai-fluency-for-students" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Education</span>
+            </div>
+            <h3>AI Fluency for Students</h3>
+            <p>Feito para estudantes que querem usar IA de forma ética e produtiva — pesquisa, resumos, estudo ativo e como não virar dependente da ferramenta.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>5 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>30min de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 8 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/teaching-ai-fluency" target="_blank" rel="noopener noreferrer" data-product="AI Fluency">
+            <div class="course-tags">
+              <span class="tag tag-product">AI Fluency</span>
+              <span class="tag tag-cat">Education</span>
+            </div>
+            <h3>Teaching AI Fluency</h3>
+            <p>Para quem quer ensinar IA para outras pessoas — estrutura pedagógica, como apresentar o tema sem gerar medo, e exercícios práticos para grupos.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>7 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>36min de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 9 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/introduction-to-claude-cowork" target="_blank" rel="noopener noreferrer" data-product="Claude Cowork">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Cowork</span>
+              <span class="tag tag-cat">Professional</span>
+            </div>
+            <h3>Introduction to Claude Cowork</h3>
+            <p>Curso de estreia do Cowork, o modo de delegação de tarefas do Claude. Cobre como configurar, estruturar missões e extrair entregáveis prontos — sem ficar na conversa.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>Em breve</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 10 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/claude-code-101" target="_blank" rel="noopener noreferrer" data-product="Claude Code" data-recommended="true">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Code</span>
+              <span class="tag tag-cat">Engineering</span>
+              <span class="tag tag-rec">⭐ Recomendado</span>
+            </div>
+            <h3>Claude Code 101</h3>
+            <p>Ponto de entrada para devs. Cobre os fundamentos do Claude Code — como usar no terminal, estruturar tarefas de código e integrar no seu fluxo de desenvolvimento.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>12 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1h de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 11 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/claude-code-in-action" target="_blank" rel="noopener noreferrer" data-product="Claude Code" data-recommended="true">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Code</span>
+              <span class="tag tag-cat">Engineering</span>
+              <span class="tag tag-rec">⭐ Recomendado</span>
+            </div>
+            <h3>Claude Code in Action</h3>
+            <p>Da teoria para a prática. Casos reais de uso do Claude Code em projetos — refatoração, debugging, criação de features e automação de tarefas repetitivas de dev.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>15 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 12 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/introduction-to-subagents" target="_blank" rel="noopener noreferrer" data-product="Claude Code" data-recommended="true">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Code</span>
+              <span class="tag tag-cat">Engineering</span>
+              <span class="tag tag-rec">⭐ Recomendado</span>
+            </div>
+            <h3>Introduction to Subagents</h3>
+            <p>Introdução ao conceito de agentes dentro de agentes. Como orquestrar subagentes com Claude Code para dividir e executar tarefas complexas em paralelo.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>4 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>20min de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 13 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/introduction-to-agent-skills" target="_blank" rel="noopener noreferrer" data-product="Claude Code" data-recommended="true">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Code</span>
+              <span class="tag tag-cat">Engineering</span>
+              <span class="tag tag-rec">⭐ Recomendado</span>
+            </div>
+            <h3>Introduction to Agent Skills</h3>
+            <p>Aprenda a criar e configurar skills para agentes — os blocos que definem o comportamento e as capacidades de um agente construído com Claude Code.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>6 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>30min de vídeo</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 14 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/building-with-the-claude-api" target="_blank" rel="noopener noreferrer" data-product="Claude Platform">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Platform</span>
+              <span class="tag tag-cat">Engineering</span>
+            </div>
+            <h3>Building with the Claude API</h3>
+            <p>O mais completo da plataforma: 84 aulas e mais de 8h de vídeo cobrindo a API do Claude do zero ao avançado — autenticação, prompts, ferramentas, streaming e produção.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>84 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>8.1h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>10 quizzes</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 15 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/claude-with-amazon-bedrock" target="_blank" rel="noopener noreferrer" data-product="Claude Platform">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Platform</span>
+              <span class="tag tag-cat">Engineering</span>
+            </div>
+            <h3>Claude with Amazon Bedrock</h3>
+            <p>Conteúdo equivalente ao curso da API, mas focado em quem usa Claude via AWS Bedrock — provisionamento, invocação, RAG e deployment na infraestrutura da Amazon.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>85 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>8h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>10 quizzes</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 16 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/claude-with-google-clouds-vertex-ai" target="_blank" rel="noopener noreferrer" data-product="Claude Platform">
+            <div class="course-tags">
+              <span class="tag tag-product">Claude Platform</span>
+              <span class="tag tag-cat">Engineering</span>
+            </div>
+            <h3>Claude with Google Cloud's Vertex AI</h3>
+            <p>Para quem usa Claude via Google Cloud. Cobre integração com Vertex AI, configuração de endpoints, pipelines e uso em produtos de dados na infraestrutura do GCP.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>85 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>8h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>10 quizzes</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 17 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/introduction-to-model-context-protocol" target="_blank" rel="noopener noreferrer" data-product="MCP">
+            <div class="course-tags">
+              <span class="tag tag-product">MCP</span>
+              <span class="tag tag-cat">Engineering</span>
+            </div>
+            <h3>Introduction to Model Context Protocol</h3>
+            <p>Introdução ao protocolo que permite ao Claude se conectar com ferramentas externas em tempo real — conceitos, arquitetura e como criar o seu primeiro servidor MCP.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>16 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>1 quiz</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+          <!-- 18 -->
+          <a class="course-card fade-in" href="https://claude.com/courses/model-context-protocol-advanced-topics" target="_blank" rel="noopener noreferrer" data-product="MCP">
+            <div class="course-tags">
+              <span class="tag tag-product">MCP</span>
+              <span class="tag tag-cat">Engineering</span>
+            </div>
+            <h3>Model Context Protocol: Advanced Topics</h3>
+            <p>Aprofundamento em MCP para quem já tem o básico. Tópicos avançados de integração, segurança, autenticação e padrões de arquitetura para servidores MCP em produção.</p>
+            <div class="course-meta">
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.869v6.262a1 1 0 0 1-1.447.894L15 14M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+                <strong>15 aulas</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <strong>1.1h de vídeo</strong>
+              </div>
+              <div class="course-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <strong>2 quizzes</strong>
+              </div>
+            </div>
+            <span class="course-cta">
+              Acessar curso
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+            </span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Curadoria gratuita · <a href="https://claude.com/resources/courses" target="_blank" rel="noopener noreferrer">Fonte: claude.com</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function filterCourses(product, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      document.querySelectorAll('.course-card').forEach(card => {
+        let show = false;
+        if (product === 'all') {
+          show = true;
+        } else if (product === 'recommended') {
+          show = !!card.dataset.recommended;
+        } else {
+          show = card.dataset.product === product;
+        }
+
+        if (show) {
+          card.style.display = 'flex';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // GSAP animations
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.from('.hero h1',   { opacity: 0, y: 30, duration: 1,   ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.15 });
+      gsap.from('.hero .sub', { opacity: 0, y: 20, duration: 0.9, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.35 });
+      gsap.from('.hero-cta',  { opacity: 0, y: 16, duration: 0.8, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.5  });
+      gsap.from('.hero-meta', { opacity: 0, y: 14, duration: 0.8, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.65 });
+      gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease: 'cubic-bezier(0.22,1,0.36,1)', delay: 0.05 });
+
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.75,
+          ease: 'cubic-bezier(0.22,1,0.36,1)',
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = 1;
+        el.style.transform = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
