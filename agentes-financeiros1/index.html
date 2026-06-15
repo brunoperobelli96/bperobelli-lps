@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>10 Agentes de IA para Investidores — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0b001f;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #D4AF37;
+      --accent-dim: rgba(212,175,55,0.10);
+      --accent-border: rgba(212,175,55,0.25);
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 1rem; line-height: 1.65;
+      overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #000;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.90); backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem; color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      text-decoration: none; letter-spacing: 0.02em;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(212,175,55,0.18); border-color: rgba(212,175,55,0.5); }
+
+    /* WRAP */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* EYEBROW */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #e8c84a; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(212,175,55,0.3); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* HERO */
+    .hero { padding-top: 120px; padding-bottom: 80px; position: relative; overflow: hidden; }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(120px); pointer-events: none; z-index: 0;
+    }
+    .hero-blob.b1 { width: 520px; height: 520px; background: rgba(212,175,55,0.07); top: -100px; right: -140px; }
+    .hero-blob.b2 { width: 340px; height: 340px; background: rgba(138,69,251,0.08); bottom: 40px; left: -80px; }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+    @media(min-width:900px) { .hero-grid { grid-template-columns: 1fr 300px; gap: 64px; align-items: start; } }
+
+    .hero h1 {
+      font-size: clamp(2.2rem,5.5vw,4.2rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { font-size: 1.05rem; color: var(--text-muted); max-width: 500px; line-height: 1.65; margin-bottom: 32px; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline); flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.18);
+      border-radius: 8px; padding: 12px 16px; margin-bottom: 28px;
+      font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;
+    }
+    .disclaimer svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .side-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .side-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .side-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 18px; line-height: 1.3; }
+    .agent-index { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .agent-index li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.84rem; color: var(--text-muted);
+      padding-bottom: 9px; border-bottom: 1px solid var(--hairline);
+    }
+    .agent-index li:last-child { border-bottom: none; padding-bottom: 0; }
+    .agent-index .dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      background: var(--accent); opacity: 0.5;
+    }
+    .agent-index .dot.highlight { opacity: 1; }
+    .agent-index .aname { font-weight: 600; color: var(--text); margin-right: 3px; }
+    .investor-badge {
+      margin-left: auto; font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--accent-border);
+      background: var(--accent-dim); border-radius: 3px; padding: 2px 6px;
+      white-space: nowrap;
+    }
+
+    /* SECTIONS */
+    section { padding-block: 60px; }
+    @media(min-width:768px) { section { padding-block: 96px; } }
+    #como-instalar, #agentes, #workflows, #outros { scroll-margin-top: 72px; }
+
+    .section-head { max-width: 640px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem,3.8vw,2.8rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* INSTALL */
+    .install-section { background: var(--bg-elevated); }
+    .install-steps { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:640px) { .install-steps { grid-template-columns: 1fr 1fr; } }
+    @media(min-width:1024px) { .install-steps { grid-template-columns: repeat(3, 1fr); } }
+
+    .install-step {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 22px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .install-step:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      font-size: 0.72rem; font-weight: 800; color: var(--accent); margin-bottom: 14px;
+    }
+    .install-step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .install-step p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.58; }
+    .code-path {
+      display: inline-block; margin-top: 10px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.72rem; color: var(--accent);
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 4px; padding: 3px 8px; word-break: break-all;
+    }
+
+    .note {
+      display: flex; gap: 12px;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 10px; padding: 14px 18px; margin-top: 28px;
+    }
+    .note svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .note p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+    .note strong { color: var(--text); }
+
+    /* AGENT CARDS */
+    .agents-section { background: var(--bg); }
+
+    .agent-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; overflow: hidden; margin-bottom: 14px;
+      transition: border-color 0.3s var(--ease);
+    }
+    .agent-card:hover { border-color: var(--accent-border); }
+    .agent-card:last-child { margin-bottom: 0; }
+
+    .agent-card-top { padding: 28px 28px 0; }
+    .agent-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px; margin-bottom: 16px;
+    }
+    .agent-num-wrap { display: flex; align-items: center; gap: 14px; flex: 1; }
+    .agent-num {
+      font-size: 2.4rem; font-weight: 900; letter-spacing: -0.05em;
+      color: var(--accent); line-height: 1; flex-shrink: 0;
+      opacity: 0.5;
+    }
+    .agent-title-wrap {}
+    .agent-type {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .agent-card h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .agent-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
+      border: 1px solid; white-space: nowrap; flex-shrink: 0;
+    }
+    .badge-investor { color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim); }
+    .badge-pro { color: var(--text-faint); border-color: var(--hairline); background: transparent; }
+
+    .agent-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 20px; }
+
+    /* WHAT IT GIVES */
+    .agent-gives {
+      display: grid; grid-template-columns: 1fr; gap: 8px;
+      margin-bottom: 20px;
+    }
+    @media(min-width:640px) { .agent-gives { grid-template-columns: 1fr 1fr; } }
+
+    .gives-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.84rem; color: var(--text-muted); line-height: 1.45;
+    }
+    .gives-item::before {
+      content: '→'; color: var(--accent); flex-shrink: 0;
+      font-size: 0.75rem; margin-top: 1px;
+    }
+    .gives-item strong { color: var(--text); }
+
+    /* PROMPTS ACCORDION */
+    .agent-card-foot {
+      padding: 0 28px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .agent-github {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.72rem; color: var(--text-faint);
+    }
+    .prompts-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 6px 12px; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+    .prompts-toggle:hover { color: var(--text-muted); border-color: rgba(255,255,255,0.15); }
+    .prompts-toggle.open { color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim); }
+    .prompts-toggle svg { width: 11px; height: 11px; transition: transform 0.3s var(--ease); }
+    .prompts-toggle.open svg { transform: rotate(180deg); }
+
+    .agent-prompts {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+      border-top: 0px solid var(--hairline);
+    }
+    .agent-prompts.open { max-height: 1200px; border-top-width: 1px; }
+    .agent-prompts-inner { padding: 20px 28px 24px; display: flex; flex-direction: column; gap: 14px; }
+
+    .prompt-item {}
+    .prompt-item-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px;
+    }
+    .prompt-box {
+      background: rgba(0,0,15,0.7); border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 14px 16px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.77rem; color: #f0d87a; line-height: 1.6;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .prompt-copy {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif; margin-top: 8px; padding: 0;
+      transition: color 0.2s;
+    }
+    .prompt-copy:hover { color: var(--accent); }
+    .prompt-copy.copied { color: var(--accent); }
+    .prompt-copy svg { width: 12px; height: 12px; }
+
+    .agent-tip {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.15);
+      border-radius: 8px; padding: 12px 16px; margin-top: 4px;
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.55;
+    }
+    .agent-tip svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+
+    /* DIVIDER */
+    .section-divider {
+      height: 1px; background: var(--hairline);
+      margin: 0 clamp(24px,4vw,64px);
+    }
+
+    /* WORKFLOWS */
+    .workflows-section { background: var(--bg-elevated); }
+    .workflows-grid { display: flex; flex-direction: column; gap: 14px; }
+
+    .workflow-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; overflow: hidden;
+      transition: border-color 0.3s var(--ease);
+    }
+    .workflow-card:hover { border-color: var(--accent-border); }
+    .workflow-card-top { padding: 20px 22px 0; }
+    .workflow-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+    }
+    .workflow-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .workflow-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+    .workflow-card-foot {
+      padding: 0 22px 18px;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+
+    /* OUTROS AGENTES */
+    .outros-section { background: var(--bg); }
+    .outros-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:640px) { .outros-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width:1024px) { .outros-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .outro-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 10px; padding: 20px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .outro-card:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-2px); }
+    .outro-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .outro-card p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.55; }
+    .outro-icon { font-size: 1.2rem; margin-bottom: 12px; display: block; }
+
+    /* DATA SOURCES */
+    .data-section { background: var(--bg-elevated); }
+    .data-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    @media(min-width:640px) { .data-grid { grid-template-columns: repeat(6, 1fr); } }
+
+    .data-chip {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 8px; padding: 12px 10px; text-align: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--text-muted);
+      letter-spacing: 0.02em;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .data-chip:hover { border-color: var(--accent-border); color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* FADE */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media(max-width:639px) { .hero-meta .sep { display: none; } }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('agentes')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Ver os agentes
+    </button>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Guia · Agentes financeiros do Claude</span>
+            <h1>
+              As ferramentas de<br>Wall Street,
+              <span class="accent">agora de graça.</span>
+            </h1>
+            <p class="sub">A Anthropic lançou 10 agentes de IA para finanças. Três deles entregam ao investidor pessoa física o mesmo nível de análise que analistas profissionais cobram milhares para fazer.</p>
+
+            <div class="disclaimer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              Este guia é educacional. Nada aqui é recomendação de investimento. Sempre faça sua própria análise e consulte um assessor qualificado antes de tomar decisões financeiras.
+            </div>
+
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('agentes')">
+                Ver os 3 agentes
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('como-instalar')">Como instalar em 5 minutos</button>
+            </div>
+            <div class="hero-meta">
+              <div class="item"><span class="k">10 agentes</span><span class="v">lançados em maio de 2026</span></div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item"><span class="k">3 para você</span><span class="v">investidor pessoa física</span></div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item"><span class="k">100% grátis</span><span class="v">open source no GitHub</span></div>
+            </div>
+          </div>
+
+          <!-- SIDE CARD -->
+          <div class="side-card fade-in">
+            <div class="side-card-label">Os 10 agentes disponíveis</div>
+            <h3>3 para investidores. 7 para profissionais de finanças.</h3>
+            <ul class="agent-index">
+              <li><span class="dot highlight"></span><span><span class="aname">Market Researcher</span>monitora sua carteira</span><span class="investor-badge">Para você</span></li>
+              <li><span class="dot highlight"></span><span><span class="aname">Model Builder</span>valuation em Excel</span><span class="investor-badge">Para você</span></li>
+              <li><span class="dot highlight"></span><span><span class="aname">Earnings Reviewer</span>analisa resultados</span><span class="investor-badge">Para você</span></li>
+              <li><span class="dot"></span><span><span class="aname">Pitch Builder</span>pitchbooks e comp sets</span></li>
+              <li><span class="dot"></span><span><span class="aname">Meeting Preparer</span>briefs para reuniões</span></li>
+              <li><span class="dot"></span><span><span class="aname">Valuation Reviewer</span>revisão de metodologia</span></li>
+              <li><span class="dot"></span><span><span class="aname">GL Reconciler</span>reconciliação contábil</span></li>
+              <li><span class="dot"></span><span><span class="aname">Month-End Closer</span>fechamento mensal</span></li>
+              <li><span class="dot"></span><span><span class="aname">Statement Auditor</span>auditoria de DFs</span></li>
+              <li><span class="dot"></span><span><span class="aname">KYC Screener</span>compliance KYC</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- INSTALL -->
+    <section class="install-section" id="como-instalar">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Configuração</span>
+          <h2 class="h2">Como instalar em 5 minutos</h2>
+          <p class="lead">Duas etapas: instalar o plugin de finanças no Claude e adicionar os três repositórios de agentes do GitHub. Qualquer plano pago dá acesso.</p>
+        </div>
+
+        <div class="install-steps">
+          <div class="install-step fade-in">
+            <div class="step-num">1</div>
+            <h3>Abra o Customize</h3>
+            <p>Acesse o Claude (claude.ai ou app Cowork). Na barra lateral esquerda, clique em <strong>Customize</strong>. Você precisa de um plano pago — Pro, Max, Team ou Enterprise.</p>
+          </div>
+          <div class="install-step fade-in">
+            <div class="step-num">2</div>
+            <h3>Instale o plugin Finance</h3>
+            <p>Em Personal Plugins, clique em <strong>+</strong>, depois em <strong>Browse Plugins</strong>. Busque por "Finance" e adicione. Isso instala os 10 agentes financeiros de uma vez.</p>
+          </div>
+          <div class="install-step fade-in">
+            <div class="step-num">3</div>
+            <h3>Adicione os 3 repositórios</h3>
+            <p>Ainda em Personal Plugins, clique em <strong>+</strong>, depois <strong>Create Plugin → Add Marketplace → Add from a repository</strong>. Cole cada link abaixo:</p>
+            <span class="code-path">github.com/anthropics/financial-services/market-researcher</span>
+            <span class="code-path" style="display:block;margin-top:6px;">github.com/anthropics/financial-services/model-builder</span>
+            <span class="code-path" style="display:block;margin-top:6px;">github.com/anthropics/financial-services/earnings-reviewer</span>
+          </div>
+        </div>
+
+        <div class="note fade-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <p><strong>Funciona em três lugares:</strong> Claude.ai (web), Cowork (desktop) e Claude Code (terminal). Os mesmos agentes, as mesmas capacidades — escolha o que preferir. O código completo está em <strong>github.com/anthropics/financial-services</strong>, open source para inspecionar, customizar ou usar via API.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENTS -->
+    <section class="agents-section" id="agentes">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Os 3 agentes para investidores</span>
+          <h2 class="h2">Análise institucional. Custo zero.</h2>
+          <p class="lead">Cada agente tem prompts prontos para copiar. Clique em "Ver prompts" para abrir os exemplos práticos de cada um.</p>
+        </div>
+
+        <!-- AGENT 1: MARKET RESEARCHER -->
+        <div class="agent-card fade-in">
+          <div class="agent-card-top">
+            <div class="agent-header">
+              <div class="agent-num-wrap">
+                <span class="agent-num">01</span>
+                <div class="agent-title-wrap">
+                  <div class="agent-type">Agente de pesquisa</div>
+                  <h2>Market Researcher</h2>
+                </div>
+              </div>
+              <span class="agent-badge badge-investor">Para investidores</span>
+            </div>
+            <p class="agent-desc">Seu analista pessoal cobrindo cada ativo que você tem na carteira. Você cola os tickers, o agente puxa tudo: notícias, avaliações de analistas, filings da SEC, movimentos de concorrentes e alertas de risco — de forma automática e contínua.</p>
+            <div class="agent-gives">
+              <div class="gives-item"><strong>Monitoramento de notícias</strong> — filtradas pelo que realmente importa</div>
+              <div class="gives-item"><strong>Ratings de analistas</strong> — upgrades, downgrades e mudanças de preço-alvo</div>
+              <div class="gives-item"><strong>Filings da SEC</strong> — 10-K, 10-Q e 8-K em português claro</div>
+              <div class="gives-item"><strong>Tendências de setor</strong> — movimentos macro que afetam sua carteira</div>
+              <div class="gives-item"><strong>Intel de concorrentes</strong> — o que está acontecendo ao redor dos seus ativos</div>
+              <div class="gives-item"><strong>Alertas de risco</strong> — mudanças regulatórias, processos, saída de executivos</div>
+            </div>
+          </div>
+          <div class="agent-card-foot">
+            <span class="agent-github">market-researcher</span>
+            <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+              Ver prompts
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="agent-prompts">
+            <div class="agent-prompts-inner">
+              <div class="prompt-item">
+                <div class="prompt-item-label">Briefing da carteira</div>
+                <div class="prompt-box">Tenho posição em AAPL, NVDA, MSFT, GOOGL e AMZN.
+
+Me dê um briefing completo sobre as cinco. O que aconteceu essa semana? Alguma mudança de rating de analista? Alguma notícia que eu deveria saber? Sinalize qualquer coisa que mude a tese de investimento em alguma dessas posições.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Deep dive em um ativo</div>
+                <div class="prompt-box">Me dê um relatório completo sobre a Tesla (TSLA). Cubra: últimos resultados, consenso de analistas, principais riscos, posição competitiva, próximos catalisadores e se o valuation atual faz sentido dado o crescimento projetado.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Scan de setor</div>
+                <div class="prompt-box">Estou analisando o setor de chips para IA. Me dê um panorama dos principais players, participação de mercado, crescimento de receita e quais empresas estão melhor posicionadas para os próximos 2-3 anos. Inclua NVDA, AMD, INTC, AVGO e qualquer outro que eu deveria acompanhar.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="agent-tip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Peça um briefing semanal toda segunda-feira. Cole sua carteira uma vez e o agente monitora por você.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENT 2: MODEL BUILDER -->
+        <div class="agent-card fade-in">
+          <div class="agent-card-top">
+            <div class="agent-header">
+              <div class="agent-num-wrap">
+                <span class="agent-num">02</span>
+                <div class="agent-title-wrap">
+                  <div class="agent-type">Agente de modelagem</div>
+                  <h2>Model Builder</h2>
+                </div>
+              </div>
+              <span class="agent-badge badge-investor">Para investidores</span>
+            </div>
+            <p class="agent-desc">Modelos financeiros completos que bancos de investimento cobram por hora de analista para construir. Você dá o ticker, o agente entrega um Excel com projeções de receita, valuation por DCF, análise de comparáveis e tabela de sensibilidade — pronto para você ajustar os cenários.</p>
+            <div class="agent-gives">
+              <div class="gives-item"><strong>Projeções de receita e custo</strong> — 5 anos com premissas detalhadas</div>
+              <div class="gives-item"><strong>Valuation por DCF</strong> — fluxo de caixa descontado com taxa de desconto ajustável</div>
+              <div class="gives-item"><strong>Análise de comparáveis</strong> — P/L, EV/EBITDA, P/S vs peers</div>
+              <div class="gives-item"><strong>Tabela de sensibilidade</strong> — o que o preço justo muda em cada cenário</div>
+            </div>
+          </div>
+          <div class="agent-card-foot">
+            <span class="agent-github">model-builder</span>
+            <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+              Ver prompts
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="agent-prompts">
+            <div class="agent-prompts-inner">
+              <div class="prompt-item">
+                <div class="prompt-item-label">Modelo completo</div>
+                <div class="prompt-box">Monte um modelo financeiro completo para a Microsoft (MSFT) em Excel. Inclua projeções de receita e despesa para 5 anos, valuation por DCF, análise de comparáveis vs peers e uma tabela de sensibilidade. Me mostre o que a ação vale em diferentes cenários de crescimento e margem.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Comparação entre dois ativos</div>
+                <div class="prompt-box">Estou decidindo entre CrowdStrike (CRWD) e Palo Alto Networks (PANW). Monte um modelo comparativo lado a lado: crescimento de receita, margens, múltiplos de valuation e upside implícito para cada um. Qual está mais barato em relação ao seu crescimento?</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Análise de cenários</div>
+                <div class="prompt-box">Tenho posição em Amazon (AMZN). Monte um modelo mostrando o que acontece com o preço da ação se: (a) crescimento do AWS cai para 15%, (b) cresce no ritmo atual de 25%, (c) acelera para 35%. Mantenha todo o resto constante.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="agent-tip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                O modelo é tão bom quanto as premissas. O agente constrói — você revisa e ajusta os inputs com base na sua própria pesquisa. Nunca confie cegamente em nenhum modelo, humano ou de IA.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENT 3: EARNINGS REVIEWER -->
+        <div class="agent-card fade-in">
+          <div class="agent-card-top">
+            <div class="agent-header">
+              <div class="agent-num-wrap">
+                <span class="agent-num">03</span>
+                <div class="agent-title-wrap">
+                  <div class="agent-type">Agente de resultados</div>
+                  <h2>Earnings Reviewer</h2>
+                </div>
+              </div>
+              <span class="agent-badge badge-investor">Para investidores</span>
+            </div>
+            <p class="agent-desc">Calls de resultados são longas, cheias de linguagem corporativa, e a maioria dos investidores não tem tempo para ouvir 20 por trimestre. O Earnings Reviewer lê a transcrição completa e te diz exatamente o que importa — e se sua tese de investimento ainda está de pé.</p>
+            <div class="agent-gives">
+              <div class="gives-item"><strong>O que superou e o que decepcionou</strong> — receita, lucro, guidance</div>
+              <div class="gives-item"><strong>Mudanças na tese</strong> — o que a gestão disse que confirma ou abala o racional de investimento</div>
+              <div class="gives-item"><strong>Tom da gestão</strong> — mais ou menos confiante versus o trimestre anterior</div>
+              <div class="gives-item"><strong>Comparação entre trimestres</strong> — evolução do discurso ao longo do tempo</div>
+            </div>
+          </div>
+          <div class="agent-card-foot">
+            <span class="agent-github">earnings-reviewer</span>
+            <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+              Ver prompts
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="agent-prompts">
+            <div class="agent-prompts-inner">
+              <div class="prompt-item">
+                <div class="prompt-item-label">Resumo de resultado</div>
+                <div class="prompt-box">A Apple (AAPL) acabou de divulgar resultados. Revise a transcrição completa da call. Me diga: o que superou e o que ficou abaixo das expectativas, o que mudou no guidance e se há algo que me preocupar.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Checagem da tese</div>
+                <div class="prompt-box">Tenho Nvidia (NVDA) porque acredito que os gastos em infraestrutura de IA vão crescer por pelo menos mais 3 anos. Revise a última call de resultados e me diga: o que a gestão disse suporta ou abala essa tese? Seja específico.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="prompt-item">
+                <div class="prompt-item-label">Comparação entre trimestres</div>
+                <div class="prompt-box">Puxe as últimas 4 calls de resultados da Meta (META). Como o tom da gestão mudou ao longo do último ano? Eles estão mais ou menos confiantes em relação aos investimentos em IA? A receita de publicidade está reacelerando?</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+              <div class="agent-tip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                Sempre diga sua tese primeiro. Em vez de "analise esse resultado", diga "tenho esse ativo por X — o resultado suporta ou abala essa tese?". A análise fica dez vezes mais relevante.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKFLOWS -->
+    <section class="workflows-section" id="workflows">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Uso avançado</span>
+          <h2 class="h2">Encadeie os agentes para análises completas</h2>
+          <p class="lead">O valor real aparece quando você usa os três juntos na mesma conversa. Cada agente constrói sobre o que o anterior entregou.</p>
+        </div>
+
+        <div class="workflows-grid">
+          <div class="workflow-card fade-in">
+            <div class="workflow-card-top">
+              <div class="workflow-label">Workflow 01 · Due Diligence Completo</div>
+              <h3>Da pesquisa à decisão em uma conversa</h3>
+              <p>Pesquisa de mercado, modelo financeiro, revisão de resultados e recomendação final — tudo encadeado, cada etapa construindo sobre a anterior.</p>
+            </div>
+            <div class="workflow-card-foot">
+              <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="agent-prompts">
+              <div class="agent-prompts-inner">
+                <div class="prompt-box">Estou considerando comprar ações da Palantir (PLTR). Faça um due diligence completo:
+
+1. Pesquisa de mercado: notícias, ratings de analistas, posição competitiva, principais riscos
+2. Monte um modelo financeiro com DCF e tabela de sensibilidade
+3. Revise a última call de resultados e diga se a tese se sustenta
+4. Me dê uma recomendação final: comprar, manter ou passar — com justificativa</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-card fade-in">
+            <div class="workflow-card-top">
+              <div class="workflow-label">Workflow 02 · Preparação para Resultado</div>
+              <h3>Entre na call sabendo o que acompanhar</h3>
+              <p>Estimativas do consenso, pontos críticos a monitorar, modelo de cenários e o que a gestão disse no trimestre anterior — antes de a call começar.</p>
+            </div>
+            <div class="workflow-card-foot">
+              <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="agent-prompts">
+              <div class="agent-prompts-inner">
+                <div class="prompt-box">A NVDA divulga resultados semana que vem. Me ajude a me preparar:
+
+1. Quais são as estimativas de consenso para receita e EPS?
+2. Quais são os três pontos mais importantes para acompanhar na call?
+3. Monte um modelo rápido mostrando o que a ação vale em diferentes cenários de crescimento de receita
+4. O que a gestão projetou para esse trimestre na última call?</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-card fade-in">
+            <div class="workflow-card-top">
+              <div class="workflow-label">Workflow 03 · Screening de Oportunidades</div>
+              <h3>Descubra ativos que você não está acompanhando</h3>
+              <p>Filtros por critérios específicos — crescimento, margens, valuation, moat — e uma visão rápida de cada oportunidade encontrada.</p>
+            </div>
+            <div class="workflow-card-foot">
+              <button class="prompts-toggle" onclick="togglePrompts(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="agent-prompts">
+              <div class="agent-prompts-inner">
+                <div class="prompt-box">Me encontre 5 ações que eu provavelmente não estou acompanhando que atendem esses critérios: market cap entre US$5B e US$50B, crescimento de receita acima de 25%, margens melhorando e vantagem competitiva sustentável. Para cada uma, me dê um overview rápido do que é interessante e quais são os riscos. Evite as mega-caps óbvias.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OUTROS AGENTES -->
+    <section class="outros-section" id="outros">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Os outros 7 agentes</span>
+          <h2 class="h2">Para profissionais de finanças</h2>
+          <p class="lead">O plugin Finance inclui mais 7 agentes voltados para bankers, gestores de fundos, controllers e equipes de compliance.</p>
+        </div>
+        <div class="outros-grid">
+          <div class="outro-card fade-in">
+            <span class="outro-icon">📊</span>
+            <h3>Pitch Builder</h3>
+            <p>Cria target lists, análise de comparáveis e rascunha pitchbooks para bancos de investimento e M&A.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">📋</span>
+            <h3>Meeting Preparer</h3>
+            <p>Monta briefings detalhados de clientes e contrapartes antes de reuniões — histórico, posições, contexto relevante.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">🔍</span>
+            <h3>Valuation Reviewer</h3>
+            <p>Revisa valuations contra comparáveis de mercado e valida a metodologia utilizada — para quem precisa defender um número.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">📒</span>
+            <h3>GL Reconciler</h3>
+            <p>Reconcilia contas do razão geral e realiza cálculos de NAV. Reduz horas de trabalho manual em fechamentos contábeis.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">📅</span>
+            <h3>Month-End Closer</h3>
+            <p>Gerencia o sequenciamento de tarefas do fechamento mensal — quem faz o quê, em qual ordem, com quais dependências.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">✅</span>
+            <h3>Statement Auditor</h3>
+            <p>Revisa demonstrações financeiras para consistência interna, conformidade com GAAP e prontidão para auditoria externa.</p>
+          </div>
+          <div class="outro-card fade-in">
+            <span class="outro-icon">🔒</span>
+            <h3>KYC Screener</h3>
+            <p>Reúne documentação de entidades, revisa contra requisitos regulatórios e prepara escalações de compliance.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA SOURCES -->
+    <section class="data-section">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Fontes de dados</span>
+          <h2 class="h2">Os dados que Wall Street paga seis dígitos por ano para acessar</h2>
+          <p class="lead">A Anthropic fechou parcerias com os principais provedores de dados financeiros do mundo. Com dados públicos gratuitos, você já tem o suficiente para a maioria das análises. Se tiver uma assinatura de FactSet ou Bloomberg, pode conectar para dados mais profundos.</p>
+        </div>
+        <div class="data-grid fade-in">
+          <div class="data-chip">FactSet</div>
+          <div class="data-chip">S&P Global</div>
+          <div class="data-chip">Moody's</div>
+          <div class="data-chip">MSCI</div>
+          <div class="data-chip">LSEG</div>
+          <div class="data-chip">SEC EDGAR</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Guia educacional · <a href="https://github.com/anthropics/financial-services" target="_blank" rel="noopener noreferrer">Fonte: github.com/anthropics</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function togglePrompts(btn) {
+      const card = btn.closest('.agent-card, .workflow-card');
+      const panel = card.querySelector('.agent-prompts');
+      const isOpen = panel.classList.contains('open');
+      document.querySelectorAll('.agent-prompts.open').forEach(p => {
+        p.classList.remove('open');
+        const t = p.closest('.agent-card, .workflow-card').querySelector('.prompts-toggle');
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded','false');
+        t.childNodes[0].textContent = t.childNodes[0].textContent.includes('prompt') ? 'Ver prompts' : 'Ver prompt';
+      });
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    }
+
+    function copyPrompt(btn) {
+      const text = btn.previousElementSibling.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M20 6 9 17l-5-5"/></svg> Copiado!';
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.35 });
+      gsap.from('.hero .disclaimer',{ opacity:0, y:16, duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.45 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.55 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.70 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.75,
+          ease:'cubic-bezier(0.22,1,0.36,1)',
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity=1; el.style.transform='none'; });
+    }
+  </script>
+</body>
+</html>
