@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>6 Plugins do Claude Code — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #8A45FB;
+      --accent-dim: rgba(138,69,251,0.10);
+      --accent-border: rgba(138,69,251,0.25);
+      --clarity: #A48DFF;
+      --green: #95BFB8;
+      --yellow: #E4C98D;
+      --blue: #6AA5C6;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #fff;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem;
+      color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--clarity);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(138,69,251,0.18); border-color: rgba(138,69,251,0.45); }
+
+    /* ── WRAP ── */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--clarity); margin-bottom: 14px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #9d5efc; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(138,69,251,0.35); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 120px; padding-bottom: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(110px); pointer-events: none; z-index: 0;
+    }
+    .hero-blob.b1 {
+      width: 500px; height: 500px;
+      background: rgba(138,69,251,0.09);
+      top: -80px; right: -120px;
+    }
+    .hero-blob.b2 {
+      width: 320px; height: 320px;
+      background: rgba(164,141,255,0.07);
+      bottom: 40px; left: -60px;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr; gap: 48px;
+    }
+    @media(min-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 300px; gap: 64px; align-items: start; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--clarity); font-style: italic; }
+    .hero .sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 500px; line-height: 1.65; margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline);
+      flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* ── SIDE CARD ── */
+    .side-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .side-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .side-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--clarity); margin-bottom: 10px;
+    }
+    .side-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 18px; line-height: 1.3; }
+    .plugin-index { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .plugin-index li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.855rem; color: var(--text-muted);
+      padding-bottom: 10px; border-bottom: 1px solid var(--hairline);
+    }
+    .plugin-index li:last-child { border-bottom: none; padding-bottom: 0; }
+    .plugin-index .num {
+      font-size: 0.68rem; font-weight: 800; color: var(--accent);
+      flex-shrink: 0; width: 20px; text-align: center;
+    }
+    .plugin-index .pname { font-weight: 600; color: var(--text); margin-right: 4px; }
+
+    /* ── SECTIONS ── */
+    section { padding-block: 60px; }
+    @media(min-width: 768px) { section { padding-block: 96px; } }
+
+    #plugins { scroll-margin-top: 72px; }
+    #stack   { scroll-margin-top: 72px; }
+
+    .section-head { max-width: 600px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── EXPLAINER ── */
+    .explainer {
+      background: var(--surface); border: 1px solid var(--accent-border);
+      border-radius: 14px; padding: 28px 32px; margin-bottom: 48px;
+      position: relative; overflow: hidden;
+    }
+    .explainer::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--clarity), transparent);
+    }
+    .explainer-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--clarity); margin-bottom: 10px;
+    }
+    .explainer h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .explainer p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+    .explainer p strong { color: var(--text); }
+
+    /* ── PLUGIN GRID ── */
+    .plugins-grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+    }
+    @media(min-width: 640px) { .plugins-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .plugins-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ── PLUGIN CARD ── */
+    .plugin-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; overflow: hidden; display: flex; flex-direction: column;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .plugin-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+
+    .plugin-card-top { padding: 24px 24px 0; flex: 1; }
+
+    .plugin-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px; margin-bottom: 16px;
+    }
+    .plugin-icon-wrap {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0; border: 1px solid;
+    }
+    .icon-purple { background: rgba(138,69,251,0.12); border-color: rgba(138,69,251,0.28); }
+    .icon-violet { background: rgba(164,141,255,0.12); border-color: rgba(164,141,255,0.28); }
+    .icon-green  { background: rgba(149,191,184,0.12); border-color: rgba(149,191,184,0.28); }
+    .icon-yellow { background: rgba(228,201,141,0.12); border-color: rgba(228,201,141,0.28); }
+    .icon-blue   { background: rgba(106,165,198,0.12); border-color: rgba(106,165,198,0.28); }
+    .icon-pink   { background: rgba(190,178,255,0.12); border-color: rgba(190,178,255,0.28); }
+
+    .plugin-badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .badge {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 8px;
+      border-radius: 4px; border: 1px solid;
+    }
+    .badge-builtin  { color: var(--blue);    border-color: rgba(106,165,198,0.35); background: rgba(106,165,198,0.10); }
+    .badge-install  { color: var(--clarity); border-color: rgba(164,141,255,0.35); background: rgba(164,141,255,0.10); }
+    .badge-official { color: var(--yellow);  border-color: rgba(228,201,141,0.35); background: rgba(228,201,141,0.10); }
+
+    .plugin-num {
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px;
+    }
+    .plugin-card h3 {
+      font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; letter-spacing: -0.02em;
+    }
+    .plugin-tagline {
+      font-size: 0.78rem; font-weight: 600; color: var(--clarity);
+      margin-bottom: 12px;
+    }
+    .plugin-desc {
+      font-size: 0.875rem; color: var(--text-muted);
+      line-height: 1.6; margin-bottom: 14px;
+    }
+
+    /* ── FOR WHOM ── */
+    .plugin-for {
+      border-top: 1px solid var(--hairline);
+      padding: 14px 0 0; margin-bottom: 12px;
+    }
+    .plugin-for-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px;
+    }
+    .plugin-for-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+    .plugin-for-list li {
+      display: flex; align-items: flex-start; gap: 7px;
+      font-size: 0.82rem; color: var(--text-muted); line-height: 1.45;
+    }
+    .plugin-for-list li::before {
+      content: '→'; color: var(--accent); flex-shrink: 0;
+      font-size: 0.75rem; margin-top: 1px;
+    }
+
+    /* ── STATS ROW ── */
+    .plugin-stats {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      font-size: 0.78rem; color: var(--text-faint);
+      padding: 10px 14px; background: rgba(255,255,255,0.03);
+      border-radius: 6px; margin-bottom: 14px;
+    }
+    .plugin-stats strong { color: var(--text-muted); }
+
+    /* ── CARD FOOTER ── */
+    .plugin-card-foot {
+      padding: 0 24px 20px; margin-top: auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .plugin-card-foot .slug {
+      font-size: 0.75rem; color: var(--text-faint);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    /* ── ACCORDION ── */
+    .install-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 6px 12px; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+    .install-toggle:hover { color: var(--text-muted); border-color: rgba(255,255,255,0.15); }
+    .install-toggle.open {
+      color: var(--clarity); border-color: rgba(164,141,255,0.35);
+      background: rgba(164,141,255,0.08);
+    }
+    .install-toggle svg { width: 11px; height: 11px; transition: transform 0.3s var(--ease); }
+    .install-toggle.open svg { transform: rotate(180deg); }
+
+    .plugin-install {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.45s var(--ease);
+      border-top: 0px solid var(--hairline);
+    }
+    .plugin-install.open { max-height: 320px; border-top-width: 1px; }
+
+    .plugin-install-inner { padding: 16px 24px 20px; }
+    .install-label {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px;
+    }
+    .install-explain {
+      font-size: 0.82rem; color: var(--text-muted);
+      line-height: 1.55; margin-bottom: 12px;
+    }
+    .install-box {
+      background: rgba(0,0,20,0.6); border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 14px 16px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.82rem; color: #c4a8ff; line-height: 1.5;
+    }
+    .install-copy {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.73rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      margin-top: 10px; padding: 0;
+      transition: color 0.2s;
+    }
+    .install-copy:hover { color: var(--clarity); }
+    .install-copy svg { width: 12px; height: 12px; }
+    .install-copy.copied { color: var(--green); }
+
+    /* ── STACK SECTION ── */
+    .stack-section {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--hairline);
+    }
+    .stack-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 32px; position: relative; overflow: hidden;
+    }
+    .stack-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--clarity), var(--blue), transparent);
+    }
+    .stack-flow { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .stack-step {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 16px; border-radius: 8px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--hairline);
+      font-size: 0.875rem; color: var(--text-muted); line-height: 1.5;
+    }
+    .stack-step .arrow { color: var(--accent); flex-shrink: 0; font-weight: 700; margin-top: 1px; }
+    .stack-step strong { color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--clarity); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* ── FADE ── */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+
+    @media(max-width: 639px) { .hero-meta .sep { display: none; } }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('plugins')" style="border:none;cursor:pointer;font-family:inherit;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Ver os 6 plugins
+    </button>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Curadoria · Claude Code Plugins</span>
+            <h1>
+              6 plugins que transformam o Claude Code em
+              <span class="accent"> um time inteiro de engenharia.</span>
+            </h1>
+            <p class="sub">Existem mais de 10.000 plugins disponíveis. Mais de 50 foram testados. Esses são os únicos que mudaram de verdade como trabalhar — e aqui você aprende a instalar cada um, do zero.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('plugins')">
+                Ver os 6 plugins
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('stack')">Como usar todos juntos</button>
+            </div>
+            <div class="hero-meta">
+              <div class="item">
+                <span class="k">6 plugins</span>
+                <span class="v">testados e aprovados</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">105K+ estrelas</span>
+                <span class="v">só no top 1</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">Gratuitos</span>
+                <span class="v">todos para instalar</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDE CARD -->
+          <div class="side-card fade-in">
+            <div class="side-card-label">O que você vai encontrar</div>
+            <h3>Um plugin por problema</h3>
+            <ul class="plugin-index">
+              <li><span class="num">01</span><span><span class="pname">Superpowers</span>para planejar antes de codar</span></li>
+              <li><span class="num">02</span><span><span class="pname">Frontend Design</span>para visual profissional</span></li>
+              <li><span class="num">03</span><span><span class="pname">Code Review</span>para revisar sem falha</span></li>
+              <li><span class="num">04</span><span><span class="pname">Security Guidance</span>para segurança em tempo real</span></li>
+              <li><span class="num">05</span><span><span class="pname">Claude-Mem</span>para memória entre sessões</span></li>
+              <li><span class="num">06</span><span><span class="pname">Gstack</span>para um time completo num plugin</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PLUGINS -->
+    <section id="plugins">
+      <div class="wrap">
+
+        <div class="explainer fade-in">
+          <div class="explainer-label">Para quem está começando agora</div>
+          <h3>O que é o Claude Code?</h3>
+          <p>Claude Code é uma ferramenta de programação com IA que funciona direto no seu computador — no terminal. Diferente do Claude normal, ele não <strong>sugere</strong> código: ele <strong>executa, testa e corrige</strong> sozinho. Pense como um programador sênior trabalhando no seu projeto enquanto você dorme. Os plugins são extensões que deixam ele ainda mais poderoso — como apps que você instala no celular para adicionar funções novas.</p>
+        </div>
+
+        <div class="section-head fade-in">
+          <span class="eyebrow">Seleção curada</span>
+          <h2 class="h2">Os 6 plugins</h2>
+          <p class="lead">Clique em "Como instalar" em cada card para ver o comando exato — é só copiar e colar no seu terminal. Mais simples do que parece.</p>
+        </div>
+
+        <div class="plugins-grid">
+
+          <!-- 1 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-purple" aria-hidden="true">⚡</div>
+                <div class="plugin-badges"><span class="badge badge-install">Instalar</span></div>
+              </div>
+              <div class="plugin-num">Plugin 01</div>
+              <h3>Superpowers</h3>
+              <div class="plugin-tagline">Faz o Claude pensar antes de agir</div>
+              <p class="plugin-desc">Sem esse plugin, o Claude entra direto no código sem planejar — como um pedreiro que começa a construir sem ver a planta. Com o Superpowers, ele para, planeja, divide o trabalho em partes menores e só então executa. A diferença na qualidade é absurda.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Quer código mais organizado e sem gambiarras</li>
+                  <li>Cansa de o Claude "sair fazendo" sem entender o contexto</li>
+                  <li>Trabalha em projetos maiores ou mais complexos</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>⭐ <strong>105K+</strong> estrelas no GitHub</span>
+                <span>👤 Jesse Vincent</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">obra/superpowers</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como instalar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Passo a passo</div>
+                <p class="install-explain">Abra o terminal (Mac: Command + Espaço → "Terminal". Windows: Win + R → "cmd"). Com o Claude Code aberto, cole o comando abaixo e pressione Enter:</p>
+                <div class="install-box">claude /install obra/superpowers</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-violet" aria-hidden="true">🎨</div>
+                <div class="plugin-badges"><span class="badge badge-official">Oficial Anthropic</span></div>
+              </div>
+              <div class="plugin-num">Plugin 02</div>
+              <h3>Frontend Design</h3>
+              <div class="plugin-tagline">Elimina o visual genérico de IA</div>
+              <p class="plugin-desc">Todo app criado por IA parece igual — visual roxo insosso, fonte sem personalidade, layout de template. Feito pela própria Anthropic, esse plugin força o Claude a usar fontes bonitas, paletas com personalidade e layouts que parecem produto de verdade.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Quer que o resultado final pareça profissional</li>
+                  <li>Está construindo um produto ou protótipo para clientes</li>
+                  <li>Não tem designer no time e precisa de visual decente</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>📦 <strong>277K+</strong> instalações</span>
+                <span>🏢 Anthropic</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">anthropics/frontend-design</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como instalar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Passo a passo</div>
+                <p class="install-explain">Plugin oficial da Anthropic. Ativa automaticamente quando você mexe em arquivos de interface (.tsx e .jsx). Para instalar:</p>
+                <div class="install-box">claude /install anthropics/frontend-design</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-green" aria-hidden="true">🔍</div>
+                <div class="plugin-badges"><span class="badge badge-builtin">Já nativo</span></div>
+              </div>
+              <div class="plugin-num">Plugin 03</div>
+              <h3>Code Review</h3>
+              <div class="plugin-tagline">4 agentes revisando ao mesmo tempo</div>
+              <p class="plugin-desc">Não precisa instalar nada. São 4 agentes rodando em paralelo, cada um olhando seu código de um ângulo diferente: um verifica regras do projeto, outro caça bugs, outro lê o histórico do Git. Zero ponto cego, sem falso alarme.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Quer garantir que o código não vai quebrar antes de publicar</li>
+                  <li>Trabalha em projeto com histórico longo de mudanças</li>
+                  <li>Quer uma segunda opinião antes de enviar para produção</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>✅ <strong>Nativo</strong> no Claude Code</span>
+                <span>👤 Boris Cherny (Anthropic)</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">anthropics/claude-code</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como usar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Não precisa instalar</div>
+                <p class="install-explain">Já vem embutido no Claude Code. Para usar, é só digitar o comando abaixo — ele sobe 4 agentes automaticamente e só mostra problemas com confiança acima de 80%.</p>
+                <div class="install-box">claude /code-review</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-yellow" aria-hidden="true">🔒</div>
+                <div class="plugin-badges"><span class="badge badge-official">Oficial Anthropic</span></div>
+              </div>
+              <div class="plugin-num">Plugin 04</div>
+              <h3>Security Guidance</h3>
+              <div class="plugin-tagline">Acha a falha antes do invasor</div>
+              <p class="plugin-desc">Monitora cada arquivo que você escreve ou edita em tempo real. Se encontrar uma vulnerabilidade crítica — uma brecha que um hacker poderia explorar — ele bloqueia a alteração antes de você salvar. Você não precisa ser especialista em segurança. Ele é.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Está construindo algo que vai receber dados de usuários</li>
+                  <li>Não tem experiência em segurança</li>
+                  <li>Quer publicar sem medo de brechas óbvias</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>📦 <strong>87K+</strong> instalações</span>
+                <span>🏢 Anthropic</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">anthropics/security-guidance</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como instalar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Passo a passo</div>
+                <p class="install-explain">Após instalado, age automaticamente em segundo plano — você não precisa fazer nada diferente. Só instala e ele já fica de olho em cada arquivo modificado.</p>
+                <div class="install-box">claude /install anthropics/security-guidance</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-blue" aria-hidden="true">🧠</div>
+                <div class="plugin-badges"><span class="badge badge-install">Instalar</span></div>
+              </div>
+              <div class="plugin-num">Plugin 05</div>
+              <h3>Claude-Mem</h3>
+              <div class="plugin-tagline">Nunca mais explique tudo de novo</div>
+              <p class="plugin-desc">Toda vez que você abre uma sessão nova no Claude Code, ele esquece tudo — seu projeto, suas regras, suas preferências. Com o Claude-Mem, a sessão 49 já sabe tudo que a sessão 48 aprendeu. Tudo salvo localmente, sem nada ir para a nuvem.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Trabalha no mesmo projeto por dias ou semanas</li>
+                  <li>Tem regras e convenções específicas no projeto</li>
+                  <li>Cansa de repetir contexto toda vez que abre o terminal</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>⭐ <strong>38K+</strong> estrelas no GitHub</span>
+                <span>👤 Alex Newman</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">thedotmack/claude-mem</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como instalar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Passo a passo</div>
+                <p class="install-explain">Após instalado, grava automaticamente o que o Claude aprende em cada sessão — decisões, convenções, preferências. Na próxima sessão, injeta esse contexto automaticamente. 100% local.</p>
+                <div class="install-box">claude /install thedotmack/claude-mem</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 -->
+          <div class="plugin-card fade-in">
+            <div class="plugin-card-top">
+              <div class="plugin-header">
+                <div class="plugin-icon-wrap icon-pink" aria-hidden="true">🚀</div>
+                <div class="plugin-badges"><span class="badge badge-install">Instalar</span></div>
+              </div>
+              <div class="plugin-num">Plugin 06</div>
+              <h3>Gstack</h3>
+              <div class="plugin-tagline">Um time inteiro num único plugin</div>
+              <p class="plugin-desc">Criado pelo Gary Tan, CEO da Y Combinator — a aceleradora por trás do Airbnb, Stripe e Dropbox. São 6 habilidades e 24 comandos: agente de CEO, engenheiro, designer, QA e responsável pelo lançamento. O agente de CEO pergunta "devemos construir isso?" antes do engenheiro perguntar "como construir". Essa ordem muda tudo.</p>
+              <div class="plugin-for">
+                <div class="plugin-for-label">Ideal para quem</div>
+                <ul class="plugin-for-list">
+                  <li>Quer um fluxo completo do planejamento até o lançamento</li>
+                  <li>Está construindo sozinho e precisa de múltiplas perspectivas</li>
+                  <li>Já se sente confiante com Claude Code e quer ir além</li>
+                </ul>
+              </div>
+              <div class="plugin-stats">
+                <span>⭐ <strong>20K+</strong> estrelas no GitHub</span>
+                <span>👤 Garry Tan (CEO, YC)</span>
+              </div>
+            </div>
+            <div class="plugin-card-foot">
+              <span class="slug">garrytan/gstack</span>
+              <button class="install-toggle" onclick="toggleInstall(this)" aria-expanded="false">
+                Como instalar
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="plugin-install">
+              <div class="plugin-install-inner">
+                <div class="install-label">Passo a passo</div>
+                <p class="install-explain">Após instalar, você terá 24 comandos novos. Fluxo recomendado: /plan-ceo-review para validar a ideia → /plan-eng-review para arquitetura → /qa para testar → /ship para lançar.</p>
+                <div class="install-box">claude /install garrytan/gstack</div>
+                <button class="install-copy" onclick="copyInstall(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar comando
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- STACK -->
+    <section class="stack-section" id="stack">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Como usar junto</span>
+          <h2 class="h2">O fluxo com os 6 ativos</h2>
+          <p class="lead">Quando você instala todos, eles trabalham em conjunto automaticamente — cada um entrando na hora certa.</p>
+        </div>
+        <div class="stack-card fade-in">
+          <div class="stack-flow">
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Sessão começa:</strong> Claude-Mem injeta o contexto da última sessão automaticamente — sem explicar nada de novo.</span>
+            </div>
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Você pede algo:</strong> Superpowers entra em ação e força o Claude a planejar antes de começar a codar.</span>
+            </div>
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Claude escreve arquivos de interface:</strong> Frontend Design ativa automaticamente e garante visual profissional.</span>
+            </div>
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Qualquer arquivo é salvo:</strong> Security Guidance escaneia em tempo real e bloqueia vulnerabilidades antes de gravar.</span>
+            </div>
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Antes de publicar:</strong> você roda /code-review — 4 agentes vasculham o projeto de ângulos diferentes.</span>
+            </div>
+            <div class="stack-step">
+              <span class="arrow">→</span>
+              <span><strong>Se estiver usando Gstack:</strong> /ship cuida do PR, do CI e do deploy — quatro agentes, zero etapa manual.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Curadoria gratuita · <a href="https://bperobelli.com.br" target="_blank" rel="noopener noreferrer">theGarage IA LAB</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function toggleInstall(btn) {
+      const card = btn.closest('.plugin-card');
+      const panel = card.querySelector('.plugin-install');
+      const isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('.plugin-install.open').forEach(p => {
+        p.classList.remove('open');
+        const t = p.closest('.plugin-card').querySelector('.install-toggle');
+        t.classList.remove('open');
+        t.setAttribute('aria-expanded', 'false');
+      });
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function copyInstall(btn) {
+      const text = btn.previousElementSibling.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M20 6 9 17l-5-5"/></svg> Copiado!';
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.5  });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.65 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.75,
+          ease:'cubic-bezier(0.22,1,0.36,1)',
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => {
+        el.style.opacity = 1; el.style.transform = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
