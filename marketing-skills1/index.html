@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>29 Skills de Marketing para o Claude — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #FF6B6B;
+      --accent-dim: rgba(255,107,107,0.10);
+      --accent-border: rgba(255,107,107,0.25);
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #000;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem;
+      color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(255,107,107,0.18); border-color: rgba(255,107,107,0.45); }
+
+    /* ── WRAP ── */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* ── EYEBROW ── */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #ff8585; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(255,107,107,0.3); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 120px; padding-bottom: 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(110px); pointer-events: none; z-index: 0;
+    }
+    .hero-blob.b1 {
+      width: 500px; height: 500px;
+      background: rgba(255,107,107,0.07);
+      top: -80px; right: -120px;
+    }
+    .hero-blob.b2 {
+      width: 320px; height: 320px;
+      background: rgba(138,69,251,0.09);
+      bottom: 40px; left: -60px;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr; gap: 48px;
+    }
+    @media(min-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr 300px; gap: 64px; align-items: start; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+      font-weight: 800; line-height: 1.06;
+      letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 500px; line-height: 1.65; margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline);
+      flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* ── SIDE CARD ── */
+    .side-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .side-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .side-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .side-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+    .index-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .index-list li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.84rem; color: var(--text-muted);
+      padding-bottom: 8px; border-bottom: 1px solid var(--hairline);
+    }
+    .index-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .index-list .emoji { font-size: 0.95rem; flex-shrink: 0; width: 20px; text-align: center; }
+    .index-list .cat { font-weight: 600; color: var(--text); margin-right: 3px; }
+
+    /* ── HOW TO INSTALL ── */
+    #como-instalar { scroll-margin-top: 72px; }
+    #skills { scroll-margin-top: 72px; }
+
+    section { padding-block: 60px; }
+    @media(min-width: 768px) { section { padding-block: 96px; } }
+
+    .section-head { max-width: 600px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.04em;
+      line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── INSTALL STEPS ── */
+    .install-section { background: var(--bg-elevated); }
+
+    .install-steps {
+      display: grid; grid-template-columns: 1fr; gap: 12px;
+    }
+    @media(min-width: 768px) { .install-steps { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .install-steps { grid-template-columns: repeat(4, 1fr); } }
+
+    .install-step {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 22px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .install-step:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      font-size: 0.75rem; font-weight: 800; color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .install-step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .install-step p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.58; }
+    .install-step .path {
+      display: inline-block; margin-top: 10px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.75rem; color: var(--accent);
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 4px; padding: 3px 8px;
+    }
+
+    .note {
+      display: flex; gap: 12px;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 10px; padding: 14px 18px; margin-top: 28px;
+    }
+    .note svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .note p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+    .note strong { color: var(--text); }
+
+    /* ── SKILLS GRID ── */
+    .skills-section { background: var(--bg); }
+
+    /* ── FILTER ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px;
+    }
+    .filter-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 16px; border-radius: 100px;
+      font-size: 0.78rem; font-weight: 700; cursor: pointer;
+      border: 1px solid var(--hairline); background: transparent;
+      color: var(--text-muted); font-family: 'Figtree', sans-serif;
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+    }
+    .filter-btn:hover { border-color: var(--accent-border); color: var(--text); }
+    .filter-btn.active {
+      background: var(--accent-dim); border-color: var(--accent-border); color: var(--accent);
+    }
+    .filter-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+
+    .skills-grid {
+      display: grid; grid-template-columns: 1fr; gap: 12px;
+    }
+    @media(min-width: 640px) { .skills-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 1024px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ── SKILL CARD ── */
+    .skill-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .skill-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+
+    .skill-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .skill-name-wrap { flex: 1; }
+    .skill-cat {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .skill-card h3 { font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
+    .skill-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    .skill-desc { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; flex: 1; }
+
+    /* ── ACCORDION PROMPT ── */
+    .skill-card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; margin-top: auto; padding-top: 10px;
+      border-top: 1px solid var(--hairline);
+    }
+    .skill-file {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.72rem; color: var(--text-faint);
+    }
+    .prompt-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 5px 10px; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+      white-space: nowrap;
+    }
+    .prompt-toggle:hover { color: var(--text-muted); border-color: rgba(255,255,255,0.15); }
+    .prompt-toggle.open { color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim); }
+    .prompt-toggle svg { width: 10px; height: 10px; transition: transform 0.3s var(--ease); }
+    .prompt-toggle.open svg { transform: rotate(180deg); }
+
+    .skill-prompt {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s var(--ease);
+      border-top: 0px solid var(--hairline);
+    }
+    .skill-prompt.open { max-height: 280px; border-top-width: 1px; }
+    .skill-prompt-inner { padding: 14px 0 4px; }
+    .prompt-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px;
+    }
+    .prompt-box {
+      background: rgba(0,0,20,0.6); border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 12px 14px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.76rem; color: #ffb0b0; line-height: 1.55;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .prompt-copy {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif; margin-top: 8px; padding: 0;
+      transition: color 0.2s;
+    }
+    .prompt-copy:hover { color: var(--accent); }
+    .prompt-copy.copied { color: var(--accent); }
+    .prompt-copy svg { width: 12px; height: 12px; }
+
+    /* ── PACK SECTION ── */
+    .pack-section { background: var(--bg-elevated); }
+
+    .pack-grid {
+      display: grid; grid-template-columns: 1fr; gap: 14px;
+    }
+    @media(min-width: 768px) { .pack-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .pack-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 24px;
+      transition: border-color 0.3s var(--ease);
+    }
+    .pack-card:hover { border-color: var(--accent-border); }
+    .pack-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+    .pack-card h3 .pack-emoji { margin-right: 6px; }
+    .pack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pack-tag {
+      font-size: 0.7rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 4px;
+      border: 1px solid var(--hairline);
+      color: var(--text-muted); background: rgba(255,255,255,0.03);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* ── FADE ── */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media(max-width: 639px) { .hero-meta .sep { display: none; } }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('como-instalar')" style="border:none;cursor:pointer;font-family:inherit;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Como instalar
+    </button>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Curadoria · Claude Skills de Marketing</span>
+            <h1>
+              29 skills que transformam o Claude em um
+              <span class="accent">time de marketing completo.</span>
+            </h1>
+            <p class="sub">Conteúdo, anúncios, SEO, e-mail, CRO, lançamentos, precificação — cada skill ensina o Claude a pensar como um especialista sênior naquela área. Instala uma vez, usa para sempre.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('skills')">
+                Ver as 29 skills
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('como-instalar')">Como instalar em 60 segundos</button>
+            </div>
+            <div class="hero-meta">
+              <div class="item">
+                <span class="k">29 skills</span>
+                <span class="v">cobrindo todo marketing</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">100% grátis</span>
+                <span class="v">open source no GitHub</span>
+              </div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item">
+                <span class="k">60 segundos</span>
+                <span class="v">para instalar cada uma</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDE CARD -->
+          <div class="side-card fade-in">
+            <div class="side-card-label">5 categorias, 29 especialistas</div>
+            <h3>Uma skill por disciplina de marketing</h3>
+            <ul class="index-list">
+              <li><span class="emoji">✍️</span><span><span class="cat">Conteúdo e Copy</span>6 skills</span></li>
+              <li><span class="emoji">📣</span><span><span class="cat">Publicidade</span>3 skills</span></li>
+              <li><span class="emoji">🔍</span><span><span class="cat">SEO e Busca</span>3 skills</span></li>
+              <li><span class="emoji">📈</span><span><span class="cat">Conversão (CRO)</span>5 skills</span></li>
+              <li><span class="emoji">🚀</span><span><span class="cat">Crescimento</span>8 skills</span></li>
+              <li><span class="emoji">⚙️</span><span><span class="cat">Operações</span>4 skills</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HOW TO INSTALL -->
+    <section class="install-section" id="como-instalar">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Passo a passo</span>
+          <h2 class="h2">Como instalar qualquer skill em 60 segundos</h2>
+          <p class="lead">O processo é o mesmo para todas as 29 skills. Aprenda uma vez e instale todas em uma única sessão.</p>
+        </div>
+
+        <div class="install-steps">
+          <div class="install-step fade-in">
+            <div class="step-num">1</div>
+            <h3>Acesse o repositório</h3>
+            <p>Vá ao GitHub e abra o repositório com todas as skills disponíveis.</p>
+            <span class="path">github.com/coreyhaines31/marketingskills</span>
+          </div>
+          <div class="install-step fade-in">
+            <div class="step-num">2</div>
+            <h3>Escolha a skill</h3>
+            <p>Clique na pasta da skill que quer instalar — por exemplo, <em>content-strategy</em>. Abra o arquivo <strong>.md</strong> dentro dela.</p>
+          </div>
+          <div class="install-step fade-in">
+            <div class="step-num">3</div>
+            <h3>Baixe o arquivo</h3>
+            <p>Clique em "Download raw file" (ícone de download no canto superior direito da página). O arquivo .md vai para o seu computador.</p>
+          </div>
+          <div class="install-step fade-in">
+            <div class="step-num">4</div>
+            <h3>Suba no Claude</h3>
+            <p>Abra o app desktop do Claude. Vá em <strong>Customize → Skills → + → Upload a Skill</strong>. Arraste o arquivo .md para dentro. Pronto.</p>
+            <span class="path">Customize → Skills → Upload</span>
+          </div>
+        </div>
+
+        <div class="note fade-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <p><strong>Dica:</strong> baixe todas as skills que quer de uma vez e arraste todas juntas para o Claude. Você instala as 29 em menos de 10 minutos. Antes de usar, conte ao Claude o que você vende, quem é seu cliente e o que te diferencia — ele aplica esse contexto em todas as skills automaticamente.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="skills-section" id="skills">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Biblioteca completa</span>
+          <h2 class="h2">As 29 skills por categoria</h2>
+          <p class="lead">Clique em "Ver prompt" em cada card para ver o exemplo de uso prático. Todos os prompts podem ser copiados.</p>
+        </div>
+
+        <div class="filter-bar" role="group" aria-label="Filtrar por categoria">
+          <button class="filter-btn active" onclick="filterSkills('all', this)"><span class="filter-dot"></span> Todas</button>
+          <button class="filter-btn" onclick="filterSkills('Conteúdo e Copy', this)"><span class="filter-dot"></span> Conteúdo e Copy</button>
+          <button class="filter-btn" onclick="filterSkills('Publicidade', this)"><span class="filter-dot"></span> Publicidade</button>
+          <button class="filter-btn" onclick="filterSkills('SEO e Busca', this)"><span class="filter-dot"></span> SEO e Busca</button>
+          <button class="filter-btn" onclick="filterSkills('Conversão', this)"><span class="filter-dot"></span> Conversão (CRO)</button>
+          <button class="filter-btn" onclick="filterSkills('Crescimento', this)"><span class="filter-dot"></span> Crescimento</button>
+          <button class="filter-btn" onclick="filterSkills('Operações', this)"><span class="filter-dot"></span> Operações</button>
+        </div>
+
+        <div class="skills-grid" id="skills-grid">
+
+          <!-- CONTEÚDO E COPY -->
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Estratégia de Conteúdo</h3></div><span class="skill-icon">📋</span></div>
+            <p class="skill-desc">Clusters de tópicos, calendários editoriais, pilares de conteúdo e planos de distribuição por canal. Entrega uma estratégia completa, não uma lista de ideias.</p>
+            <div class="skill-card-foot"><span class="skill-file">content-strategy</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte uma estratégia de conteúdo completa para [seu negócio]. Inclua 3 clusters de tópicos, calendário editorial para 90 dias, pilares de conteúdo e plano de distribuição por canal."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Copywriting</h3></div><span class="skill-icon">✍️</span></div>
+            <p class="skill-desc">Copy de marketing para homepages, landing pages e páginas de produto. Estrutura completa: hero, problema, solução, prova social, objeções e CTA.</p>
+            <div class="skill-card-foot"><span class="skill-file">copywriting</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Escreva uma landing page completa para [seu produto]: hero, problema, solução, funcionalidades, prova social, objeções e CTA. Público: [descreva seu público]."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Revisão de Copy</h3></div><span class="skill-icon">🔎</span></div>
+            <p class="skill-desc">Aperta a linguagem, corrige o tom e fortalece CTAs em textos que já existem. Não cria do zero — entra no que você já tem e deixa mais forte.</p>
+            <div class="skill-card-foot"><span class="skill-file">copy-editing</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Revise esse texto de marketing: [cole o texto]. Aperte a linguagem, ajuste o tom para [direto/institucional/conversacional] e fortaleça os CTAs. Mostre a versão original e a revisada lado a lado."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Cold E-mail B2B</h3></div><span class="skill-icon">📨</span></div>
+            <p class="skill-desc">Sequências de prospecção e follow-up B2B desenhadas para gerar resposta — não para impressionar. Estrutura baseada em dor, relevância e facilidade de responder.</p>
+            <div class="skill-card-foot"><span class="skill-file">cold-email</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie uma sequência de 3 e-mails de prospecção fria para [perfil do lead]. Produto: [descreva]. Problema que resolve: [descreva]. Cada e-mail com até 100 palavras, com um único CTA claro."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Sequência de E-mail</h3></div><span class="skill-icon">📬</span></div>
+            <p class="skill-desc">Fluxos de boas-vindas, campanhas de drip, nutrição de leads e reativação. Mistura valor, história, prova social e ofertas suaves na cadência certa.</p>
+            <div class="skill-card-foot"><span class="skill-file">email-sequence</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte uma sequência de boas-vindas de 7 e-mails para novos assinantes. E-mail 1 sai na hora do cadastro. Espaçe os outros em 14 dias. Misture valor, história, prova social e pitch suave. Feche com oferta clara. Meu produto: [descreva]."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conteúdo e Copy">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conteúdo e Copy</div><h3>Lead Magnets</h3></div><span class="skill-icon">🧲</span></div>
+            <p class="skill-desc">PDFs, checklists e templates otimizados para captura de e-mail. Entrega estrutura, títulos e bullets — você preenche com o conteúdo específico do seu negócio.</p>
+            <div class="skill-card-foot"><span class="skill-file">lead-magnets</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie um lead magnet em formato checklist para [meu público-alvo]. Tema: [tema]. Deve resolver [problema específico] em menos de 5 minutos de leitura. Inclua título, subtítulo e a estrutura completa dos itens."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <!-- PUBLICIDADE -->
+          <div class="skill-card fade-in" data-cat="Publicidade">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Publicidade</div><h3>Criativos de Anúncio</h3></div><span class="skill-icon">🎯</span></div>
+            <p class="skill-desc">Headlines, descrições, texto principal e variações completas de criativos em escala. Cada pacote ataca um ângulo diferente do mesmo produto.</p>
+            <div class="skill-card-foot"><span class="skill-file">ad-creative</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Gere 5 pacotes de criativo para anúncio do meu produto. Cada pacote: texto principal, headline, descrição e CTA. Público: [descreva]. Plataforma: [Meta/Google/LinkedIn]. Cada pacote com um ângulo diferente."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Publicidade">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Publicidade</div><h3>Mídia Paga</h3></div><span class="skill-icon">💰</span></div>
+            <p class="skill-desc">Estratégia de paid media no Google, Meta, LinkedIn e X. Segmentação, orçamentos e otimização — com lógica de especialista, não de quem aperta botão.</p>
+            <div class="skill-card-foot"><span class="skill-file">paid-ads</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte uma estratégia de mídia paga para [meu produto] no [Meta/Google]. Orçamento mensal: R$[valor]. Público: [descreva]. Inclua estrutura de campanhas, segmentação recomendada e como dividir o orçamento por fase."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Publicidade">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Publicidade</div><h3>Setup de Teste A/B</h3></div><span class="skill-icon">🧪</span></div>
+            <p class="skill-desc">Testes A/B com hipóteses corretas, tamanho de amostra, significância estatística e duração. Para de testar no achismo e começa a testar com método.</p>
+            <div class="skill-card-foot"><span class="skill-file">ab-test-setup</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte um teste A/B para [elemento: headline/CTA/imagem] da minha [landing page/anúncio]. Hipótese: [o que você acredita]. Inclua tamanho de amostra necessário, duração recomendada e como medir significância."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <!-- SEO E BUSCA -->
+          <div class="skill-card fade-in" data-cat="SEO e Busca">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">SEO e Busca</div><h3>SEO para IA</h3></div><span class="skill-icon">🤖</span></div>
+            <p class="skill-desc">Otimiza conteúdo para aparecer nas respostas de ChatGPT, Perplexity e Google AI Overviews. SEO não é só Google — é ser a fonte que a IA cita.</p>
+            <div class="skill-card-foot"><span class="skill-file">ai-seo</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Otimize esse conteúdo para aparecer nas respostas de IA (ChatGPT, Perplexity, Google AI): [cole o conteúdo]. Reescreva de forma que modelos de IA sejam mais propensos a citá-lo como fonte. Mantenha leitura fluida."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="SEO e Busca">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">SEO e Busca</div><h3>SEO Programático</h3></div><span class="skill-icon">⚙️</span></div>
+            <p class="skill-desc">Páginas SEO em escala usando templates e dados. Gera centenas de páginas relevantes sem escrever cada uma do zero — para quem quer crescer orgânico rápido.</p>
+            <div class="skill-card-foot"><span class="skill-file">programmatic-seo</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte uma estratégia de SEO programático para [meu produto/serviço]. Identifique 5 templates de página, as variáveis de dados em cada template e a estrutura de URL. Estimativa de volume de busca por tipo de página."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="SEO e Busca">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">SEO e Busca</div><h3>Páginas vs Concorrentes</h3></div><span class="skill-icon">⚔️</span></div>
+            <p class="skill-desc">Páginas de comparação que ranqueiam para "[concorrente] alternativa" e "[produto A] vs [produto B]". Captura quem já está pesquisando — o lead mais qualificado que existe.</p>
+            <div class="skill-card-foot"><span class="skill-file">competitor-alternatives</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie uma página de comparação para [meu produto] vs [concorrente]. Inclua tabela de funcionalidades, diferenciais reais, casos de uso ideais para cada um e CTA. Otimize para a busca '[concorrente] alternativa'."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <!-- CONVERSÃO -->
+          <div class="skill-card fade-in" data-cat="Conversão">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conversão (CRO)</div><h3>CRO de Página</h3></div><span class="skill-icon">📐</span></div>
+            <p class="skill-desc">Layout, copy, CTAs e sinais de confiança em qualquer página de marketing. Analisa o que está prejudicando a conversão e entrega recomendações concretas.</p>
+            <div class="skill-card-foot"><span class="skill-file">page-cro</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Analise essa página de [landing/produto/home]: [cole o conteúdo ou URL]. Identifique os 5 maiores problemas de conversão, explique o impacto de cada um e entregue uma solução específica para cada problema."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conversão">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conversão (CRO)</div><h3>CRO de Formulário</h3></div><span class="skill-icon">📝</span></div>
+            <p class="skill-desc">Taxa de preenchimento de formulários de captura e contato. Pequenas mudanças em formulários têm impacto desproporcional no volume de leads gerados.</p>
+            <div class="skill-card-foot"><span class="skill-file">form-cro</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Analise meu formulário de [captura/contato/trial]: [descreva os campos]. Sugira mudanças para aumentar o preenchimento — sequência de campos, labels, microcopy e CTA do botão de envio."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conversão">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conversão (CRO)</div><h3>CRO de Onboarding</h3></div><span class="skill-icon">🚀</span></div>
+            <p class="skill-desc">Ativação pós-cadastro e tempo até o "momento aha". Quem não ativa nas primeiras 48h raramente volta — essa skill resolve isso com fluxo e copy corretos.</p>
+            <div class="skill-card-foot"><span class="skill-file">onboarding-cro</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Meu produto é [descreva]. O momento aha do usuário é [quando ele percebe valor pela primeira vez]. Crie um fluxo de onboarding de 5 passos que leve o usuário novo até esse momento em menos de 10 minutos."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conversão">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conversão (CRO)</div><h3>CRO de Popup</h3></div><span class="skill-icon">🪟</span></div>
+            <p class="skill-desc">Popups, modais e slide-ins que convertem sem irritar. Copy, timing e segmentação para quem quer capturar atenção sem destruir a experiência do usuário.</p>
+            <div class="skill-card-foot"><span class="skill-file">popup-cro</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie 3 variações de popup de exit-intent para [minha página]. Objetivo: capturar e-mail. Produto: [descreva]. Cada variação com headline, copy de suporte, CTA e campo de e-mail. Timing e segmentação recomendados."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Conversão">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Conversão (CRO)</div><h3>CRO de Paywall</h3></div><span class="skill-icon">🔒</span></div>
+            <p class="skill-desc">Paywalls dentro do produto, modais de upsell e gates de funcionalidade. O copy da tela de upgrade impacta mais o MRR do que qualquer campanha de marketing.</p>
+            <div class="skill-card-foot"><span class="skill-file">paywall-upgrade-cro</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Escreva o copy do paywall para [funcionalidade bloqueada] do meu produto. Plano que libera: [nome e preço]. Usuário atual: [plano free/básico]. O copy deve mostrar o valor perdido, não apenas listar o que está no plano pago."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <!-- CRESCIMENTO -->
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Estratégia de Lançamento</h3></div><span class="skill-icon">🎯</span></div>
+            <p class="skill-desc">Pré-lançamento, dia do lançamento e follow-up pós-lançamento. Um lançamento sem plano é uma promoção. Um lançamento com plano é um evento.</p>
+            <div class="skill-card-foot"><span class="skill-file">launch-strategy</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Monte um plano de lançamento de 30 dias para [produto/funcionalidade]. Inclua fase de aquecimento pré-lançamento, sequência do dia do lançamento por canal, e follow-up pós-lançamento. Atribua cada ação a um dia específico com entregáveis claros."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Estratégia de Precificação</h3></div><span class="skill-icon">💲</span></div>
+            <p class="skill-desc">Precificação baseada em posicionamento, concorrência e psicologia. O preço é o elemento de marketing com maior impacto na percepção de valor — e o mais negligenciado.</p>
+            <div class="skill-card-foot"><span class="skill-file">pricing-strategy</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Analise a precificação do meu produto: [nome, preço atual, planos]. Concorrentes: [liste com preços]. Público: [descreva]. Sugira uma estrutura de preços baseada em valor percebido e psicologia de compra, com justificativa para cada tier."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Ideias de Marketing</h3></div><span class="skill-icon">💡</span></div>
+            <p class="skill-desc">Estratégias de marketing frescas sob demanda. Quando você está travado e precisa de ângulos novos — não dos óbvios que todo mundo usa.</p>
+            <div class="skill-card-foot"><span class="skill-file">marketing-ideas</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Gere 10 ideias de marketing não convencionais para [meu produto]. Público: [descreva]. Evite as ideias óbvias (redes sociais, blog, e-mail). Foque em canais e formatos que meu concorrente provavelmente não está usando."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Psicologia do Marketing</h3></div><span class="skill-icon">🧠</span></div>
+            <p class="skill-desc">Ciência comportamental aplicada ao marketing. Vieses cognitivos, gatilhos de decisão e arquitetura de escolha — usados de forma ética para aumentar conversão.</p>
+            <div class="skill-card-foot"><span class="skill-file">marketing-psychology</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Aplique psicologia comportamental para melhorar a conversão da minha [página/e-mail/anúncio]: [cole o conteúdo]. Identifique 3 vieses cognitivos que posso usar, como aplicar cada um e qual mudança concreta fazer."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Pesquisa de Cliente</h3></div><span class="skill-icon">🎤</span></div>
+            <p class="skill-desc">Análise de pesquisas e entrevistas com clientes. Transforma respostas em insights acionáveis — não em slides bonitos que ninguém usa para tomar decisão.</p>
+            <div class="skill-card-foot"><span class="skill-file">customer-research</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Analise essas respostas da pesquisa com clientes: [cole as respostas]. Identifique os 3 padrões mais relevantes, o job-to-be-done principal e 2 mudanças de produto/marketing que essa pesquisa justifica."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Ferramenta Gratuita</h3></div><span class="skill-icon">🛠️</span></div>
+            <p class="skill-desc">Estratégia para criar ferramentas gratuitas que geram tráfego orgânico qualificado. Calculadoras, geradores e verificadores que atraem exatamente quem precisa do seu produto.</p>
+            <div class="skill-card-foot"><span class="skill-file">free-tool-strategy</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Sugira 5 ferramentas gratuitas que eu poderia construir para [meu produto/nicho]. Para cada uma: nome, o que faz, por que atrai o público ideal, como converte para o produto pago e estimativa de dificuldade de construção."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Crescimento">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Crescimento</div><h3>Programa de Referral</h3></div><span class="skill-icon">🤝</span></div>
+            <p class="skill-desc">Design de programas de referral e afiliados. O canal de aquisição com menor CAC — quando está estruturado certo. A maioria não está.</p>
+            <div class="skill-card-foot"><span class="skill-file">referral-program</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie um programa de referral para [meu produto]. Inclua: tipo de incentivo (para quem indica e para quem foi indicado), mecânica de rastreamento, copy do convite e o momento certo de ativar o pedido de indicação no ciclo de vida do cliente."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <!-- OPERAÇÕES -->
+          <div class="skill-card fade-in" data-cat="Operações">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Operações</div><h3>Revenue Operations</h3></div><span class="skill-icon">📊</span></div>
+            <p class="skill-desc">RevOps e gestão de pipeline. Alinha marketing, vendas e CS em torno de métricas e processos que realmente movem receita — não de reuniões de alinhamento.</p>
+            <div class="skill-card-foot"><span class="skill-file">revops</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Analise o pipeline do meu processo de vendas: [descreva as etapas e taxas de conversão]. Identifique o maior gargalo, a causa provável e as 3 ações de RevOps com maior impacto imediato na taxa de fechamento."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Operações">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Operações</div><h3>Auditoria de App Store</h3></div><span class="skill-icon">📱</span></div>
+            <p class="skill-desc">Otimização de listagem na App Store e Google Play. Título, subtítulo, descrição, screenshots e palavras-chave — cada campo impacta ranking e conversão.</p>
+            <div class="skill-card-foot"><span class="skill-file">aso-audit</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Audite a listagem do meu app na App Store: [cole título, subtítulo, descrição e palavras-chave atuais]. Aponte os 5 maiores problemas de ASO e entregue uma versão reescrita de cada campo."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+          <div class="skill-card fade-in" data-cat="Operações">
+            <div class="skill-card-top"><div class="skill-name-wrap"><div class="skill-cat">Operações</div><h3>Prevenção de Churn</h3></div><span class="skill-icon">🛡️</span></div>
+            <p class="skill-desc">Fluxos de cancelamento, ofertas de retenção e recuperação de pagamento. É mais barato salvar um cliente do que adquirir um novo — mas a maioria das empresas não tem nenhuma estrutura para isso.</p>
+            <div class="skill-card-foot"><span class="skill-file">churn-prevention</span><button class="prompt-toggle" onclick="togglePrompt(this)">Ver prompt<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button></div>
+            <div class="skill-prompt"><div class="skill-prompt-inner"><div class="prompt-label">Prompt prático</div><div class="prompt-box">"Crie um fluxo de cancelamento para [meu produto]. Inclua: tela de saída com pergunta de motivo, oferta de retenção por tipo de motivo (preço, falta de uso, concorrente) e sequência de e-mail de recuperação para churn por falha de pagamento."</div><button class="prompt-copy" onclick="copyPrompt(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button></div></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PACKS -->
+    <section class="pack-section" id="packs">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Por onde começar</span>
+          <h2 class="h2">Packs por objetivo</h2>
+          <p class="lead">Não precisa instalar todas as 29 de uma vez. Escolha o pack baseado no que você está tentando resolver agora.</p>
+        </div>
+        <div class="pack-grid">
+          <div class="pack-card fade-in">
+            <h3><span class="pack-emoji">🛒</span>Preciso de clientes</h3>
+            <div class="pack-tags">
+              <span class="pack-tag">copywriting</span>
+              <span class="pack-tag">ad-creative</span>
+              <span class="pack-tag">paid-ads</span>
+              <span class="pack-tag">page-cro</span>
+              <span class="pack-tag">email-sequence</span>
+            </div>
+          </div>
+          <div class="pack-card fade-in">
+            <h3><span class="pack-emoji">📈</span>Preciso de tráfego</h3>
+            <div class="pack-tags">
+              <span class="pack-tag">content-strategy</span>
+              <span class="pack-tag">ai-seo</span>
+              <span class="pack-tag">programmatic-seo</span>
+              <span class="pack-tag">competitor-alternatives</span>
+              <span class="pack-tag">lead-magnets</span>
+            </div>
+          </div>
+          <div class="pack-card fade-in">
+            <h3><span class="pack-emoji">🚀</span>Preciso lançar algo</h3>
+            <div class="pack-tags">
+              <span class="pack-tag">launch-strategy</span>
+              <span class="pack-tag">pricing-strategy</span>
+              <span class="pack-tag">copywriting</span>
+              <span class="pack-tag">ad-creative</span>
+              <span class="pack-tag">email-sequence</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="note fade-in" style="margin-top:28px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <p><strong>Skills se somam.</strong> Instale content-strategy, copywriting e ai-seo juntos e peça ao Claude para planejar e escrever um artigo otimizado para busca por IA. Ele puxa das três skills ao mesmo tempo. Quanto mais skills relevantes instaladas, melhor o output.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Curadoria gratuita · <a href="https://github.com/coreyhaines31/marketingskills" target="_blank" rel="noopener noreferrer">Fonte: github.com/coreyhaines31</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+    function filterSkills(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.skill-card').forEach(card => {
+        const show = cat === 'all' || card.dataset.cat === cat;
+        card.style.display = show ? 'flex' : 'none';
+        if (show) { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }
+      });
+    }
+    function togglePrompt(btn) {
+      const card = btn.closest('.skill-card');
+      const panel = card.querySelector('.skill-prompt');
+      const isOpen = panel.classList.contains('open');
+      document.querySelectorAll('.skill-prompt.open').forEach(p => {
+        p.classList.remove('open');
+        p.closest('.skill-card').querySelector('.prompt-toggle').classList.remove('open');
+      });
+      if (!isOpen) { panel.classList.add('open'); btn.classList.add('open'); }
+    }
+    function copyPrompt(btn) {
+      const text = btn.previousElementSibling.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M20 6 9 17l-5-5"/></svg> Copiado!';
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.5  });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.65 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'cubic-bezier(0.22,1,0.36,1)', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity=1; el.style.transform='none'; });
+    }
+  </script>
+</body>
+</html>
