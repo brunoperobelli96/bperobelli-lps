@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>4 Skills do Claude para um Currículo Irrecusável — Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0b001f;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --accent: #4D9EFF;
+      --accent-dim: rgba(77,158,255,0.10);
+      --accent-border: rgba(77,158,255,0.25);
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Figtree', sans-serif; font-size: 1rem;
+      line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 16px;
+      background: var(--accent); color: #000;
+      padding: 8px 16px; border-radius: 4px;
+      font-weight: 700; z-index: 9999; text-decoration: none;
+    }
+    .skip-link:focus { top: 16px; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(24px,4vw,64px); height: 64px;
+      border-bottom: 1px solid var(--hairline);
+      background: rgba(9,0,35,0.90); backdrop-filter: blur(16px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text); font-size: 0.875rem; font-weight: 600;
+    }
+    .nav-logo small { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; }
+    .nav-mark {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; background: var(--brand);
+      border-radius: 6px; font-weight: 900; font-size: 0.75rem; color: #fff; flex-shrink: 0;
+    }
+    .nav-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent);
+      border: 1px solid var(--accent-border); padding: 5px 14px;
+      border-radius: 100px; background: var(--accent-dim);
+      cursor: pointer; font-family: inherit; letter-spacing: 0.02em;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .nav-badge:hover { background: rgba(77,158,255,0.18); border-color: rgba(77,158,255,0.5); }
+
+    /* WRAP */
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(24px,4vw,64px); }
+
+    /* EYEBROW */
+    .eyebrow {
+      display: inline-block; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 22px; border-radius: 8px;
+      font-weight: 700; font-size: 0.875rem;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: background 0.3s var(--ease), transform 0.2s, box-shadow 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #6db0ff; transform: translateY(-2px); box-shadow: 0 12px 36px rgba(77,158,255,0.3); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+    .btn .arr { transition: transform 0.3s var(--ease); }
+    .btn:hover .arr { transform: translateX(4px); }
+
+    /* HERO */
+    .hero { padding-top: 120px; padding-bottom: 80px; position: relative; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); pointer-events: none; z-index: 0; }
+    .hero-blob.b1 { width: 500px; height: 500px; background: rgba(77,158,255,0.07); top: -80px; right: -120px; }
+    .hero-blob.b2 { width: 320px; height: 320px; background: rgba(138,69,251,0.09); bottom: 40px; left: -60px; }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 48px; }
+    @media(min-width:900px) { .hero-grid { grid-template-columns: 1fr 300px; gap: 64px; align-items: start; } }
+
+    .hero h1 {
+      font-size: clamp(2.2rem,5.5vw,4.2rem);
+      font-weight: 800; line-height: 1.06; letter-spacing: -0.04em; margin-bottom: 20px;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { font-size: 1.05rem; color: var(--text-muted); max-width: 500px; line-height: 1.65; margin-bottom: 32px; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 24px;
+      padding-top: 24px; border-top: 1px solid var(--hairline); flex-wrap: wrap;
+    }
+    .hero-meta .item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-meta .k { font-weight: 800; font-size: 0.95rem; }
+    .hero-meta .v { font-size: 0.78rem; color: var(--text-muted); }
+    .hero-meta .sep { width: 1px; height: 28px; background: var(--hairline); }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 28px; position: relative;
+    }
+    .side-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 14px 14px 0 0;
+    }
+    .side-card-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    }
+    .side-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 18px; line-height: 1.3; }
+    .loop-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .loop-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--hairline);
+    }
+    .loop-item:last-child { border-bottom: none; }
+    .loop-step {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800; color: var(--accent);
+    }
+    .loop-text { font-size: 0.855rem; color: var(--text-muted); padding-top: 4px; }
+    .loop-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+    /* SECTIONS */
+    section { padding-block: 60px; }
+    @media(min-width:768px) { section { padding-block: 96px; } }
+    #como-usar, #skills, #loop, #dicas, #instalar-skill { scroll-margin-top: 72px; }
+
+    .section-head { max-width: 640px; margin-bottom: 48px; }
+    .section-head .h2 {
+      font-size: clamp(1.7rem,3.8vw,2.8rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 14px;
+    }
+    .section-head .lead { font-size: 1rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* HOW TO USE */
+    .how-section { background: var(--bg-elevated); }
+    .how-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:768px) { .how-grid { grid-template-columns: 1fr 1fr; } }
+
+    .how-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 24px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .how-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .how-card-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 800; color: var(--accent); margin-bottom: 14px;
+    }
+    .how-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .how-card p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.6; }
+    .how-card .best-for {
+      margin-top: 12px; font-size: 0.76rem; color: var(--text-faint);
+      font-style: italic;
+    }
+
+    /* INSTALL TABS */
+    .install-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .install-tab {
+      padding: 5px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 700;
+      border: 1px solid var(--hairline); background: transparent; color: var(--text-muted);
+      cursor: pointer; font-family: inherit;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .install-tab.active { background: var(--accent-dim); border-color: var(--accent-border); color: var(--accent); }
+
+    .install-steps-block { display: flex; flex-direction: column; gap: 8px; }
+    .install-step-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.84rem; color: var(--text-muted); line-height: 1.5;
+    }
+    .install-step-row .n {
+      font-size: 0.65rem; font-weight: 800; color: var(--accent);
+      flex-shrink: 0; margin-top: 3px; width: 16px;
+    }
+    .code-inline {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.78rem; color: var(--accent);
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 4px; padding: 2px 6px;
+    }
+
+    .note {
+      display: flex; gap: 12px;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 10px; padding: 14px 18px; margin-top: 28px;
+    }
+    .note svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .note p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+    .note strong { color: var(--text); }
+
+    /* SKILL CARDS */
+    .skills-section { background: var(--bg); }
+
+    .skill-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; overflow: hidden; margin-bottom: 14px;
+      transition: border-color 0.3s var(--ease);
+    }
+    .skill-card:last-child { margin-bottom: 0; }
+    .skill-card:hover { border-color: var(--accent-border); }
+
+    .skill-card-top { padding: 28px 28px 0; }
+    .skill-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 16px; margin-bottom: 16px;
+    }
+    .skill-num-wrap { display: flex; align-items: center; gap: 14px; }
+    .skill-num {
+      font-size: 2.4rem; font-weight: 900; letter-spacing: -0.05em;
+      color: var(--accent); line-height: 1; flex-shrink: 0; opacity: 0.4;
+    }
+    .skill-title-wrap {}
+    .skill-order {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .skill-card h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .skill-emoji { font-size: 1.6rem; flex-shrink: 0; }
+
+    .skill-what {
+      font-size: 0.875rem; color: var(--text-muted);
+      line-height: 1.65; margin-bottom: 16px;
+    }
+
+    .skill-triggers {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;
+    }
+    .trigger-chip {
+      font-size: 0.7rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 100px;
+      border: 1px solid var(--hairline); color: var(--text-faint);
+      background: rgba(255,255,255,0.02);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    .skill-card-foot {
+      padding: 0 28px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .skill-name-code {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.72rem; color: var(--text-faint);
+    }
+    .skill-toggle {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.78rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: 1px solid var(--hairline);
+      border-radius: 6px; padding: 6px 12px; cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+    .skill-toggle:hover { color: var(--text-muted); border-color: rgba(255,255,255,0.15); }
+    .skill-toggle.open { color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim); }
+    .skill-toggle svg { width: 11px; height: 11px; transition: transform 0.3s var(--ease); }
+    .skill-toggle.open svg { transform: rotate(180deg); }
+
+    .skill-accordion {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s var(--ease);
+      border-top: 0px solid var(--hairline);
+    }
+    .skill-accordion.open { max-height: 1400px; border-top-width: 1px; }
+    .skill-accordion-inner { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 0; }
+
+    .skill-block-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--text-faint); margin-bottom: 10px;
+    }
+    .skill-block {
+      background: rgba(0,0,15,0.7); border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 16px 18px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.75rem; color: #a8d4ff; line-height: 1.65;
+      white-space: pre-wrap; word-break: break-word;
+      margin-bottom: 10px;
+    }
+    .skill-copy {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; font-weight: 600; color: var(--text-faint);
+      background: none; border: none; cursor: pointer;
+      font-family: 'Figtree', sans-serif; padding: 0; margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+    .skill-copy:hover { color: var(--accent); }
+    .skill-copy.copied { color: var(--accent); }
+    .skill-copy svg { width: 12px; height: 12px; }
+
+    /* LOOP SECTION */
+    .loop-section { background: var(--bg-elevated); }
+    .loop-flow {
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .loop-flow-item {
+      display: grid; grid-template-columns: 40px 1fr; gap: 20px;
+      padding: 24px 0; border-bottom: 1px solid var(--hairline);
+    }
+    .loop-flow-item:last-child { border-bottom: none; }
+    .loop-flow-num-wrap { display: flex; flex-direction: column; align-items: center; }
+    .loop-flow-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent-dim); border: 1.5px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 800; color: var(--accent); flex-shrink: 0;
+    }
+    .loop-flow-line {
+      width: 1px; flex: 1; background: var(--hairline); margin-top: 8px; min-height: 16px;
+    }
+    .loop-flow-item:last-child .loop-flow-line { display: none; }
+    .loop-flow-body { padding-top: 4px; }
+    .loop-flow-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .loop-flow-body p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* TIPS */
+    .tips-section { background: var(--bg); }
+    .tips-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:640px) { .tips-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width:1024px) { .tips-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .tip-card {
+      background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 22px;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .tip-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .tip-icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
+    .tip-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 8px; }
+    .tip-card p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--hairline);
+      padding: 36px clamp(24px,4vw,64px);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text-muted); font-size: 0.84rem;
+    }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    /* FADE */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media(max-width:639px) { .hero-meta .sep { display: none; } }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <nav class="nav" aria-label="Navegação">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark" aria-hidden="true">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('skills')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Ver os 4 prompts
+    </button>
+  </nav>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-blob b1" aria-hidden="true"></div>
+      <div class="hero-blob b2" aria-hidden="true"></div>
+      <div class="wrap hero-inner">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Guia · Prompts de Currículo para o Claude</span>
+            <h1>
+              4 prompts que tornam<br>seu currículo
+              <span class="accent">irrecusável.</span>
+            </h1>
+            <p class="sub">A maioria cola o currículo no Claude e escreve "melhore isso" — e fica surpreso quando nada muda. Esse guia mostra o setup certo: diagnóstico, palavras-chave, reescrita e simulação de entrevista, nessa ordem.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" onclick="scrollToSection('skills')">
+                Ver os 4 prompts
+                <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+              <button class="btn btn-ghost" onclick="scrollToSection('loop')">Ver o loop completo</button>
+            </div>
+            <div class="hero-meta">
+              <div class="item"><span class="k">4 prompts</span><span class="v">copie, preencha os colchetes e use</span></div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item"><span class="k">1 loop</span><span class="v">diagnóstico → palavras → reescrita → entrevista</span></div>
+              <div class="sep" aria-hidden="true"></div>
+              <div class="item"><span class="k">100% grátis</span><span class="v">funciona no plano gratuito</span></div>
+            </div>
+          </div>
+
+          <!-- SIDE CARD -->
+          <div class="side-card fade-in">
+            <div class="side-card-label">A sequência certa</div>
+            <h3>Cada prompt constrói sobre o anterior</h3>
+            <ul class="loop-list">
+              <li class="loop-item">
+                <div class="loop-step">1</div>
+                <div class="loop-text"><strong>🔍 The Diagnoser</strong>Encontra o que está afastando os recrutadores antes de um humano ver seu CV</div>
+              </li>
+              <li class="loop-item">
+                <div class="loop-step">2</div>
+                <div class="loop-text"><strong>🕵️ The Recruiter</strong>Identifica as palavras-chave certas para o cargo — as que você está deixando de fora</div>
+              </li>
+              <li class="loop-item">
+                <div class="loop-step">3</div>
+                <div class="loop-text"><strong>✏️ The Rewriter</strong>Reescreve cada bullet com impacto, métrica e as keywords mapeadas</div>
+              </li>
+              <li class="loop-item">
+                <div class="loop-step">4</div>
+                <div class="loop-text"><strong>🎤 The Hiring Manager</strong>Simula a entrevista mais difícil que você vai enfrentar — antes de encarar a real</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HOW TO USE -->
+    <section class="how-section" id="como-usar">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Antes de começar</span>
+          <h2 class="h2">Duas formas de usar cada prompt</h2>
+          <p class="lead">Você pode usar qualquer prompt direto — cola, preenche os colchetes e envia. Ou instalar como skill permanente para ativar com uma frase — mas isso é opcional.</p>
+        </div>
+
+        <div class="how-grid">
+          <div class="how-card fade-in">
+            <div class="how-card-num">A</div>
+            <h3>Prompt avulso</h3>
+            <p>Copie o prompt de cada um, cole em uma conversa nova no Claude, preencha os <strong>[COLCHETES]</strong> com seus dados e envie. Sem configuração nenhuma.</p>
+            <p class="best-for">Melhor para: quem precisa ajustar o currículo uma única vez.</p>
+          </div>
+          <div class="how-card fade-in">
+            <div class="how-card-num">B</div>
+            <h3>Skill permanente (opcional)</h3>
+            <p>Instala o bloco uma vez como skill no Claude. Depois é só digitar a frase de ativação — "diagnostique meu currículo" ou "me entreviste para [cargo]" — e o Claude carrega o setup certo automaticamente.</p>
+            <p class="best-for">Melhor para: quem está em busca ativa, mandando currículo para várias vagas ou quer reusar o loop a cada poucas semanas sem copiar nada.</p>
+          </div>
+        </div>
+
+        <div class="note fade-in" style="margin-top:24px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <p><strong>Dica antes de começar:</strong> cole seu currículo como texto puro — não como PDF anexado. Copie as palavras direto do documento. PDFs às vezes perdem a formatação que o Claude precisa ler corretamente.</p>
+        </div>
+
+
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="skills-section" id="skills">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Os 4 prompts</span>
+          <h2 class="h2">Use agora. Instale depois se quiser.</h2>
+          <p class="lead">Clique em "Ver prompt" para abrir o código de cada um — pronto para copiar e usar direto no Claude.</p>
+        </div>
+
+        <!-- SKILL 1: DIAGNOSER -->
+        <div class="skill-card fade-in">
+          <div class="skill-card-top">
+            <div class="skill-header">
+              <div class="skill-num-wrap">
+                <span class="skill-num">01</span>
+                <div class="skill-title-wrap">
+                  <div class="skill-order">Use primeiro</div>
+                  <h2>The Diagnoser</h2>
+                </div>
+              </div>
+              <span class="skill-emoji" aria-hidden="true">🔍</span>
+            </div>
+            <p class="skill-what">Analisa seu currículo como um sistema ATS real faria. Aponta as linhas exatas, escolhas de formatação e elementos ausentes que estão te eliminando antes de qualquer humano ver o documento. Não tem sentido reescrever bullets se a estrutura está quebrada.</p>
+            <div class="skill-triggers">
+              <span class="trigger-chip">"diagnostique meu currículo"</span>
+              <span class="trigger-chip">"audite meu CV"</span>
+              <span class="trigger-chip">"o que está errado no meu currículo"</span>
+              <span class="trigger-chip">"meu currículo passa no ATS?"</span>
+            </div>
+          </div>
+          <div class="skill-card-foot">
+            <span class="skill-name-code">resume-diagnoser</span>
+            <button class="skill-toggle" onclick="toggleSkill(this)" aria-expanded="false">
+              Ver prompt
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="skill-accordion">
+            <div class="skill-accordion-inner">
+              <div class="skill-block-label">Prompt completo — copie, preencha os colchetes e envie no Claude</div>
+              <div class="skill-block">---
+name: resume-diagnoser
+description: Diagnostica um currículo como um sistema ATS real faria. Aponta problemas de formatação, seções fracas, sinais ausentes e ranqueia os 5 principais ajustes por impacto.
+---
+
+Você é um especialista sênior em avaliação de currículos e sistemas ATS. Você já revisou mais de 10.000 currículos para posições de [CARGO-ALVO].
+
+Se [CARGO-ALVO], [SETOR], [SENIORIDADE] ou o texto do currículo estiverem faltando, peça um de cada vez antes de começar.
+
+Diagnostique o currículo como um ATS real faria e diga exatamente o que está quebrado.
+
+Cubra estas quatro áreas:
+
+1. Elementos que eliminam do ATS. Problemas de formatação, layout ou parsing que causam rejeição automática. Tabelas, colunas, cabeçalhos, gráficos, fontes, datas, riscos de tipo de arquivo — qualquer coisa que um ATS não consiga ler.
+
+2. Diagnóstico seção por seção. Para cada seção (resumo, experiência, habilidades, formação), aponte a frase ou bullet mais fraco e explique por que ele falha no ATS ou na leitura de recrutadores.
+
+3. Sinais ausentes. O que os gestores de [CARGO-ALVO] esperam ver e que não está no currículo.
+
+4. Top 5 ajustes ranqueados por impacto. O que mudar primeiro, segundo, terceiro — e exatamente como mudar. Mostre um antes-e-depois para pelo menos um bullet.
+
+Seja brutalmente específico. Cite as linhas reais do currículo do usuário. Não suavize o feedback.
+
+Cargo-alvo: [CARGO-ALVO]
+Setor: [SETOR]
+Senioridade: [JUNIOR / PLENO / SÊNIOR / LEAD]
+
+Currículo:
+[COLE O CURRÍCULO AQUI]</div>
+              <button class="skill-copy" onclick="copySkill(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar bloco
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SKILL 2: RECRUITER -->
+        <div class="skill-card fade-in">
+          <div class="skill-card-top">
+            <div class="skill-header">
+              <div class="skill-num-wrap">
+                <span class="skill-num">02</span>
+                <div class="skill-title-wrap">
+                  <div class="skill-order">Use segundo</div>
+                  <h2>The Recruiter</h2>
+                </div>
+              </div>
+              <span class="skill-emoji" aria-hidden="true">🕵️</span>
+            </div>
+            <p class="skill-what">Age como um recrutador sênior que vasculhou mil vagas reais para o cargo que você quer. Devolve as palavras-chave mais pedidas agora, as que estão faltando no seu currículo, e as habilidades em ascensão que a maioria dos candidatos ainda não está incluindo — onde você pode se destacar.</p>
+            <div class="skill-triggers">
+              <span class="trigger-chip">"quais keywords faltam no meu currículo"</span>
+              <span class="trigger-chip">"analise meu currículo como recrutador"</span>
+              <span class="trigger-chip">"busque vagas de [cargo] para mim"</span>
+            </div>
+          </div>
+          <div class="skill-card-foot">
+            <span class="skill-name-code">resume-recruiter</span>
+            <button class="skill-toggle" onclick="toggleSkill(this)" aria-expanded="false">
+              Ver prompt
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="skill-accordion">
+            <div class="skill-accordion-inner">
+              <div class="skill-block-label">Prompt completo — copie, preencha os colchetes e envie no Claude</div>
+              <div class="skill-block">---
+name: resume-recruiter
+description: Age como recrutador sênior que leu 1.000+ vagas reais para o cargo do usuário. Retorna as top keywords mais pedidas, as ausentes no currículo, habilidades em alta que poucos candidatos incluem e buzzwords para cortar.
+---
+
+Você é um recrutador sênior com 10 anos de experiência alocando candidatos em posições de [CARGO-ALVO]. Você lê mais de 1.000 descrições de vagas reais por mês e sabe exatamente quais palavras-chave, habilidades e frases estão aparecendo nas vagas agora.
+
+Se [CARGO-ALVO], [SETOR], [SENIORIDADE] ou o texto do currículo estiverem faltando, peça um de cada vez antes de começar.
+
+Com base no padrão atual do mercado, entregue ao usuário:
+
+1. Top 15 palavras-chave e habilidades que aparecem com mais frequência nas vagas de [CARGO-ALVO] agora. Ranqueadas por frequência. Indique quais são técnicas, quais são soft skills, quais são ferramentas.
+
+2. Quais dessas keywords estão AUSENTES no currículo do usuário. Seja específico. Se uma keyword está presente mas enterrada, diga onde.
+
+3. Habilidades em alta em 2026 para [CARGO-ALVO] que a maioria dos candidatos ainda não está incluindo. Aqui está a oportunidade de se destacar.
+
+4. Buzzwords para remover. Frases genéricas e sem sinal que os recrutadores pulam. Cite as que estão no currículo do usuário.
+
+5. Lista de ação ranqueada. As 5 mudanças que moveriam o currículo de "eliminado" para "shortlist" mais rápido.
+
+Cargo-alvo: [CARGO-ALVO]
+Setor: [SETOR]
+Senioridade: [JUNIOR / PLENO / SÊNIOR / LEAD]
+Empresas-alvo (opcional): [3 EXEMPLOS OU "QUALQUER"]
+
+Currículo:
+[COLE O CURRÍCULO AQUI]</div>
+              <button class="skill-copy" onclick="copySkill(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar bloco
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SKILL 3: REWRITER -->
+        <div class="skill-card fade-in">
+          <div class="skill-card-top">
+            <div class="skill-header">
+              <div class="skill-num-wrap">
+                <span class="skill-num">03</span>
+                <div class="skill-title-wrap">
+                  <div class="skill-order">Use terceiro</div>
+                  <h2>The Rewriter</h2>
+                </div>
+              </div>
+              <span class="skill-emoji" aria-hidden="true">✏️</span>
+            </div>
+            <p class="skill-what">Reescreve cada bullet da seção de experiência usando a fórmula XYZ do Google: "Alcancei X, medido por Y, fazendo Z." É o padrão que o próprio guia de currículos do Google recomenda — e o que separa os candidatos do top 5% dos demais.</p>
+            <div class="skill-triggers">
+              <span class="trigger-chip">"reescreva meus bullets"</span>
+              <span class="trigger-chip">"reescreva minha experiência"</span>
+              <span class="trigger-chip">"aplique XYZ no meu currículo"</span>
+              <span class="trigger-chip">"fortaleça meus bullets"</span>
+            </div>
+          </div>
+          <div class="skill-card-foot">
+            <span class="skill-name-code">resume-rewriter</span>
+            <button class="skill-toggle" onclick="toggleSkill(this)" aria-expanded="false">
+              Ver prompt
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="skill-accordion">
+            <div class="skill-accordion-inner">
+              <div class="skill-block-label">Prompt completo — copie, preencha os colchetes e envie no Claude</div>
+              <div class="skill-block">---
+name: resume-rewriter
+description: Reescreve cada bullet da seção de experiência usando a fórmula XYZ do Google (Alcancei X, medido por Y, fazendo Z). Adiciona métricas, verbos de ação e keywords do cargo-alvo.
+---
+
+Você é um redator de currículos que já ajudou candidatos a entrar em Meta, Google, Amazon e empresas Fortune 500. Você aplica a fórmula XYZ do Google em cada bullet:
+
+"Alcancei [X], medido por [Y], fazendo [Z]."
+
+X = o impacto ou resultado
+Y = a métrica, percentual ou desfecho mensurável
+Z = a ação ou método específico que gerou o resultado
+
+Se [CARGO-ALVO], a lista de keywords ausentes ou o texto da seção de experiência estiverem faltando, peça um de cada vez antes de começar.
+
+Reescreva cada bullet da seção de experiência do usuário usando a fórmula. Siga estas regras:
+
+1. Todo bullet começa com um verbo de ação forte. Sem "responsável por", "auxiliei em" ou "participei de".
+
+2. Todo bullet inclui um número, percentual, valor em reais ou resultado mensurável. Se não tiver, PERGUNTE ao usuário antes de inventar. Marque qualquer número estimado com [estimativa — confirme antes de enviar].
+
+3. Cada bullet tem no máximo duas linhas.
+
+4. Use o vocabulário das vagas de [CARGO-ALVO] no mercado atual.
+
+5. Adicione as keywords ausentes que o usuário trouxe da skill The Recruiter.
+
+6. Corte palavras de enchimento: "diversas", "múltiplos", "diferentes", "com sucesso", "efetivamente".
+
+Após as reescritas, entregue:
+- Um antes-e-depois lado a lado dos 5 bullets de maior impacto
+- Uma nota curta explicando por que cada reescrita é mais forte
+
+Cargo-alvo: [CARGO-ALVO]
+Keywords ausentes para incluir: [COLE DA SKILL THE RECRUITER]
+
+Seção de experiência:
+[COLE A SEÇÃO AQUI]</div>
+              <button class="skill-copy" onclick="copySkill(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar bloco
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SKILL 4: HIRING MANAGER -->
+        <div class="skill-card fade-in">
+          <div class="skill-card-top">
+            <div class="skill-header">
+              <div class="skill-num-wrap">
+                <span class="skill-num">04</span>
+                <div class="skill-title-wrap">
+                  <div class="skill-order">Use por último</div>
+                  <h2>The Hiring Manager</h2>
+                </div>
+              </div>
+              <span class="skill-emoji" aria-hidden="true">🎤</span>
+            </div>
+            <p class="skill-what">Transforma o Claude no gestor de contratação real da vaga que você quer. Conduz uma entrevista realista com as perguntas técnicas e comportamentais mais difíceis do nível pedido, avalia cada resposta de 0 a 10 e diz exatamente o que um candidato top teria dito no lugar.</p>
+            <div class="skill-triggers">
+              <span class="trigger-chip">"me entreviste para [cargo]"</span>
+              <span class="trigger-chip">"simulação de entrevista para [cargo]"</span>
+              <span class="trigger-chip">"pratique entrevista comigo"</span>
+              <span class="trigger-chip">"aja como gestor de contratação"</span>
+            </div>
+          </div>
+          <div class="skill-card-foot">
+            <span class="skill-name-code">resume-hiring-manager</span>
+            <button class="skill-toggle" onclick="toggleSkill(this)" aria-expanded="false">
+              Ver prompt
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+          </div>
+          <div class="skill-accordion">
+            <div class="skill-accordion-inner">
+              <div class="skill-block-label">Prompt completo — copie, preencha os colchetes e envie no Claude</div>
+              <div class="skill-block">---
+name: resume-hiring-manager
+description: Conduz uma simulação realista de entrevista como gestor de contratação para o cargo-alvo. Faz as perguntas técnicas e comportamentais mais difíceis, avalia respostas de 0 a 10 e dá pontuação final de empregabilidade com plano de estudo.
+---
+
+Você é o gestor de contratação de uma vaga de [CARGO-ALVO] em uma [TIPO DE EMPRESA, ex: startup de SaaS em crescimento, fintech Fortune 500, agência de médio porte]. Você tem 8+ anos de experiência contratando para essa posição e sabe exatamente o que separa um contratado de um não-contratado.
+
+Se [CARGO-ALVO], [TIPO DE EMPRESA], [SENIORIDADE] ou o texto do currículo estiverem faltando, peça um de cada vez antes de começar.
+
+Conduza uma entrevista realista de 30 minutos com o usuário. Formato:
+
+Rodada 1: Perguntas técnicas e específicas do cargo (5 perguntas)
+As cinco perguntas mais difíceis e realistas que um gestor desse nível faria. Uma pergunta por vez. Espere a resposta antes de continuar.
+
+Rodada 2: Perguntas comportamentais (3 perguntas)
+Use o framework STAR (Situação, Tarefa, Ação, Resultado). Avalie o quanto o usuário estrutura bem a resposta.
+
+Para cada resposta recebida:
+- Avalie de 0 a 10
+- Diga exatamente o que um candidato top teria dito no lugar
+- Destaque a única coisa a mudar na forma de comunicar
+- Passe para a próxima pergunta
+
+Ao final da entrevista, entregue:
+1. Pontuação geral de empregabilidade de 0 a 100
+2. As três respostas mais fracas, com as palavras específicas que custaram pontos
+3. As três perguntas para ensaiar antes da próxima entrevista real
+4. Um plano de estudo curto para as lacunas identificadas
+
+Regras:
+- Seja rigoroso. Não suavize o feedback para ser gentil.
+- Se o usuário responder de forma vaga, questione como um entrevistador real faria.
+- Use o currículo abaixo como contexto para que as perguntas pareçam feitas sob medida.
+
+Cargo-alvo: [CARGO-ALVO]
+Tipo de empresa: [TIPO DE EMPRESA]
+Senioridade: [JUNIOR / PLENO / SÊNIOR / LEAD]
+
+Currículo:
+[COLE O CURRÍCULO AQUI]
+
+Comece com a pergunta 1.</div>
+              <button class="skill-copy" onclick="copySkill(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copiar bloco
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LOOP -->
+    <section class="loop-section" id="loop">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">O loop completo</span>
+          <h2 class="h2">Rode nessa ordem exata.</h2>
+          <p class="lead">Cada prompt constrói sobre o anterior. Pular etapas é o erro mais comum — e o mais caro.</p>
+        </div>
+
+        <div class="loop-flow fade-in">
+          <div class="loop-flow-item">
+            <div class="loop-flow-num-wrap">
+              <div class="loop-flow-num">1</div>
+              <div class="loop-flow-line"></div>
+            </div>
+            <div class="loop-flow-body">
+              <h3>🔍 Diagnostique — The Diagnoser</h3>
+              <p>Corrija primeiro os problemas estruturais e de formatação. Não tem sentido reescrever bullets em um currículo que o ATS não consegue ler. Essa etapa identifica exatamente o que está te eliminando antes de um humano ver o documento.</p>
+            </div>
+          </div>
+          <div class="loop-flow-item">
+            <div class="loop-flow-num-wrap">
+              <div class="loop-flow-num">2</div>
+              <div class="loop-flow-line"></div>
+            </div>
+            <div class="loop-flow-body">
+              <h3>🕵️ Mapeie as keywords — The Recruiter</h3>
+              <p>Você não pode otimizar para palavras-chave sem saber quais importam agora. Copie a lista de keywords ausentes que essa skill gera — você vai precisar dela na próxima etapa.</p>
+            </div>
+          </div>
+          <div class="loop-flow-item">
+            <div class="loop-flow-num-wrap">
+              <div class="loop-flow-num">3</div>
+              <div class="loop-flow-line"></div>
+            </div>
+            <div class="loop-flow-body">
+              <h3>✏️ Reescreva — The Rewriter</h3>
+              <p>Com o diagnóstico feito e as keywords mapeadas, essa skill transforma bullets genéricos em provas com impacto + métrica + método, já com a linguagem que os recrutadores estão buscando.</p>
+            </div>
+          </div>
+          <div class="loop-flow-item">
+            <div class="loop-flow-num-wrap">
+              <div class="loop-flow-num">4</div>
+              <div class="loop-flow-line"></div>
+            </div>
+            <div class="loop-flow-body">
+              <h3>🎤 Prepare-se — The Hiring Manager</h3>
+              <p>A melhor preparação de entrevista que existe, especialmente na véspera. Rode o simulado algumas vezes até suas notas subirem. Quando entrar na entrevista real, você já terá respondido as perguntas mais difíceis antes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIPS -->
+    <section class="tips-section" id="dicas">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Dicas rápidas</span>
+          <h2 class="h2">Para extrair o máximo</h2>
+        </div>
+        <div class="tips-grid">
+          <div class="tip-card fade-in">
+            <span class="tip-icon">♻️</span>
+            <h3>Instale como skill e reutilize sempre</h3>
+            <p>Se você instalar como skill (instruções no final da página), na próxima vez que mudar de emprego é só digitar a frase de ativação.</p>
+          </div>
+          <div class="tip-card fade-in">
+            <span class="tip-icon">📄</span>
+            <h3>Dois formatos de arquivo</h3>
+            <p>Salve o currículo final em dois formatos: .docx limpo para uploads em ATS e PDF polido para leitores humanos. Alguns sistemas ainda parsam melhor o Word.</p>
+          </div>
+          <div class="tip-card fade-in">
+            <span class="tip-icon">🎯</span>
+            <h3>Adapte por vaga</h3>
+            <p>Não mande o mesmo currículo para 30 vagas. Rode The Recruiter para cada cargo-alvo e ajuste o topo do currículo. O esforço vale.</p>
+          </div>
+          <div class="tip-card fade-in">
+            <span class="tip-icon">🎤</span>
+            <h3>Salve o chat da entrevista</h3>
+            <p>Reabra a conversa com The Hiring Manager na véspera da entrevista real e passe pelas perguntas mais uma vez. Funciona.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- COMO INSTALAR COMO SKILL -->
+    <section class="how-section" id="instalar-skill" style="background:var(--bg-elevated);">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Opcional · Para uso recorrente</span>
+          <h2 class="h2">Quer instalar como skill permanente?</h2>
+          <p class="lead">Se você está em busca ativa ou vai usar esses prompts com frequência, instale uma vez e ative com uma frase. Funciona no Claude.ai e no app Desktop.</p>
+        </div>
+
+        <div class="how-grid">
+          <div class="how-card fade-in">
+            <div class="how-card-num" style="font-size:0.6rem;">Web</div>
+            <h3>Claude.ai (navegador)</h3>
+            <div class="install-steps-block">
+              <div class="install-step-row"><span class="n">1.</span><span>Clique na sua foto de perfil (canto inferior esquerdo) → <span class="code-inline">Configurações → Capacidades → Skills → Criar skill</span></span></div>
+              <div class="install-step-row"><span class="n">2.</span><span>Cole o bloco completo do prompt (frontmatter + corpo)</span></div>
+              <div class="install-step-row"><span class="n">3.</span><span>Salve — pronto.</span></div>
+            </div>
+          </div>
+          <div class="how-card fade-in">
+            <div class="how-card-num" style="font-size:0.6rem;">App</div>
+            <h3>Claude Desktop (Mac ou Windows)</h3>
+            <div class="install-steps-block">
+              <div class="install-step-row"><span class="n">1.</span><span><span class="code-inline">Configurações → Capacidades → Skills → Criar skill</span></span></div>
+              <div class="install-step-row"><span class="n">2.</span><span>Cole o bloco completo e salve</span></div>
+              <div class="install-step-row"><span class="n">3.</span><span>Reinicie o app para carregar</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note fade-in" style="margin-top:24px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <p>Após instalar, você não precisa copiar mais nada. Só digitar a frase de ativação — "diagnostique meu currículo", "me entreviste para [cargo]" — e o Claude carrega o prompt certo automaticamente.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Guia gratuito · <a href="https://bperobelli.com.br" target="_blank" rel="noopener noreferrer">theGarage IA LAB</a>
+    </div>
+  </footer>
+
+  <script>
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function toggleSkill(btn) {
+      const card = btn.closest('.skill-card');
+      const panel = card.querySelector('.skill-accordion');
+      const isOpen = panel.classList.contains('open');
+      document.querySelectorAll('.skill-accordion.open').forEach(p => {
+        p.classList.remove('open');
+        p.closest('.skill-card').querySelector('.skill-toggle').classList.remove('open');
+        p.closest('.skill-card').querySelector('.skill-toggle').setAttribute('aria-expanded','false');
+      });
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    }
+
+    function copySkill(btn) {
+      const text = btn.previousElementSibling.textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M20 6 9 17l-5-5"/></svg> Copiado!';
+        setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.5  });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.65 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.75,
+          ease:'cubic-bezier(0.22,1,0.36,1)',
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity=1; el.style.transform='none'; });
+    }
+  </script>
+</body>
+</html>
