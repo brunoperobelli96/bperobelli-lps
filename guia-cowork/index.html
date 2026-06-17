@@ -214,7 +214,7 @@
     .setup-icon { width: 32px; height: 32px; color: var(--accent); opacity: 0.65; margin-bottom: 14px; }
 
     /* scroll offset para nav fixo */
-    #setup, #passos, #casos, #cta {
+    #setup, #passos, #casos, #cta, #configuracao {
       scroll-margin-top: 72px;
     }
 
@@ -319,6 +319,72 @@
     .footer-note a { color: var(--accent); text-decoration: none; }
     .footer-note a:hover { text-decoration: underline; }
 
+    /* ── CONFIGURAÇÃO ── */
+    .config-section { background: var(--bg-elevated); }
+
+    .config-grid { display: flex; flex-direction: column; }
+
+    .config-item {
+      display: grid; grid-template-columns: 40px 1fr; gap: 20px;
+      padding: 22px 0; border-bottom: 1px solid var(--hairline);
+    }
+    .config-item:last-child { border-bottom: none; }
+
+    .config-num-wrap { display: flex; flex-direction: column; align-items: center; }
+    .config-num {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid var(--accent-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 800; color: var(--accent);
+      background: var(--accent-dim); flex-shrink: 0;
+    }
+    .config-line {
+      width: 1px; flex: 1; background: var(--hairline);
+      margin-top: 8px; min-height: 16px;
+    }
+    .config-item:last-child .config-line { display: none; }
+
+    .config-body { padding-top: 5px; }
+    .config-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .config-body p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+
+    .config-code {
+      background: rgba(0,0,20,0.6); border: 1px solid var(--hairline);
+      border-left: 2px solid var(--accent); border-radius: 6px;
+      padding: 12px 16px; margin-top: 10px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.78rem; color: #a8f0d8; line-height: 1.55;
+      white-space: pre-wrap; word-break: break-word;
+    }
+
+    .config-list {
+      list-style: none; display: flex; flex-direction: column;
+      gap: 6px; margin-top: 8px;
+    }
+    .config-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.855rem; color: var(--text-muted); line-height: 1.5;
+    }
+    .config-list li::before {
+      content: "→"; color: var(--accent); flex-shrink: 0;
+      font-size: 0.75rem; margin-top: 1px;
+    }
+    .config-file {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.78rem; color: var(--accent);
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 4px; padding: 1px 6px; margin-right: 2px; white-space: nowrap;
+    }
+
+    .config-tip {
+      display: flex; gap: 14px; align-items: flex-start;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 12px; padding: 18px 22px; margin-top: 32px;
+      font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .config-tip svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .config-tip strong { color: var(--text); }
+
     /* ── FADE IN ── */
     .fade-in { opacity: 0; transform: translateY(28px); }
 
@@ -364,6 +430,7 @@
                 <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </button>
               <button class="btn btn-ghost" onclick="scrollToSection('setup')">O que você precisa antes</button>
+              <button class="btn btn-ghost" onclick="scrollToSection('configuracao')" style="font-size:0.8rem;">Nunca usou o Cowork? Configure aqui →</button>
             </div>
             <div class="hero-meta">
               <div class="item">
@@ -650,6 +717,140 @@
     </section>
 
 
+
+    <!-- CONFIGURAÇÃO COWORK -->
+    <section class="config-section" id="configuracao">
+      <div class="wrap">
+        <div class="section-head fade-in">
+          <span class="eyebrow">Nunca usou o Cowork?</span>
+          <h2 class="h2">Configure em 9 passos simples.</h2>
+          <p class="lead">Antes de delegar sua primeira tarefa, você precisa de 15 minutos de setup. Faça uma vez — e nunca mais repita.</p>
+        </div>
+
+        <div class="config-grid">
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">1</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Baixe o app</h3>
+              <p>Baixe o Claude app — não o navegador. O Cowork só funciona no app desktop, disponível para macOS e Windows em <strong>claude.com/download</strong>.</p>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">2</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Assine o Pro</h3>
+              <p>O plano Pro custa US$20/mês e é o mínimo para usar o Cowork. Dica de economia: use o modelo Opus apenas para tarefas complexas — ele consome mais tokens que o Sonnet.</p>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">3</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Crie a pasta Cowork</h3>
+              <p>No seu computador, crie uma pasta chamada <em>Cowork</em> com três subpastas dentro:</p>
+              <div class="config-code">Cowork/
+  ABOUT ME/
+  OUTPUTS/
+  TEMPLATES/</div>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">4</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Adicione seus arquivos em ABOUT ME</h3>
+              <p>Três arquivos essenciais para dar contexto ao Claude:</p>
+              <ul class="config-list">
+                <li><span class="config-file">about-me.md</span> quem você é, seu histórico e objetivos</li>
+                <li><span class="config-file">my-company.md</span> sobre a empresa, produto e mercado</li>
+                <li><span class="config-file">anti-ai-writing-style.md</span> seu tom de voz e o que evitar</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">5</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Deixe o Claude te entrevistar</h3>
+              <p>Não sabe o que escrever nos arquivos? Abra o Cowork, aponte para a pasta e peça para ele te entrevistar. As respostas viram automaticamente o conteúdo dos arquivos.</p>
+              <div class="config-code">"Entreviste-me para criar meu arquivo about-me.md. Faça uma pergunta por vez."</div>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">6</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Defina as instruções globais</h3>
+              <p>Vá em <strong>Settings → Cowork → Edit Global Instructions</strong>. Peça para o Claude ler todos os arquivos da pasta ABOUT ME sempre que iniciar uma sessão — isso garante contexto em toda tarefa.</p>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">7</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Escolha o modelo certo</h3>
+              <p>Use <strong>Opus 4.7 com Extended Thinking</strong> para tarefas complexas que exigem raciocínio profundo. Use <strong>Sonnet</strong> para tarefas curtas e iterações rápidas. Tokens economizados no Sonnet financiam as sessões pesadas no Opus.</p>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">8</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Faça sua primeira sessão</h3>
+              <p>Com tudo configurado, comece simples. Deixe o Claude ler o contexto e definir o plano antes de executar.</p>
+              <div class="config-code">"Leia minha pasta. Me ajude com [tarefa]. Use AskUserQuestion antes de começar para garantir que entendeu o objetivo."</div>
+            </div>
+          </div>
+
+          <div class="config-item fade-in">
+            <div class="config-num-wrap">
+              <div class="config-num">9</div>
+              <div class="config-line"></div>
+            </div>
+            <div class="config-body">
+              <h3>Crie templates das sessões úteis</h3>
+              <p>Ao final de qualquer sessão que gerou um bom resultado, peça para o Claude salvar a estrutura em TEMPLATES. Da próxima vez, você começa de onde parou.</p>
+              <div class="config-code">"Essa sessão funcionou bem. Salve a estrutura de prompts usada como template em TEMPLATES/[nome].md para eu reutilizar."</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="config-tip fade-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <div>
+            <strong>Dica extra:</strong> mantenha sua pasta ABOUT ME sempre atualizada. Mudou de cargo, lançou um produto, definiu um novo público? Atualize os arquivos. Quanto mais contexto, melhores os resultados — em toda sessão, para sempre.
+          </div>
+        </div>
+
+      </div>
+    </section>
 
   </main>
 
