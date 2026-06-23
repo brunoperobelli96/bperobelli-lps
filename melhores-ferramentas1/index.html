@@ -402,19 +402,19 @@
             <p class="sub">Não é uma lista de tudo que existe. É o que realmente funciona — uma ferramenta por categoria, com o caso de uso certo e um prompt para começar hoje.</p>
             <div class="hero-cta">
               <button class="btn btn-primary" onclick="scrollToSection('ferramentas')">
-                Ver as 6 ferramentas
+                Ver as 9 ferramentas
                 <svg class="arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
               </button>
               <a href="https://bperobelli.com.br" class="btn btn-ghost">Ver o site completo</a>
             </div>
             <div class="hero-meta">
               <div class="item">
-                <span class="k">6 ferramentas</span>
+                <span class="k">9 ferramentas</span>
                 <span class="v">uma por categoria</span>
               </div>
               <div class="sep" aria-hidden="true"></div>
               <div class="item">
-                <span class="k">6 prompts</span>
+                <span class="k">9 prompts</span>
                 <span class="v">prontos para copiar e usar</span>
               </div>
               <div class="sep" aria-hidden="true"></div>
@@ -431,11 +431,14 @@
             <h3>Uma ferramenta por problema</h3>
             <ul class="tool-list">
               <li><span class="emoji">✍️</span><span><span class="tname">Claude</span>para escrever</span></li>
+              <li><span class="emoji">💡</span><span><span class="tname">ChatGPT</span>para brainstorming</span></li>
               <li><span class="emoji">🔍</span><span><span class="tname">Perplexity</span>para pesquisa</span></li>
               <li><span class="emoji">📊</span><span><span class="tname">Gamma</span>para apresentações</span></li>
-              <li><span class="emoji">📚</span><span><span class="tname">NotebookLM</span>para estudar</span></li>
-              <li><span class="emoji">🎨</span><span><span class="tname">Nano Banana 2</span>para imagens</span></li>
+              <li><span class="emoji">🎨</span><span><span class="tname">ChatGPT Image</span>para imagens</span></li>
+              <li><span class="emoji">🎬</span><span><span class="tname">Higgsfield</span>para vídeos</span></li>
               <li><span class="emoji">💻</span><span><span class="tname">Claude Code</span>para programar</span></li>
+              <li><span class="emoji">🎙️</span><span><span class="tname">Wispr Flow</span>para digitar</span></li>
+              <li><span class="emoji">📚</span><span><span class="tname">NotebookLM</span>para estudar</span></li>
             </ul>
           </div>
         </div>
@@ -447,7 +450,7 @@
       <div class="wrap">
         <div class="section-head fade-in">
           <span class="eyebrow">Seleção curada</span>
-          <h2 class="h2">As 6 ferramentas</h2>
+          <h2 class="h2">As 9 ferramentas</h2>
           <p class="lead">Clique em "Ver prompt" para ver o exemplo prático de cada ferramenta. Todos os prompts podem ser copiados com um clique.</p>
         </div>
 
@@ -491,6 +494,52 @@
               <div class="tool-prompt-inner">
                 <div class="prompt-label">Prompt prático</div>
                 <div class="prompt-box">"Escreva um e-mail para um cliente que sumiu há 30 dias. Tom: direto, sem cobrar, com uma abertura de conversa natural. Contexto: somos uma consultoria de IA e ele estava avaliando um projeto."</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar prompt
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHATGPT -->
+          <div class="tool-card fade-in">
+            <div class="tool-card-top">
+              <div class="tool-header">
+                <div class="tool-icon-wrap" aria-hidden="true">💡</div>
+                <div class="tool-badges">
+                  <span class="badge badge-freemium">Freemium</span>
+                </div>
+              </div>
+              <div class="tool-category">Para brainstorming</div>
+              <h3>ChatGPT</h3>
+              <p class="tool-desc">Funciona como parceiro de raciocínio em tempo real: você joga uma ideia solta e ele devolve perguntas, ângulos e variações que você não tinha considerado. Ajuda a destravar quando a cabeça trava na primeira ideia que aparece.</p>
+              <div class="tool-for">
+                <div class="tool-for-label">Faz mais sentido para</div>
+                <ul class="tool-for-list">
+                  <li>Empreendedores validando uma ideia antes de investir tempo</li>
+                  <li>Times de marketing buscando ângulos de campanha</li>
+                  <li>Profissionais presos numa decisão sem conseguir avançar</li>
+                </ul>
+              </div>
+              <div class="tool-alt">
+                <strong>Alternativa gratuita:</strong> Claude (plano free também serve bem para brainstorming)
+              </div>
+            </div>
+            <div class="tool-card-foot">
+              <a class="tool-link" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
+                Acessar ChatGPT
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+              <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="tool-prompt" role="region">
+              <div class="tool-prompt-inner">
+                <div class="prompt-label">Prompt prático</div>
+                <div class="prompt-box">"Quero lançar um novo serviço de consultoria em IA para empresas de médio porte. Me dê 10 ângulos diferentes de posicionamento, cada um com um público e uma dor específica."</div>
                 <button class="prompt-copy" onclick="copyPrompt(this)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copiar prompt
@@ -591,55 +640,7 @@
             </div>
           </div>
 
-          <!-- NOTEBOOKLM -->
-          <div class="tool-card fade-in">
-            <div class="tool-card-top">
-              <div class="tool-header">
-                <div class="tool-icon-wrap" aria-hidden="true">📚</div>
-                <div class="tool-badges">
-                  <span class="badge badge-free">Grátis</span>
-                </div>
-              </div>
-              <div class="tool-category">Para estudar</div>
-              <h3>NotebookLM</h3>
-              <p class="tool-desc">Transforma seus próprios documentos em um assistente que responde perguntas sobre eles. Você sobe o material — PDF, artigo, transcrição — e passa a ter um tutor particular daquele conteúdo.</p>
-              <div class="tool-for">
-                <div class="tool-for-label">Faz mais sentido para</div>
-                <ul class="tool-for-list">
-                  <li>Profissionais que precisam absorver muito conteúdo rápido</li>
-                  <li>Gestores estudando um tema antes de tomar uma decisão</li>
-                  <li>Times que precisam disseminar conhecimento a partir de docs internos</li>
-                </ul>
-              </div>
-              <div class="tool-alt">
-                <strong>Alternativa gratuita:</strong> É gratuito — não há alternativa mais barata.
-              </div>
-            </div>
-            <div class="tool-card-foot">
-              <a class="tool-link" href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer">
-                Acessar NotebookLM
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-              </a>
-              <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
-                Ver prompt
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-              </button>
-            </div>
-            <div class="tool-prompt" role="region">
-              <div class="tool-prompt-inner">
-                <div class="prompt-label">Prompt prático</div>
-                <div class="prompt-box">"Quais são os três pontos mais importantes desse material que um diretor financeiro precisa entender antes de aprovar um projeto de IA?"
-
-(Use após subir o PDF de um relatório ou curso)</div>
-                <button class="prompt-copy" onclick="copyPrompt(this)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                  Copiar prompt
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- GEMINI / NANO BANANA -->
+          <!-- CHATGPT IMAGE -->
           <div class="tool-card fade-in">
             <div class="tool-card-top">
               <div class="tool-header">
@@ -649,8 +650,8 @@
                 </div>
               </div>
               <div class="tool-category">Para imagens</div>
-              <h3>Nano Banana 2</h3>
-              <p class="tool-desc">Gerador de imagens nativo do Google integrado ao Gemini. Cria imagens a partir de descrição em texto direto no ambiente Gemini, sem precisar alternar ferramentas ou criar conta separada.</p>
+              <h3>ChatGPT Image</h3>
+              <p class="tool-desc">Gerador de imagens nativo do ChatGPT, direto na mesma conversa onde você já escreve. Entende contexto e segue instruções complexas de composição, texto e estilo com mais precisão do que a maioria dos geradores dedicados.</p>
               <div class="tool-for">
                 <div class="tool-for-label">Faz mais sentido para</div>
                 <ul class="tool-for-list">
@@ -664,8 +665,8 @@
               </div>
             </div>
             <div class="tool-card-foot">
-              <a class="tool-link" href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">
-                Acessar Nano Banana 2
+              <a class="tool-link" href="https://chatgpt.com" target="_blank" rel="noopener noreferrer">
+                Acessar ChatGPT Image
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
               </a>
               <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
@@ -677,6 +678,52 @@
               <div class="tool-prompt-inner">
                 <div class="prompt-label">Prompt prático</div>
                 <div class="prompt-box">"Crie uma imagem no estilo minimalista e profissional de um executivo olhando para um dashboard de dados futurista, fundo escuro, tons de azul e roxo, sem texto na imagem."</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar prompt
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- HIGGSFIELD -->
+          <div class="tool-card fade-in">
+            <div class="tool-card-top">
+              <div class="tool-header">
+                <div class="tool-icon-wrap" aria-hidden="true">🎬</div>
+                <div class="tool-badges">
+                  <span class="badge badge-freemium">Freemium</span>
+                </div>
+              </div>
+              <div class="tool-category">Para criar vídeos</div>
+              <h3>Higgsfield</h3>
+              <p class="tool-desc">Gera vídeos com IA a partir de texto ou imagem, com modelos como Veo, Kling e Sora reunidos na mesma plataforma. Você escreve o que quer ver e recebe um clipe pronto, sem gravar, editar ou contratar produção.</p>
+              <div class="tool-for">
+                <div class="tool-for-label">Faz mais sentido para</div>
+                <ul class="tool-for-list">
+                  <li>Criadores de conteúdo que precisam de vídeo todos os dias</li>
+                  <li>Profissionais de marketing testando anúncios em vídeo rápido</li>
+                  <li>Empreendedores sem equipe de produção ou orçamento de filmagem</li>
+                </ul>
+              </div>
+              <div class="tool-alt">
+                <strong>Alternativa gratuita:</strong> CapCut (templates de IA com recursos limitados)
+              </div>
+            </div>
+            <div class="tool-card-foot">
+              <a class="tool-link" href="https://higgsfield.ai" target="_blank" rel="noopener noreferrer">
+                Acessar Higgsfield
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+              <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="tool-prompt" role="region">
+              <div class="tool-prompt-inner">
+                <div class="prompt-label">Prompt prático</div>
+                <div class="prompt-box">"Crie um vídeo de 10 segundos mostrando um executivo olhando para um dashboard futurista, câmera se aproximando em câmera lenta, iluminação em tons de azul e roxo, sem texto na tela."</div>
                 <button class="prompt-copy" onclick="copyPrompt(this)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copiar prompt
@@ -723,6 +770,100 @@
               <div class="tool-prompt-inner">
                 <div class="prompt-label">Prompt prático</div>
                 <div class="prompt-box">"Crie um script em Python que acessa uma planilha do Google Sheets, lê os dados da coluna B e envia um e-mail automático para cada contato com o nome na coluna A. Use a API do Gmail."</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar prompt
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- WISPR FLOW -->
+          <div class="tool-card fade-in">
+            <div class="tool-card-top">
+              <div class="tool-header">
+                <div class="tool-icon-wrap" aria-hidden="true">🎙️</div>
+                <div class="tool-badges">
+                  <span class="badge badge-freemium">Freemium</span>
+                </div>
+              </div>
+              <div class="tool-category">Para digitar</div>
+              <h3>Wispr Flow</h3>
+              <p class="tool-desc">Transforma sua fala em texto formatado direto em qualquer campo — e-mail, WhatsApp, documento, editor de código. Remove vícios de fala, ajusta pontuação e escreve até quatro vezes mais rápido do que digitar.</p>
+              <div class="tool-for">
+                <div class="tool-for-label">Faz mais sentido para</div>
+                <ul class="tool-for-list">
+                  <li>Profissionais que escrevem muito e digitam pouco</li>
+                  <li>Gestores respondendo e-mails entre reuniões</li>
+                  <li>Qualquer pessoa cansada de digitar no teclado</li>
+                </ul>
+              </div>
+              <div class="tool-alt">
+                <strong>Alternativa gratuita:</strong> Ditado nativo do teclado do celular (menos preciso, mas sem custo)
+              </div>
+            </div>
+            <div class="tool-card-foot">
+              <a class="tool-link" href="https://wisprflow.ai" target="_blank" rel="noopener noreferrer">
+                Acessar Wispr Flow
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+              <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="tool-prompt" role="region">
+              <div class="tool-prompt-inner">
+                <div class="prompt-label">Prompt prático</div>
+                <div class="prompt-box">Fale naturalmente: "Responde pro cliente dizendo que a proposta já tá pronta e vou mandar até quinta, perguntando se ele prefere reunião ou só o PDF." O Wispr Flow transforma isso num e-mail formatado, sem você digitar uma letra.</div>
+                <button class="prompt-copy" onclick="copyPrompt(this)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copiar prompt
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOTEBOOKLM -->
+          <div class="tool-card fade-in">
+            <div class="tool-card-top">
+              <div class="tool-header">
+                <div class="tool-icon-wrap" aria-hidden="true">📚</div>
+                <div class="tool-badges">
+                  <span class="badge badge-free">Grátis</span>
+                </div>
+              </div>
+              <div class="tool-category">Para estudar</div>
+              <h3>NotebookLM</h3>
+              <p class="tool-desc">Transforma seus próprios documentos em um assistente que responde perguntas sobre eles. Você sobe o material — PDF, artigo, transcrição — e passa a ter um tutor particular daquele conteúdo.</p>
+              <div class="tool-for">
+                <div class="tool-for-label">Faz mais sentido para</div>
+                <ul class="tool-for-list">
+                  <li>Profissionais que precisam absorver muito conteúdo rápido</li>
+                  <li>Gestores estudando um tema antes de tomar uma decisão</li>
+                  <li>Times que precisam disseminar conhecimento a partir de docs internos</li>
+                </ul>
+              </div>
+              <div class="tool-alt">
+                <strong>Alternativa gratuita:</strong> É gratuito — não há alternativa mais barata.
+              </div>
+            </div>
+            <div class="tool-card-foot">
+              <a class="tool-link" href="https://notebooklm.google.com" target="_blank" rel="noopener noreferrer">
+                Acessar NotebookLM
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+              <button class="prompt-toggle" onclick="togglePrompt(this)" aria-expanded="false">
+                Ver prompt
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="tool-prompt" role="region">
+              <div class="tool-prompt-inner">
+                <div class="prompt-label">Prompt prático</div>
+                <div class="prompt-box">"Quais são os três pontos mais importantes desse material que um diretor financeiro precisa entender antes de aprovar um projeto de IA?"
+
+(Use após subir o PDF de um relatório ou curso)</div>
                 <button class="prompt-copy" onclick="copyPrompt(this)">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copiar prompt
