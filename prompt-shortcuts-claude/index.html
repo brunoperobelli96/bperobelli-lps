@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Prompt Shortcuts do Claude AI — Bruno Perobelli</title>
+<meta name="description" content="100 slash commands e atalhos que destravam respostas melhores do Claude. Cole no final de qualquer prompt e veja a diferença.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#090023;
+  --bg-elevated:#0e0030;
+  --surface:#130040;
+  --text:#f0eaff;
+  --text-muted:#8b7faa;
+  --text-faint:#3d3560;
+  --brand:#8A45FB;
+  --hairline:rgba(255,255,255,0.07);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+
+  --accent:#06B6D4;
+  --accent-dim:rgba(6,182,212,0.12);
+  --accent-border:rgba(6,182,212,0.35);
+  --accent-code:#67E8F9;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Figtree',ui-sans-serif,system-ui,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.skip-link{
+  position:absolute; left:-9999px; top:0;
+  background:var(--accent); color:#000; padding:10px 16px; z-index:999; border-radius:6px;
+}
+.skip-link:focus{ left:12px; top:12px; }
+
+a{color:inherit;}
+img{max-width:100%; display:block;}
+section{position:relative;}
+
+/* ---------- NAV ---------- */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px clamp(20px,5vw,64px);
+  background:rgba(9,0,35,0.72);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--hairline);
+}
+.nav-left{display:flex; align-items:center; gap:10px;}
+.nav-mark{
+  width:30px; height:30px; border-radius:8px;
+  background:var(--brand); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:0.72rem; letter-spacing:-0.02em;
+  flex-shrink:0;
+}
+.nav-name{font-size:0.85rem; font-weight:600; color:var(--text);}
+.nav-name span{color:var(--text-muted); font-weight:400;}
+.nav-badge{
+  display:flex; align-items:center; gap:6px;
+  background:var(--accent-dim); border:1px solid var(--accent-border);
+  color:var(--accent); font-size:0.78rem; font-weight:700;
+  padding:8px 14px; border-radius:999px; cursor:pointer;
+  font-family:inherit; transition:transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.nav-badge:hover{ transform:translateY(-1px); border-color:var(--accent); }
+@media (max-width:639px){ .nav-badge .badge-text{display:none;} }
+
+/* ---------- HERO ---------- */
+.hero{
+  padding:148px clamp(20px,5vw,64px) 80px;
+  position:relative; overflow:hidden;
+}
+.blob{ position:absolute; border-radius:50%; filter:blur(110px); pointer-events:none; opacity:0.5; }
+.blob-1{ width:480px; height:480px; background:var(--accent); top:-180px; right:-120px; }
+.blob-2{ width:380px; height:380px; background:var(--brand); bottom:-160px; left:-100px; opacity:0.35; }
+
+.hero-grid{
+  display:grid; grid-template-columns:1fr; gap:48px;
+  max-width:1180px; margin:0 auto; position:relative; z-index:2;
+}
+@media (min-width:900px){ .hero-grid{ grid-template-columns:1fr 320px; align-items:start; gap:56px; } }
+
+.eyebrow{
+  color:var(--accent); text-transform:uppercase; letter-spacing:0.15em;
+  font-size:0.68rem; font-weight:700; display:inline-block; margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(2.2rem,5.5vw,4.2rem); font-weight:800; letter-spacing:-0.04em;
+  line-height:1.08; margin-bottom:22px;
+}
+.hero h1 .accent{ color:var(--accent); font-style:italic; font-weight:800; }
+.hero .sub{
+  font-size:1.08rem; color:var(--text-muted); max-width:560px; margin-bottom:34px;
+}
+.hero-cta{ display:flex; flex-wrap:wrap; gap:14px; margin-bottom:36px; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:inherit; font-size:0.92rem; font-weight:700;
+  padding:14px 24px; border-radius:10px; border:none; cursor:pointer;
+  transition:transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s var(--ease);
+  min-height:44px;
+}
+.btn-primary{ background:var(--accent); color:#04101f; }
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 30px -8px var(--accent); }
+.btn-ghost{ background:transparent; color:var(--text); border:1px solid var(--hairline); }
+.btn-ghost:hover{ transform:translateY(-2px); border-color:var(--accent-border); }
+.arr{ width:16px; height:16px; }
+
+.hero-meta{ display:flex; align-items:center; gap:14px; color:var(--text-muted); font-size:0.85rem; flex-wrap:wrap; }
+.hero-meta .sep{ width:4px; height:4px; border-radius:50%; background:var(--text-faint); }
+@media (max-width:639px){ .hero-meta .sep{ display:none; } .hero-meta{ flex-direction:column; align-items:flex-start; gap:6px; } }
+.hero-meta strong{ color:var(--text); font-weight:700; }
+
+/* side card */
+.side-card{
+  background:var(--surface); border:1px solid var(--hairline); border-radius:14px;
+  padding:22px; position:relative; overflow:hidden;
+}
+.side-card::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--accent), var(--brand));
+}
+.side-card h3{ font-size:0.78rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:16px; font-weight:700; }
+.side-list{ list-style:none; display:flex; flex-direction:column; gap:11px; }
+.side-list li{
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+  font-size:0.88rem; color:var(--text); background:none; border:none; font-family:inherit;
+  width:100%; text-align:left; padding-bottom:11px; border-bottom:1px solid var(--hairline);
+  transition:color 0.2s var(--ease);
+}
+.side-list li:last-child{ border-bottom:none; padding-bottom:0; }
+.side-list li:hover{ color:var(--accent); }
+.side-list .count{
+  font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--accent);
+  background:var(--accent-dim); padding:2px 8px; border-radius:6px; flex-shrink:0; margin-left:auto;
+}
+
+/* ---------- SECTION SHELL ---------- */
+.section{ padding:80px clamp(20px,5vw,64px); }
+.section.alt{ background:var(--bg-elevated); }
+.section-inner{ max-width:980px; margin:0 auto; }
+.section-head{ max-width:680px; margin-bottom:44px; }
+.section-head h2{
+  font-size:clamp(1.7rem,3.8vw,2.8rem); font-weight:800; letter-spacing:-0.04em; margin-bottom:14px;
+}
+.section-head h2 .accent{ color:var(--accent); font-style:italic; }
+.section-head p{ color:var(--text-muted); font-size:1rem; }
+
+.fade-in{ opacity:0; transform:translateY(24px); }
+
+/* ---------- COMO USAR ---------- */
+.steps{ display:grid; grid-template-columns:1fr; gap:20px; }
+@media (min-width:768px){ .steps{ grid-template-columns:repeat(3,1fr); } }
+.step-card{
+  background:var(--surface); border:1px solid var(--hairline); border-radius:12px; padding:24px;
+  transition:border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.step-card:hover{ border-color:var(--accent-border); transform:translateY(-3px); }
+.step-num{
+  font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--accent);
+  background:var(--accent-dim); width:28px; height:28px; border-radius:7px;
+  display:flex; align-items:center; justify-content:center; font-weight:700; margin-bottom:14px;
+}
+.step-card h4{ font-size:1rem; font-weight:700; margin-bottom:8px; }
+.step-card p{ color:var(--text-muted); font-size:0.88rem; }
+.step-code{
+  margin-top:12px; background:rgba(0,0,20,0.6); border:1px solid var(--hairline);
+  border-left:2px solid var(--accent); border-radius:6px; padding:8px 10px;
+  font-family:'JetBrains Mono',monospace; font-size:0.76rem; color:var(--accent-code);
+}
+
+.note{
+  display:flex; gap:14px; align-items:flex-start;
+  background:var(--accent-dim); border:1px solid var(--accent-border);
+  border-radius:12px; padding:18px 20px; margin-top:28px;
+}
+.note svg{ flex-shrink:0; width:20px; height:20px; color:var(--accent); margin-top:2px; }
+.note p{ font-size:0.9rem; color:var(--text); }
+.note strong{ color:var(--accent); }
+
+/* ---------- BLOCOS DE TABELA ---------- */
+.table-block{ margin-bottom:52px; scroll-margin-top:88px; }
+.table-block:last-child{ margin-bottom:0; }
+.table-block-head{
+  display:flex; align-items:baseline; gap:10px; margin-bottom:16px; flex-wrap:wrap;
+}
+.table-block-head h3{ font-size:1.2rem; font-weight:800; letter-spacing:-0.02em; }
+.table-block-head .count{
+  font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--accent);
+  background:var(--accent-dim); padding:3px 9px; border-radius:6px; flex-shrink:0;
+}
+
+.cmd-table{
+  width:100%; border-collapse:collapse;
+  background:var(--surface); border:1px solid var(--hairline); border-radius:12px;
+  overflow:hidden;
+}
+.cmd-table tr{ border-bottom:1px solid var(--hairline); transition:background 0.2s var(--ease); }
+.cmd-table tr:last-child{ border-bottom:none; }
+.cmd-table tr:hover{ background:rgba(255,255,255,0.02); }
+.cmd-table td{ padding:13px 16px; vertical-align:middle; font-size:0.88rem; }
+.cmd-table td.col-code{ width:1%; white-space:nowrap; }
+.cmd-table td.col-desc{ color:var(--text-muted); }
+
+.cmd-code{
+  font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:600;
+  color:var(--accent-code); background:rgba(0,0,20,0.6);
+  border:1px solid var(--hairline); border-left:2px solid var(--accent);
+  border-radius:6px; padding:5px 9px; display:inline-block; white-space:nowrap;
+}
+
+@media (max-width:639px){
+  .cmd-table, .cmd-table tbody, .cmd-table tr, .cmd-table td{ display:block; width:100%; }
+  .cmd-table tr{ padding:12px 16px; }
+  .cmd-table td{ padding:2px 0; }
+  .cmd-table td.col-desc{ font-size:0.84rem; }
+}
+
+/* ---------- CTA FINAL ---------- */
+.final-cta{
+  background:var(--surface); border:1px solid var(--accent-border); border-radius:18px;
+  padding:48px clamp(24px,5vw,56px); text-align:center; position:relative; overflow:hidden;
+}
+.final-cta h2{ font-size:clamp(1.5rem,3.5vw,2.2rem); font-weight:800; letter-spacing:-0.03em; margin-bottom:14px; }
+.final-cta p{ color:var(--text-muted); max-width:480px; margin:0 auto 28px; }
+
+/* ---------- FOOTER ---------- */
+footer{
+  padding:40px clamp(20px,5vw,64px) 56px; display:flex; flex-direction:column;
+  align-items:center; gap:16px; text-align:center; border-top:1px solid var(--hairline);
+}
+.footer-logo{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:0.9rem; text-decoration:none; }
+.footer-note{ color:var(--text-faint); font-size:0.8rem; }
+.footer-note a{ color:var(--text-muted); text-decoration:underline; }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="nav-left">
+    <span class="nav-mark" aria-hidden="true">BP</span>
+    <span class="nav-name">Bruno Perobelli <span>· IA aplicada</span></span>
+  </div>
+  <button class="nav-badge" onclick="scrollToSection('comandos')">
+    <span class="badge-text">100 prompt shortcuts</span>
+    <span aria-hidden="true">→</span>
+  </button>
+</nav>
+
+<main id="main">
+
+<header class="hero">
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div>
+      <span class="eyebrow">Claude AI · Produtividade</span>
+      <h1>100 atalhos de prompt que <span class="accent">destravam</span> o Claude</h1>
+      <p class="sub">Cole um código no final do seu prompt e a resposta muda completamente. Sem plugin, sem ferramenta nova. Só os atalhos certos, no momento certo.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="scrollToSection('comandos')">
+          Ver todos os atalhos
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn btn-ghost" onclick="scrollToSection('como-usar')">Como usar</button>
+      </div>
+      <div class="hero-meta">
+        <span><strong>100</strong> atalhos</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span><strong>10</strong> categorias</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>Copiar e colar</span>
+      </div>
+    </div>
+    <div class="side-card">
+      <h3>O que tem aqui</h3>
+      <ul class="side-list" id="sideList"></ul>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="como-usar">
+  <div class="section-inner">
+    <div class="section-head fade-in">
+      <h2>Como <span class="accent">usar</span> os atalhos</h2>
+      <p>Não é um prompt novo. É um complemento do que você já escreve.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card fade-in">
+        <span class="step-num">01</span>
+        <h4>Escreva seu pedido normal</h4>
+        <p>Pergunte o que precisar, do jeito que você já faz hoje.</p>
+        <div class="step-code">"Explica o que é inflação"</div>
+      </div>
+      <div class="step-card fade-in">
+        <span class="step-num">02</span>
+        <h4>Cole o atalho no final</h4>
+        <p>Adicione o código de um dos atalhos da lista, sem mais nada.</p>
+        <div class="step-code">"Explica o que é inflação /eli5"</div>
+      </div>
+      <div class="step-card fade-in">
+        <span class="step-num">03</span>
+        <h4>Receba a resposta no formato certo</h4>
+        <p>O Claude entende o atalho como instrução de formato e tom.</p>
+        <div class="step-code">Resposta simples, como se você tivesse 5 anos</div>
+      </div>
+    </div>
+    <div class="note fade-in">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <p><strong>Dica:</strong> atalhos com barra (<code>/deepthink</code>) e sem barra (<code>BEASTMODE</code>) funcionam do mesmo jeito. Use o que vier no fluxo da frase.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section alt" id="comandos">
+  <div class="section-inner">
+    <div class="section-head fade-in">
+      <h2>Todos os <span class="accent">atalhos</span></h2>
+      <p>Organizados por categoria. Use Ctrl+F (ou Cmd+F) pra achar rápido o que precisar.</p>
+    </div>
+    <div id="blocksWrap"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="final-cta fade-in">
+      <h2>Quer mais conteúdo assim direto no Instagram?</h2>
+      <p>Posto sobre IA aplicada a negócios, produtividade e ferramentas práticas todos os dias.</p>
+      <button class="btn btn-primary" onclick="window.open('https://instagram.com/bperobelli','_blank')">
+        Seguir @bperobelli
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <a href="https://bperobelli.com.br" class="footer-logo">
+    <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+    Bruno Perobelli
+  </a>
+  <div class="footer-note">
+    Guia gratuito · Bruno Perobelli
+  </div>
+</footer>
+
+<script>
+const DATA = [
+  { cat: "Escrita e Estilo", items: [
+    ["/ghost",   "Reescreve o texto de forma que é impossível perceber que foi escrito por IA"],
+    ["/mirror",  "Reproduz exatamente o seu estilo de escrita a partir de uma amostra"],
+    ["/raw",     "Remove toda a formatação e entrega uma resposta simples e limpa"],
+    ["/voice",   "Define um tom específico e mantém durante toda a conversa"],
+    ["/punch",   "Deixa cada frase mais direta e com mais impacto"],
+    ["/flow",    "Reestrutura o texto para que flua melhor do início ao fim"],
+    ["/trim",    "Corta o que é desnecessário sem perder o significado"],
+    ["/hook",    "Reescreve a abertura para prender a atenção imediatamente"],
+    ["/rephrase","Diz a mesma coisa de um jeito completamente diferente"],
+    ["/polish",  "Torna um texto bruto em algo profissional sem mudar o sentido"],
+  ]},
+  { cat: "Artefatos e Criação", items: [
+    ["ARTIFACTS", "Gera um projeto interativo completo que você pode usar na hora"],
+    ["/buildme",  "Cria um app ou ferramenta completa a partir de uma descrição"],
+    ["DASHBOARD", "Constrói um painel de dados ao vivo com o qual você pode interagir"],
+    ["PROTOTYPE", "Gera um protótipo funcional a partir de apenas uma ideia"],
+    ["CANVAS",    "Abre um espaço visual para criar layouts e diagramas"],
+    ["/render",   "Transforma uma descrição em uma saída visual no chat"],
+    ["BLUEPRINT", "Cria um plano de projeto completo com arquivos e estrutura"],
+    ["WIREFRAME", "Projeta o layout básico de um site ou tela de aplicativo"],
+    ["/livecode", "Escreve e executa código em tempo real para você ver funcionando"],
+    ["GENERATOR", "Constrói uma ferramenta reutilizável que cria resultados sob demanda"],
+  ]},
+  { cat: "Raciocínio e Pensamento", items: [
+    ["OODA",        "Analisa uma situação por observar, orientar, decidir e agir"],
+    ["/deepthink",  "Força o Claude a raciocinar por cada camada antes de responder"],
+    ["L99",         "Eleva a resposta ao mais alto nível possível de profundidade"],
+    ["CHAINLOGIC",  "Percorre cada etapa do raciocínio para você acompanhar a lógica"],
+    ["/blindspots", "Encontra o que você está perdendo e não pensou em perguntar"],
+    ["OVERTHINK",   "Analisa deliberadamente em excesso para pegar detalhes que todos perdem"],
+    ["/unpack",     "Divide uma ideia complexa em cada parte que a faz funcionar"],
+    ["INVERT",      "Resolve o problema pensando de forma completamente inversa"],
+    ["/layered",    "Dá a resposta em nível superficial, intermediário e especialista"],
+    ["XRAY",        "Enxerga além da resposta óbvia para encontrar o que está realmente acontecendo"],
+  ]},
+  { cat: "Aprendizado e Domínio", items: [
+    ["/teachme",    "Transforma a resposta em uma aula ao invés de só uma resposta"],
+    ["GAPFINDER",   "Identifica exatamente o que você não sabe sobre um tema"],
+    ["/eli5",       "Explica de forma tão simples que uma criança de 5 anos entenderia"],
+    ["MASTERCLASS", "Ensina um tema como um especialista de classe mundial faria"],
+    ["/drill",      "Cria exercícios de prática para você realmente aprender"],
+    ["SPEEDRUN",    "Ensina o caminho mais rápido possível para entender algo"],
+    ["/mentor",     "Dá conselhos como um mentor pessoal que conhece sua situação"],
+    ["LEVELUP",     "Descobre seu nível atual e ensina o próximo"],
+    ["CRASHCOURSE", "Te dá tudo que precisa saber em cinco minutos"],
+    ["BOOTCAMP",    "Constrói um plano de aprendizado completo do iniciante ao avançado"],
+  ]},
+  { cat: "Análise e Estratégia", items: [
+    ["/redteam",   "Desmonta sua ideia para encontrar cada ponto fraco"],
+    ["PARETO",     "Encontra os 20% de ações que geram 80% dos resultados"],
+    ["/swot",      "Faz uma análise completa de forças, fraquezas, oportunidades e ameaças"],
+    ["WARGAME",    "Simula como concorrentes ou adversários responderiam"],
+    ["/premortem", "Imagina que o plano já falhou e descobre o motivo"],
+    ["LEVERAGE",   "Encontra a ação que muda tudo o que vem depois"],
+    ["/audit",     "Revisa o seu trabalho e aponta todos os problemas encontrados"],
+    ["BOTTLENECK", "Identifica o único ponto que está travando tudo"],
+    ["/scenario",  "Projeta múltiplos futuros para você se preparar para cada um"],
+    ["BLINDSPOT",  "Revela os riscos e ângulos que você ainda não considerou"],
+  ]},
+  { cat: "Criativo e Conteúdo", items: [
+    ["/viral",       "Reescreve o conteúdo para ser otimizado para ser compartilhado"],
+    ["HOOKS10",      "Gera dez aberturas de gancho para qualquer tema"],
+    ["/storysell",   "Transforma uma mensagem chata em uma história que as pessoas querem ler"],
+    ["REMIX",        "Pega duas ideias sem relação e as une em algo novo"],
+    ["/angles",      "Dá dez formas completamente diferentes de abordar um tema"],
+    ["CLIFFHANGER",  "Escreve um final que deixa as pessoas desesperadas por mais"],
+    ["/captionme",   "Escreve legendas para redes sociais que realmente geram engajamento"],
+    ["POLARIZE",     "Torna sua opinião ousada o suficiente para as pessoas precisarem responder"],
+    ["/banger",      "Transforma uma linha fraca em algo que as pessoas fazem screenshot"],
+    ["THUMBNAIL",    "Escreve um título ou manchete feito para gerar cliques"],
+  ]},
+  { cat: "Código e Técnico", items: [
+    ["/debug",    "Encontra o bug no seu código e explica o que deu errado"],
+    ["REFACTOR",  "Limpa o código bagunçado sem mudar o que ele faz"],
+    ["/shipit",   "Pega um código bruto e o deixa pronto para produção"],
+    ["ARCHITECT", "Projeta a estrutura completa do sistema antes de escrever qualquer código"],
+    ["/convert",  "Reescreve o código de uma linguagem para outra"],
+    ["AUTOMATE",  "Transforma um processo manual em um script que roda sozinho"],
+    ["/testit",   "Escreve testes para o seu código para garantir que funciona"],
+    ["SCAFFOLD",  "Configura toda a estrutura de arquivos para um novo projeto"],
+    ["/optimize", "Deixa o código mais rápido sem quebrar nada"],
+    ["APIBUILD",  "Cria uma API completa a partir de uma descrição em linguagem natural"],
+  ]},
+  { cat: "Pesquisa e Análise Profunda", items: [
+    ["/deepdive",    "Vai muito além da superfície em qualquer tema"],
+    ["FACTCHECK",    "Verifica afirmações e sinaliza o que pode estar errado"],
+    ["/sources",     "Embasa cada afirmação com a origem da informação"],
+    ["COMPARE",      "Coloca duas ou mais opções lado a lado com um vencedor claro"],
+    ["/investigate", "Pesquisa um tema como um jornalista investigativo"],
+    ["TRENDSCAN",    "Identifica o que está acontecendo agora em qualquer área"],
+    ["/extract",     "Extrai exatamente a informação que você precisa de um documento longo"],
+    ["TIMELINE",     "Mapeia o histórico completo de um tema em ordem cronológica"],
+    ["/digest",      "Lê tudo e te entrega só o que importa"],
+    ["DOSSIER",      "Compila um dossiê completo sobre qualquer tema, pessoa ou empresa"],
+  ]},
+  { cat: "Comandos de Poder", items: [
+    ["/godmode",   "Desbloqueia a resposta mais detalhada e completa possível"],
+    ["/autoprompt","Pega sua ideia bruta e constrói o prompt perfeito para ela"],
+    ["MEGAPROMPT", "Gera um prompt longo e detalhado que entrega exatamente o que você quer"],
+    ["/chain",     "Executa múltiplos prompts em sequência, cada um construindo sobre o anterior"],
+    ["/system",    "Escreve um prompt de sistema personalizado que muda o comportamento do Claude"],
+    ["PERSONA",    "Faz o Claude responder como um tipo específico de especialista"],
+    ["/memory",    "Diz ao Claude para lembrar de detalhes específicos durante toda a conversa"],
+    ["CONTEXT",    "Carrega informações de contexto para cada resposta ser mais relevante"],
+    ["/rolelock",  "Trava o Claude em um personagem específico para o resto do chat"],
+    ["PROMPTFIX",  "Pega um prompt ruim e o reescreve para funcionar de verdade"],
+  ]},
+  { cat: "Modos Ocultos", items: [
+    ["/nofilter",  "Dá a opinião honesta mais direta e sem filtros possível"],
+    ["BEASTMODE",  "Eleva a qualidade da saída ao máximo absoluto"],
+    ["/therapist", "Conversa sobre uma situação com você como um terapeuta treinado faria"],
+    ["CEOMODE",    "Responde como um CEO tomando decisões de alto risco"],
+    ["/negotiate", "Escreve um roteiro de negociação feito para te dar o melhor acordo"],
+    ["FOUNDER",    "Dá conselhos de startup e negócios pela perspectiva de um fundador"],
+    ["/closer",    "Escreve uma copy de vendas ou mensagem feita para fechar o negócio"],
+    ["OPERATOR",   "Lida com uma tarefa do início ao fim sem precisar de mais input"],
+    ["/unlocked",  "Remove a cautela padrão e entrega a resposta mais direta"],
+    ["SENTINEL",   "Revisa tudo em busca de erros, riscos e detalhes perdidos"],
+  ]},
+];
+
+function slug(s){ return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-'); }
+
+function buildSideList(){
+  const wrap = document.getElementById('sideList');
+  DATA.forEach(group => {
+    const li = document.createElement('li');
+    li.innerHTML = `<button class="side-list-btn" style="display:flex;width:100%;background:none;border:none;color:inherit;font-family:inherit;font-size:inherit;cursor:pointer;align-items:center;padding:0;" onclick="scrollToSection('${slug(group.cat)}')">${group.cat}<span class="count">${group.items.length}</span></button>`;
+    wrap.appendChild(li);
+  });
+}
+
+function buildBlocks(){
+  const wrap = document.getElementById('blocksWrap');
+  DATA.forEach(group => {
+    const block = document.createElement('div');
+    block.className = 'table-block fade-in';
+    block.id = slug(group.cat);
+
+    const rows = group.items.map(([code, desc]) => `
+      <tr>
+        <td class="col-code"><span class="cmd-code">${code}</span></td>
+        <td class="col-desc">${desc}</td>
+      </tr>
+    `).join('');
+
+    block.innerHTML = `
+      <div class="table-block-head">
+        <h3>${group.cat}</h3>
+        <span class="count">${group.items.length}</span>
+      </div>
+      <table class="cmd-table">
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    wrap.appendChild(block);
+  });
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.scrollY - 72;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+buildSideList();
+buildBlocks();
+
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.15 });
+  gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.35 });
+  gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.5  });
+  gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.65 });
+  gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'cubic-bezier(0.22,1,0.36,1)', delay:0.05 });
+
+  gsap.utils.toArray('.fade-in').forEach(el => {
+    gsap.to(el, {
+      opacity:1, y:0, duration:0.75,
+      ease:'cubic-bezier(0.22,1,0.36,1)',
+      scrollTrigger:{ trigger:el, start:'top 90%', once:true }
+    });
+  });
+} else {
+  document.querySelectorAll('.fade-in').forEach(el => {
+    el.style.opacity = 1; el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>
