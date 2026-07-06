@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Guia Completo do Claude Design · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #06B6D4;
+      --accent-dim: rgba(6,182,212,0.1);
+      --accent-glow: rgba(6,182,212,0.22);
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .skip-link {
+      position: absolute; top: -100px; left: 1rem;
+      background: var(--accent); color: #090023;
+      padding: 0.5rem 1rem; border-radius: 4px;
+      font-weight: 700; z-index: 999; text-decoration: none;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto;
+      padding: 0 clamp(1rem,5vw,2rem);
+      height: 56px; display: flex;
+      align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.5rem;
+      text-decoration: none; color: var(--text);
+      font-weight: 700; font-size: 0.95rem;
+    }
+    .nav-mark {
+      background: var(--accent); color: #090023;
+      font-weight: 800; font-size: 0.78rem;
+      padding: 2px 6px; border-radius: 4px;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; }
+    .nav-cta {
+      background: var(--accent); color: #090023;
+      font-weight: 700; font-size: 0.8rem;
+      padding: 6px 16px; border-radius: 6px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* EYEBROW */
+    .eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 72px 0 64px;
+      overflow: hidden;
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .hero-blob.b1 {
+      width: 560px; height: 560px;
+      background: rgba(6,182,212,0.07);
+      top: -140px; right: -100px;
+    }
+    .hero-blob.b2 {
+      width: 320px; height: 320px;
+      background: rgba(100,60,200,0.1);
+      bottom: -60px; left: -60px;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 48px; align-items: start;
+    }
+    .hero-copy .eyebrow { margin-bottom: 16px; }
+    .hero h1 {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.025em; margin-bottom: 18px;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 540px; line-height: 1.7; margin-bottom: 32px;
+    }
+    .hero-meta { display: flex; gap: 28px; flex-wrap: wrap; margin-bottom: 28px; }
+    .hero-stat { display: flex; flex-direction: column; gap: 3px; }
+    .hero-stat-val {
+      font-size: 1.45rem; font-weight: 800;
+      color: var(--accent); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.72rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-top: 2px solid var(--accent);
+      border-radius: 12px; padding: 22px;
+    }
+    .side-card-title {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+    .side-card li {
+      display: flex; gap: 8px;
+      font-size: 0.875rem; color: var(--text-muted); align-items: flex-start;
+    }
+    .side-card li::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+
+    /* BUTTONS */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #090023;
+      font-weight: 700; font-size: 0.95rem;
+      padding: 12px 26px; border-radius: 8px;
+      text-decoration: none;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(6,182,212,0.28);
+    }
+
+    /* SECTIONS */
+    section { padding: 60px 0; }
+    section.alt { background: var(--bg-elevated); }
+
+    .section-header { margin-bottom: 36px; }
+    .section-header .eyebrow { margin-bottom: 8px; }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 800; letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .section-lead {
+      font-size: 0.975rem; color: var(--text-muted);
+      margin-top: 10px; max-width: 600px; line-height: 1.7;
+    }
+
+    /* ACCESS GRID */
+    .access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 40px; }
+    .access-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-top: 2px solid var(--accent);
+      border-radius: 10px; padding: 20px 22px;
+      transition: border-color 0.2s, transform 0.2s var(--ease);
+    }
+    .access-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .access-card .access-label {
+      font-size: 0.68rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent);
+      font-weight: 700; margin-bottom: 7px;
+    }
+    .access-card h3 { font-size: 0.975rem; font-weight: 700; margin-bottom: 6px; }
+    .access-card p { font-size: 0.87rem; color: var(--text-muted); line-height: 1.55; }
+    .access-card code {
+      display: inline-block; margin-top: 10px;
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.22);
+      border-radius: 4px; padding: 2px 8px;
+      font-size: 0.78rem; color: var(--accent);
+      font-family: 'Figtree', monospace;
+    }
+
+    /* SUBSECTION LABEL */
+    .sub-eyebrow { margin-bottom: 14px; margin-top: 8px; display: block; }
+
+    /* CREATES GRID */
+    .creates-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 40px;
+    }
+    .create-tile {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 18px 18px;
+      transition: border-color 0.2s, transform 0.2s var(--ease);
+    }
+    .create-tile:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .create-icon { font-size: 1.35rem; margin-bottom: 8px; }
+    .create-tile h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .create-tile p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* EDIT GRID */
+    .edit-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 14px; margin-bottom: 40px;
+    }
+    .edit-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-top: 2px solid var(--accent);
+      border-radius: 10px; padding: 20px;
+      transition: border-color 0.2s, transform 0.2s var(--ease);
+    }
+    .edit-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .edit-num {
+      font-size: 2.2rem; font-weight: 800;
+      color: var(--accent); opacity: 0.22;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .edit-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+    .edit-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* IO GRID */
+    .io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .io-card {
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 18px 20px;
+    }
+    .io-card h4 {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--accent); margin-bottom: 12px;
+    }
+    .io-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .io-tag {
+      background: var(--accent-dim);
+      border: 1px solid rgba(6,182,212,0.18);
+      border-radius: 5px; padding: 3px 9px;
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+
+    /* BRIDGE */
+    .bridge {
+      padding: 44px 0;
+      background: var(--bg);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+    }
+    .bridge p {
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--text-muted); max-width: 560px;
+      margin: 0 auto; line-height: 1.5;
+    }
+    .bridge p em { color: var(--accent); font-style: normal; }
+
+    /* WAY SECTIONS */
+    .way-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start;
+    }
+    .way-layout.reverse > *:first-child { order: 2; }
+    .way-layout.reverse > *:last-child { order: 1; }
+
+    .way-copy .eyebrow { margin-bottom: 4px; }
+    .way-number {
+      font-size: 4.5rem; font-weight: 800;
+      color: var(--accent); opacity: 0.1;
+      line-height: 1; margin-bottom: -12px;
+    }
+    .way-copy h2 {
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      font-weight: 800; letter-spacing: -0.02em;
+      margin: 8px 0 14px; line-height: 1.2;
+    }
+    .way-copy p {
+      font-size: 0.94rem; color: var(--text-muted);
+      line-height: 1.7; margin-bottom: 10px;
+    }
+
+    /* PROMPT BLOCK */
+    .prompt-block {
+      background: #060018;
+      border: 1px solid rgba(6,182,212,0.18);
+      border-top: 2px solid var(--accent);
+      border-radius: 10px; overflow: hidden;
+    }
+    .prompt-header {
+      padding: 10px 16px;
+      background: rgba(6,182,212,0.06);
+      border-bottom: 1px solid rgba(6,182,212,0.12);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .prompt-label {
+      font-size: 0.68rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--accent); font-weight: 700;
+    }
+    .copy-btn {
+      background: none;
+      border: 1px solid rgba(6,182,212,0.28);
+      color: var(--accent); font-size: 0.68rem;
+      font-family: 'Figtree', sans-serif; font-weight: 700;
+      padding: 3px 10px; border-radius: 4px;
+      cursor: pointer; transition: background 0.2s;
+      letter-spacing: 0.04em;
+    }
+    .copy-btn:hover { background: rgba(6,182,212,0.1); }
+    .prompt-body {
+      padding: 18px 20px;
+      font-size: 0.8rem; line-height: 1.75;
+      color: #9f96c8;
+      font-family: 'Figtree', monospace;
+      white-space: pre-wrap; max-height: 400px;
+      overflow-y: auto;
+    }
+    .prompt-body::-webkit-scrollbar { width: 4px; }
+    .prompt-body::-webkit-scrollbar-track { background: transparent; }
+    .prompt-body::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.18); border-radius: 2px; }
+
+    /* PRO MOVE */
+    .pro-move {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: linear-gradient(135deg, rgba(6,182,212,0.07), rgba(100,60,200,0.07));
+      border: 1px solid rgba(6,182,212,0.18);
+      border-radius: 10px; padding: 16px 20px; margin-top: 20px;
+    }
+    .pro-move-tag {
+      background: var(--accent); color: #090023;
+      font-weight: 700; font-size: 0.62rem; padding: 3px 8px;
+      border-radius: 4px; letter-spacing: 0.06em;
+      text-transform: uppercase; white-space: nowrap; margin-top: 2px; flex-shrink: 0;
+    }
+    .pro-move p { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 72px 0; text-align: center;
+      background: var(--bg-elevated); position: relative; overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(6,182,212,0.08), transparent 55%);
+      pointer-events: none;
+    }
+    .cta-section .eyebrow { margin-bottom: 14px; display: block; }
+    .cta-section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .cta-section > .wrap > p {
+      color: var(--text-muted); margin-bottom: 28px;
+      font-size: 1rem; max-width: 460px; margin-left: auto; margin-right: auto;
+    }
+    .cta-sub {
+      font-size: 0.82rem; color: var(--text-faint); margin-top: 16px; display: block;
+    }
+    .cta-sub strong { color: var(--text-muted); }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 0; text-align: center;
+    }
+    .footer-logo {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: var(--text-muted); font-size: 0.85rem;
+      text-decoration: none; margin-bottom: 6px;
+    }
+    .footer-note { font-size: 0.75rem; color: var(--text-faint); }
+
+    /* FADE IN */
+    .fade-in { opacity: 0; transform: translateY(18px); }
+
+    /* RESPONSIVE */
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .side-card { display: none; }
+      .way-layout, .way-layout.reverse { grid-template-columns: 1fr; }
+      .way-layout.reverse > *:first-child { order: unset; }
+      .way-layout.reverse > *:last-child { order: unset; }
+      .creates-grid { grid-template-columns: 1fr 1fr; }
+      .edit-grid { grid-template-columns: 1fr; gap: 10px; }
+    }
+    @media (max-width: 540px) {
+      .access-grid { grid-template-columns: 1fr; }
+      .creates-grid { grid-template-columns: 1fr; }
+      .io-grid { grid-template-columns: 1fr; }
+      .hero-meta { gap: 18px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+      <small>· IA aplicada</small>
+    </a>
+    <a href="#guia" class="nav-cta">Quero o Guia</a>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · PRODUTIVIDADE</p>
+          <h1>O Claude Design vai além de <span class="accent">slides</span></h1>
+          <p class="sub">A maioria das pessoas usa o Claude pra escrever e codar. Mas o Claude Design é a feature mais subestimada que a Anthropic já lançou — e esse guia mostra o que você pode fazer com ela.</p>
+          <div class="hero-meta">
+            <div class="hero-stat">
+              <span class="hero-stat-val">~30s</span>
+              <span class="hero-stat-label">Para gerar um deck</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-val">R$800–3k</span>
+              <span class="hero-stat-label">Que agências cobram</span>
+            </div>
+            <div class="hero-stat">
+              <span class="hero-stat-val">10+</span>
+              <span class="hero-stat-label">Ferramentas de exportação</span>
+            </div>
+          </div>
+          <a href="#guia" class="btn-primary">Quero o Guia Completo</a>
+        </div>
+        <div class="side-card">
+          <p class="side-card-title">O que você vai receber</p>
+          <ul>
+            <li>Como acessar o Design (Desktop + Web)</li>
+            <li>Passo a passo para criar sua primeira apresentação</li>
+            <li>6 tipos de conteúdo que você pode criar</li>
+            <li>Os 3 modos de edição</li>
+            <li>Motion graphics com a sua marca</li>
+            <li>Construir no estilo de qualquer marca</li>
+            <li>Reconstruir qualquer site que você admira</li>
+            <li>Prompts prontos pra copiar</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: O básico que já muda tudo -->
+  <section id="basico">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PASSO A PASSO</p>
+        <h2>O básico que já muda tudo</h2>
+        <p class="section-lead">Você ainda abre o PowerPoint toda vez que precisa de uma apresentação? O Claude Design faz isso em 30 segundos — dentro do app que você já usa, sem abrir nenhuma outra ferramenta.</p>
+      </div>
+
+      <span class="eyebrow sub-eyebrow fade-in">COMO ACESSAR</span>
+      <div class="access-grid fade-in">
+        <div class="access-card">
+          <p class="access-label">Opção A — Desktop</p>
+          <h3>App do Claude</h3>
+          <p>Abre o app desktop. No canto inferior esquerdo da sidebar você vai ver <strong>Design</strong>. Clica e começa a criar.</p>
+        </div>
+        <div class="access-card">
+          <p class="access-label">Opção B — Web</p>
+          <h3>Pelo navegador</h3>
+          <p>Acessa direto pelo browser. Mesma interface, mesmas funcionalidades — sem instalar nada.</p>
+          <code>claude.ai/design</code>
+        </div>
+      </div>
+
+      <span class="eyebrow sub-eyebrow fade-in">O QUE VOCÊ CONSEGUE CRIAR</span>
+      <div class="creates-grid fade-in">
+        <div class="create-tile">
+          <div class="create-icon">🖥️</div>
+          <h4>Protótipos interativos</h4>
+          <p>Navegação funcional, hover states, animações. Não é mockup estático — se comporta como app de verdade.</p>
+        </div>
+        <div class="create-tile">
+          <div class="create-icon">📊</div>
+          <h4>Apresentações e pitch decks</h4>
+          <p>Slides com layout, design e conteúdo gerados de uma vez. Estrutura, hierarquia e paleta prontas.</p>
+        </div>
+        <div class="create-tile">
+          <div class="create-icon">📱</div>
+          <h4>Social media graphics</h4>
+          <p>Posts, carrosséis, stories, banners — qualquer formato de rede social, direto no app.</p>
+        </div>
+        <div class="create-tile">
+          <div class="create-icon">🎨</div>
+          <h4>Posters e marketing</h4>
+          <p>Peças para eventos, campanhas, anúncios — com identidade visual definida pelo que você descreve.</p>
+        </div>
+        <div class="create-tile">
+          <div class="create-icon">📄</div>
+          <h4>Documentos e relatórios</h4>
+          <p>Currículos, one-pagers, cases — com tipografia e formatação profissional desde o primeiro draft.</p>
+        </div>
+        <div class="create-tile">
+          <div class="create-icon">🌐</div>
+          <h4>Visualizações 3D e interativas</h4>
+          <p>Gráficos com animação e WebGL. O que a Anthropic chama de "frontier design".</p>
+        </div>
+      </div>
+
+      <span class="eyebrow sub-eyebrow fade-in">OS 3 MODOS DE EDIÇÃO</span>
+      <div class="edit-grid fade-in">
+        <div class="edit-card">
+          <div class="edit-num">01</div>
+          <h4>Chat edits</h4>
+          <p>Descreve o que quer mudar no chat. O Claude atualiza o canvas. Melhor pra mudanças amplas — "deixa o header maior", "muda a cor pra verde".</p>
+        </div>
+        <div class="edit-card">
+          <div class="edit-num">02</div>
+          <h4>Comentários inline</h4>
+          <p>Clica em qualquer elemento do canvas e deixa um comentário direto nele. Melhor pra ajustes precisos — "move 10px pra direita", "esse texto em negrito".</p>
+        </div>
+        <div class="edit-card">
+          <div class="edit-num">03</div>
+          <h4>Manipulação direta</h4>
+          <p>Clica em Edit no topo do canvas. Arrasta pra mover, redimensiona, edita texto por clique e reordena camadas com drag and drop.</p>
+        </div>
+      </div>
+
+      <span class="eyebrow sub-eyebrow fade-in">IMPORT E EXPORT</span>
+      <div class="io-grid fade-in">
+        <div class="io-card">
+          <h4>Importar de</h4>
+          <div class="io-tags">
+            <span class="io-tag">Figma</span>
+            <span class="io-tag">PDF</span>
+            <span class="io-tag">Imagens</span>
+            <span class="io-tag">Markdown</span>
+          </div>
+        </div>
+        <div class="io-card">
+          <h4>Exportar para</h4>
+          <div class="io-tags">
+            <span class="io-tag">Canva</span>
+            <span class="io-tag">Figma</span>
+            <span class="io-tag">Adobe</span>
+            <span class="io-tag">Vercel</span>
+            <span class="io-tag">Wix</span>
+            <span class="io-tag">Gamma</span>
+            <span class="io-tag">Webflow</span>
+            <span class="io-tag">Framer</span>
+            <span class="io-tag">Base44</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRIDGE 1 -->
+  <div class="bridge">
+    <div class="wrap">
+      <p>Mas se você acha que isso já é muito, <em>espera o que vem agora.</em></p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Motion graphics -->
+  <section class="alt" id="motion">
+    <div class="wrap">
+      <div class="way-layout fade-in">
+        <div class="way-copy">
+          <p class="eyebrow">USE 1 DE 3</p>
+          <div class="way-number">01</div>
+          <h2>Motion graphics que parecem de agência</h2>
+          <p>Você não precisa de motion designer pra ter animações com a sua cara. Pega um template gratuito de sites como React Video Editor — o código já vem pronto — e usa o Claude pra customizar tudo com a identidade da sua marca.</p>
+          <p>O prompt abaixo mantém a animação intacta e troca só o visual. Resultado: motion gráfico exclusivo, sem pagar agência, sem abrir After Effects.</p>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-header">
+            <span class="prompt-label">Prompt — Customizar Template</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
+          </div>
+          <div class="prompt-body">Here's a motion-graphics template I want made unmistakably mine (code or link at the bottom). Keep the animation, change the brand.
+
+My brand:
+- Colors: primary [hex], accent [hex], background [hex]
+- Fonts: display [font], body [font]. Never use Inter, Roboto, or default system fonts.
+- Energy: [e.g. bold and high-contrast, or calm and premium]
+- The feel I'm going for: [1-2 brands or styles I love]
+
+Do this:
+1. Keep the animation logic, timing, and transitions exactly. Do not simplify or slow the motion.
+2. Restyle everything visual — the colors, type, backgrounds, and text — so it reads as my brand, and swap my copy in wherever there's placeholder text.
+3. Avoid the generic AI look: no default easing, no muddy gradients, no stock-template feel. Make deliberate choices that match my energy.
+4. Give me the full, ready-to-run code, not a snippet.
+5. Then list exactly what you changed, and flag anything in the original that fought my brand so I can decide what to keep.
+
+Template:
+[cole o código ou link aqui]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRIDGE 2 -->
+  <div class="bridge">
+    <div class="wrap">
+      <p>E não para aí. <em>O segundo uso é onde a maioria das pessoas larga o PowerPoint de vez.</em></p>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Brand style -->
+  <section id="marca">
+    <div class="wrap">
+      <div class="way-layout reverse fade-in">
+        <div class="prompt-block">
+          <div class="prompt-header">
+            <span class="prompt-label">Prompt — Usar Design System</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
+          </div>
+          <div class="prompt-body">Use the DESIGN.md below as the single source of truth for this build. Do not substitute your own defaults for anything it specifies.
+
+Build me: [uma landing page / deck de slides / seção de preços / dashboard]
+
+Rules:
+1. Follow the DESIGN.md exactly: its colors, type scale, spacing rhythm, corner radius, shadows, and motion. Use the real tokens, do not approximate them.
+2. Where the system is silent, choose the option most consistent with its personality — and tell me what you decided and why.
+3. Kill the generic AI defaults: no Inter or Roboto, no purple-to-indigo gradients, no centered hero with three cards unless the system actually calls for it.
+4. Make it fully responsive and clean enough to ship, not a rough draft.
+5. When it's done, show me the build, then give me two more directions for the hero: one more minimal and one more expressive, so I can compare instead of guess.
+
+DESIGN.md:
+[cole o DESIGN.md aqui]</div>
+        </div>
+        <div class="way-copy">
+          <p class="eyebrow">USE 2 DE 3</p>
+          <div class="way-number">02</div>
+          <h2>Construa no estilo de qualquer marca</h2>
+          <p>Existem coleções gratuitas no GitHub que têm os design systems reais de marcas como Apple e Stripe em arquivos chamados DESIGN.md. Cola um deles e o Claude constrói qualquer coisa naquele estilo exato — em cerca de dois minutos.</p>
+          <p>O prompt ao lado usa o DESIGN.md como fonte única da verdade. Nada de aproximações ou defaults genéricos do Claude.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRIDGE 3 -->
+  <div class="bridge">
+    <div class="wrap">
+      <p>O terceiro uso é o que <em>mais surpreende as pessoas</em> quando elas veem pela primeira vez.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Rebuild any site -->
+  <section class="alt" id="rebuild">
+    <div class="wrap">
+      <div class="way-layout fade-in">
+        <div class="way-copy">
+          <p class="eyebrow">USE 3 DE 3</p>
+          <div class="way-number">03</div>
+          <h2>Reconstrua qualquer site que você admira</h2>
+          <p>Cola a URL de qualquer site que você gosta e o Claude reconstrói aquele design inteiro como uma página limpa e editável. Ele extrai o sistema de cores, tipografia, espaçamento e ritmo — e entrega tudo como design tokens que você reutiliza em qualquer outro projeto.</p>
+          <p>Não precisa contratar designer. Não precisa explicar o que quer. Só cola a URL e diz o que é seu.</p>
+          <div class="pro-move">
+            <span class="pro-move-tag">Pro Move</span>
+            <p>Use o <strong>Higgsfield</strong> para gerar imagens e vídeos on-brand, depois cole na página que o Claude construiu. Resultado visual de agência — feito por você.</p>
+          </div>
+        </div>
+        <div class="prompt-block">
+          <div class="prompt-header">
+            <span class="prompt-label">Prompt — Reconstruir por URL</span>
+            <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
+          </div>
+          <div class="prompt-body">Here's a website whose design I love: [URL]. Reverse-engineer it and rebuild it as something I can make mine.
+
+Do it in this order:
+1. First, study the page and pull out its full design system: the exact colors (hex), the fonts and type scale, the spacing rhythm, corner radius, shadow style, and how it handles motion. List it all back to me as clean, labeled design tokens.
+2. Then rebuild the page as a clean, responsive layout using that exact system. Match the real spacing, hierarchy, and rhythm — not a watered-down generic version. Use placeholder text and images where you need them.
+3. Do not fall back on default fonts or a generic template. If something is ambiguous, match the source as closely as you can.
+4. Finally, tell me which sections I should swap for my own content, and save those design tokens as a reusable block so I can apply this same style to my other pages.
+
+Site to rebuild: [URL]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="guia">
+    <div class="wrap">
+      <span class="eyebrow">MATERIAL GRATUITO</span>
+      <h2>Quer o guia completo?</h2>
+      <p>Os prompts, os repositórios do GitHub, os templates gratuitos e tudo mais — reunidos num material pra você ter em mãos.</p>
+      <a href="https://bperobelli.com.br" class="btn-primary">Quero o Guia Completo</a>
+      <span class="cta-sub">Comenta <strong>DESIGN</strong> no vídeo e eu te mando direto no direct.</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span> Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <p class="footer-note">Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+    gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+    gsap.from('.hero-cta, .hero .btn-primary', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+    gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+    gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+    gsap.utils.toArray('.fade-in').forEach(el => {
+      gsap.to(el, {
+        opacity:1, y:0, duration:0.7, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 88%', once:true }
+      });
+    });
+  }
+
+  function copyPrompt(btn) {
+    const body = btn.closest('.prompt-block').querySelector('.prompt-body');
+    navigator.clipboard.writeText(body.innerText).then(() => {
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
