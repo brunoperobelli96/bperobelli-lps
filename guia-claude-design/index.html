@@ -398,8 +398,8 @@
     }
     .footer-note { font-size: 0.75rem; color: var(--text-faint); }
 
-    /* FADE IN */
-    .fade-in { opacity: 0; transform: translateY(18px); }
+    /* FADE IN — estado inicial via JS para não esconder conteúdo se GSAP falhar */
+    .fade-in { }
 
     /* RESPONSIVE */
     @media (max-width: 860px) {
@@ -419,6 +419,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       .fade-in { opacity: 1 !important; transform: none !important; }
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
   </style>
 </head>
@@ -433,7 +434,7 @@
       Bruno Perobelli
       <small>· IA aplicada</small>
     </a>
-    <a href="#guia" class="nav-cta">Quero o Guia</a>
+    <a href="https://instagram.com/bperobelli" class="nav-cta" target="_blank" rel="noopener">@bperobelli</a>
   </div>
 </nav>
 
@@ -463,7 +464,7 @@
               <span class="hero-stat-label">Ferramentas de exportação</span>
             </div>
           </div>
-          <a href="#guia" class="btn-primary">Quero o Guia Completo</a>
+          <a href="https://instagram.com/bperobelli" class="btn-primary" target="_blank" rel="noopener">Siga @bperobelli no Instagram</a>
         </div>
         <div class="side-card">
           <p class="side-card-title">O que você vai receber</p>
@@ -549,7 +550,7 @@
         </div>
         <div class="edit-card">
           <div class="edit-num">02</div>
-          <h4>Comentários inline</h4>
+          <h4>Comentários online</h4>
           <p>Clica em qualquer elemento do canvas e deixa um comentário direto nele. Melhor pra ajustes precisos — "move 10px pra direita", "esse texto em negrito".</p>
         </div>
         <div class="edit-card">
@@ -611,20 +612,20 @@
             <span class="prompt-label">Prompt — Customizar Template</span>
             <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
           </div>
-          <div class="prompt-body">Here's a motion-graphics template I want made unmistakably mine (code or link at the bottom). Keep the animation, change the brand.
+          <div class="prompt-body">Aqui está um template de motion graphics que eu quero transformar em algo inconfundivelmente meu (código ou link no final). Mantém a animação, troca a marca.
 
-My brand:
-- Colors: primary [hex], accent [hex], background [hex]
-- Fonts: display [font], body [font]. Never use Inter, Roboto, or default system fonts.
-- Energy: [e.g. bold and high-contrast, or calm and premium]
-- The feel I'm going for: [1-2 brands or styles I love]
+Minha marca:
+- Cores: primária [hex], destaque [hex], fundo [hex]
+- Fontes: display [fonte], corpo [fonte]. Nunca use Inter, Roboto ou fontes padrão do sistema.
+- Energia: [ex: negrito e alto contraste, ou calmo e premium]
+- A vibe que eu quero: [1-2 marcas ou estilos que eu admiro]
 
-Do this:
-1. Keep the animation logic, timing, and transitions exactly. Do not simplify or slow the motion.
-2. Restyle everything visual — the colors, type, backgrounds, and text — so it reads as my brand, and swap my copy in wherever there's placeholder text.
-3. Avoid the generic AI look: no default easing, no muddy gradients, no stock-template feel. Make deliberate choices that match my energy.
-4. Give me the full, ready-to-run code, not a snippet.
-5. Then list exactly what you changed, and flag anything in the original that fought my brand so I can decide what to keep.
+Faça assim:
+1. Mantém a lógica de animação, timing e transições exatamente como estão. Não simplifique nem reduza o movimento.
+2. Reformule tudo que é visual — as cores, tipografia, fundos e textos — pra que comunique a minha marca. Troca também os textos de placeholder pelo meu conteúdo.
+3. Evita o visual genérico de IA: sem easing padrão, sem gradientes sem personalidade, sem sensação de template de prateleira. Faça escolhas deliberadas que combinem com a minha energia.
+4. Me entrega o código completo e pronto pra rodar, não um trecho.
+5. Lista exatamente o que você mudou e sinalize qualquer parte do original que brigou com a minha marca, pra eu decidir o que manter.
 
 Template:
 [cole o código ou link aqui]</div>
@@ -649,16 +650,16 @@ Template:
             <span class="prompt-label">Prompt — Usar Design System</span>
             <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
           </div>
-          <div class="prompt-body">Use the DESIGN.md below as the single source of truth for this build. Do not substitute your own defaults for anything it specifies.
+          <div class="prompt-body">Use o DESIGN.md abaixo como fonte única da verdade pra essa construção. Não substitua nada que ele especifica pelos seus padrões.
 
-Build me: [uma landing page / deck de slides / seção de preços / dashboard]
+Crie pra mim: [uma landing page / deck de slides / seção de preços / dashboard]
 
-Rules:
-1. Follow the DESIGN.md exactly: its colors, type scale, spacing rhythm, corner radius, shadows, and motion. Use the real tokens, do not approximate them.
-2. Where the system is silent, choose the option most consistent with its personality — and tell me what you decided and why.
-3. Kill the generic AI defaults: no Inter or Roboto, no purple-to-indigo gradients, no centered hero with three cards unless the system actually calls for it.
-4. Make it fully responsive and clean enough to ship, not a rough draft.
-5. When it's done, show me the build, then give me two more directions for the hero: one more minimal and one more expressive, so I can compare instead of guess.
+Regras:
+1. Siga o DESIGN.md à risca: cores, escala tipográfica, ritmo de espaçamento, raio de borda, sombras e movimento. Use os tokens reais, sem aproximações.
+2. Onde o sistema for omisso, escolha a opção mais consistente com a personalidade dele — e me diga o que você decidiu e por quê.
+3. Elimina os padrões genéricos de IA: nada de Inter ou Roboto, nada de gradientes roxo-para-índigo, nada de hero centralizado com três cards a menos que o sistema indique isso.
+4. Faz responsivo e limpo o suficiente pra publicar, não um rascunho.
+5. Quando terminar, me mostra o resultado e sugere mais duas direções pra seção hero: uma mais minimalista e uma mais expressiva, pra eu comparar em vez de adivinhar.
 
 DESIGN.md:
 [cole o DESIGN.md aqui]</div>
@@ -701,15 +702,15 @@ DESIGN.md:
             <span class="prompt-label">Prompt — Reconstruir por URL</span>
             <button class="copy-btn" onclick="copyPrompt(this)">Copiar</button>
           </div>
-          <div class="prompt-body">Here's a website whose design I love: [URL]. Reverse-engineer it and rebuild it as something I can make mine.
+          <div class="prompt-body">Aqui está um site cujo design eu admiro: [URL]. Faz a engenharia reversa dele e reconstrói como algo que eu consiga fazer meu.
 
-Do it in this order:
-1. First, study the page and pull out its full design system: the exact colors (hex), the fonts and type scale, the spacing rhythm, corner radius, shadow style, and how it handles motion. List it all back to me as clean, labeled design tokens.
-2. Then rebuild the page as a clean, responsive layout using that exact system. Match the real spacing, hierarchy, and rhythm — not a watered-down generic version. Use placeholder text and images where you need them.
-3. Do not fall back on default fonts or a generic template. If something is ambiguous, match the source as closely as you can.
-4. Finally, tell me which sections I should swap for my own content, and save those design tokens as a reusable block so I can apply this same style to my other pages.
+Faz assim, nessa ordem:
+1. Primeiro, estude a página e extraia o sistema de design completo: as cores exatas (hex), as fontes e escala tipográfica, o ritmo de espaçamento, raio de borda, estilo de sombra e como ele trata o movimento. Me entrega tudo isso como design tokens organizados e nomeados.
+2. Depois reconstrói a página como um layout limpo e responsivo usando esse sistema. Respeita o espaçamento, a hierarquia e o ritmo reais — não uma versão genérica e aguada. Usa texto e imagens de placeholder onde precisar.
+3. Não recorre a fontes padrão nem a template genérico. Se algo for ambíguo, aproxima ao máximo do original.
+4. Por fim, me diz quais seções eu devo trocar pelo meu conteúdo e salva esses design tokens como um bloco reutilizável pra eu aplicar esse mesmo estilo nas minhas outras páginas.
 
-Site to rebuild: [URL]</div>
+Site pra reconstruir: [URL]</div>
         </div>
       </div>
     </div>
@@ -718,11 +719,7 @@ Site to rebuild: [URL]</div>
   <!-- CTA -->
   <section class="cta-section" id="guia">
     <div class="wrap">
-      <span class="eyebrow">MATERIAL GRATUITO</span>
-      <h2>Quer o guia completo?</h2>
-      <p>Os prompts, os repositórios do GitHub, os templates gratuitos e tudo mais — reunidos num material pra você ter em mãos.</p>
-      <a href="https://bperobelli.com.br" class="btn-primary">Quero o Guia Completo</a>
-      <span class="cta-sub">Comenta <strong>DESIGN</strong> no vídeo e eu te mando direto no direct.</span>
+      <p>Siga <strong>@bperobelli</strong> para mais materiais e conteúdos práticos sobre IA.</p>
     </div>
   </section>
 
@@ -738,20 +735,24 @@ Site to rebuild: [URL]</div>
 </footer>
 
 <script>
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
-    gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
-    gsap.from('.hero-cta, .hero .btn-primary', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
-    gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
-    gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
-    gsap.utils.toArray('.fade-in').forEach(el => {
-      gsap.to(el, {
-        opacity:1, y:0, duration:0.7, ease:'power3.out',
-        scrollTrigger: { trigger:el, start:'top 88%', once:true }
+  window.addEventListener('load', function() {
+    if (typeof gsap !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      // Define estado inicial via JS (não CSS) para não esconder conteúdo se GSAP falhar
+      gsap.set('.fade-in', { opacity: 0, y: 18 });
+      gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+      gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+      gsap.from('.hero .btn-primary', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+      gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+      gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.7, ease:'power3.out',
+          scrollTrigger: { trigger:el, start:'top 88%', once:true }
+        });
       });
-    });
-  }
+    }
+  });
 
   function copyPrompt(btn) {
     const body = btn.closest('.prompt-block').querySelector('.prompt-body');
