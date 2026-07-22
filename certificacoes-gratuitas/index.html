@@ -328,6 +328,21 @@
       color: var(--text-muted);
       border: 1px solid var(--text-faint);
     }
+    .top3-link {
+      display: inline-flex;
+      align-items: center;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 9px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 1.1rem;
+      transition: opacity 0.2s;
+      width: fit-content;
+    }
+    .top3-link:hover { opacity: 0.85; }
 
     /* TOP 5 */
     .top5-list {
@@ -557,7 +572,7 @@
     }
 
     /* ANIMATIONS */
-    .fade-in { opacity: 0; transform: translateY(20px); }
+    .fade-in { transition: opacity 0.1s; }
   </style>
 </head>
 <body>
@@ -586,7 +601,7 @@
           <p class="eyebrow">CARREIRA · IA APLICADA</p>
           <h1>As certificações que vão fazer você se tornar <span class="accent">insubstituível</span></h1>
           <p class="sub">A IA já está mudando quem contratam, quem promovem e quem cortam primeiro. Esses 21 certificados gratuitos colocam você no grupo que fica.</p>
-          <a href="#top3" class="hero-cta">Ver o top 3 de Bruno</a>
+          <a href="#top3" class="hero-cta">Ver top 3 de @bperobelli</a>
           <div class="hero-meta">
             <div class="hero-stat">
               <div class="hero-stat-val">21</div>
@@ -637,6 +652,7 @@
             <span class="tag">~5 horas</span>
             <span class="tag">Iniciante</span>
           </div>
+          <a href="https://grow.google/certificates/ai-essentials" target="_blank" rel="noopener" class="top3-link">Acessar o curso aqui</a>
         </div>
         <div class="top3-card silver fade-in">
           <span class="medal">🥈</span>
@@ -647,6 +663,7 @@
             <span class="tag">~1,5 hora</span>
             <span class="tag">Iniciante</span>
           </div>
+          <a href="https://deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" rel="noopener" class="top3-link">Acessar o curso aqui</a>
         </div>
         <div class="top3-card bronze fade-in">
           <span class="medal">🥉</span>
@@ -657,86 +674,63 @@
             <span class="tag">~1,5 hora</span>
             <span class="tag">Intermediário</span>
           </div>
+          <a href="https://deeplearning.ai/short-courses/ai-agentic-design-patterns-with-autogen/" target="_blank" rel="noopener" class="top3-link">Acessar o curso aqui</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TOP 5 -->
-  <section class="alt" id="top5">
+  <!-- LISTA COMPLETA -->
+  <section class="alt" id="lista">
     <div class="wrap">
       <div class="section-header fade-in">
-        <p class="eyebrow">TOP 5</p>
-        <h2>Os 5 melhores para começar</h2>
-        <p>Reconhecidos por recrutadores em todas as áreas, de tecnologia a marketing.</p>
+        <p class="eyebrow">LISTA COMPLETA</p>
+        <h2>Mais 18 certificações gratuitas</h2>
+        <p>Separadas por área para facilitar a sua escolha.</p>
       </div>
-      <div class="top5-list">
-        <a href="https://grow.google/certificates/ai-essentials" target="_blank" rel="noopener" class="top5-item fade-in">
-          <div class="top5-rank">1</div>
-          <div class="top5-info">
-            <h3>Google AI Essentials</h3>
-            <p>Google · Fundamentos de IA, prompts e aplicações no trabalho</p>
-          </div>
-          <div class="top5-right">
-            <span class="badge level">Iniciante</span>
-            <span class="badge time">~5 horas</span>
-          </div>
-        </a>
-        <a href="https://linkedin.com/learning" target="_blank" rel="noopener" class="top5-item fade-in">
-          <div class="top5-rank">2</div>
-          <div class="top5-info">
-            <h3>LinkedIn AI Learning Certificate</h3>
-            <p>LinkedIn · Aparece direto no seu perfil para recrutadores</p>
-          </div>
-          <div class="top5-right">
+
+      <!-- Para todo profissional -->
+      <div class="cat-divider fade-in">
+        <span>Para todo profissional</span>
+        <div class="cat-line"></div>
+      </div>
+      <div class="course-grid">
+        <a href="https://linkedin.com/learning" target="_blank" rel="noopener" class="course-card fade-in">
+          <span class="course-platform">LinkedIn</span>
+          <h3>LinkedIn AI Learning Certificate</h3>
+          <p>Aparece direto no seu perfil para recrutadores, sem precisar de currículo. Cobre IA generativa e estratégia de negócios com IA.</p>
+          <div class="course-badges">
             <span class="badge level">Iniciante</span>
             <span class="badge time">~3–5 horas</span>
           </div>
         </a>
-        <a href="https://academy.hubspot.com/courses/digital-marketing" target="_blank" rel="noopener" class="top5-item fade-in">
-          <div class="top5-rank">3</div>
-          <div class="top5-info">
-            <h3>HubSpot Digital Marketing Certificate</h3>
-            <p>HubSpot Academy · SEO, conteúdo, redes sociais e e-mail marketing</p>
-          </div>
-          <div class="top5-right">
+        <a href="https://academy.hubspot.com/courses/digital-marketing" target="_blank" rel="noopener" class="course-card fade-in">
+          <span class="course-platform">HubSpot Academy</span>
+          <h3>HubSpot Digital Marketing Certificate</h3>
+          <p>Listado como qualificação preferencial em quase toda vaga de marketing. Cobre SEO, conteúdo, redes sociais e e-mail marketing.</p>
+          <div class="course-badges">
             <span class="badge level">Iniciante</span>
             <span class="badge time">~3 horas</span>
           </div>
         </a>
-        <a href="https://education.github.com" target="_blank" rel="noopener" class="top5-item fade-in">
-          <div class="top5-rank">4</div>
-          <div class="top5-info">
-            <h3>GitHub Foundations Certificate</h3>
-            <p>GitHub · Controle de versão, repositórios e GitHub Actions</p>
-          </div>
-          <div class="top5-right">
+        <a href="https://education.github.com" target="_blank" rel="noopener" class="course-card fade-in">
+          <span class="course-platform">GitHub</span>
+          <h3>GitHub Foundations Certificate</h3>
+          <p>Normalmente custa US$ 99, mas o GitHub oferece gratuitamente pelo programa educacional. Cobre controle de versão, repositórios e GitHub Actions.</p>
+          <div class="course-badges">
             <span class="badge level">Iniciante</span>
             <span class="badge time">~8 horas</span>
           </div>
         </a>
-        <a href="https://learn.microsoft.com" target="_blank" rel="noopener" class="top5-item fade-in">
-          <div class="top5-rank">5</div>
-          <div class="top5-info">
-            <h3>Microsoft AI Fundamentals AI-900</h3>
-            <p>Microsoft · Machine learning, visão computacional e serviços Azure AI</p>
-          </div>
-          <div class="top5-right">
+        <a href="https://learn.microsoft.com" target="_blank" rel="noopener" class="course-card fade-in">
+          <span class="course-platform">Microsoft</span>
+          <h3>Microsoft AI Fundamentals AI-900</h3>
+          <p>Aparece em quase toda vaga de IA bem paga. Machine learning, visão computacional e serviços Azure AI. Microsoft oferece dias de treinamento gratuitos com voucher de exame incluso.</p>
+          <div class="course-badges">
             <span class="badge level">Iniciante</span>
             <span class="badge time">~10–15 horas</span>
           </div>
         </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- LISTA COMPLETA -->
-  <section id="lista">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <p class="eyebrow">LISTA COMPLETA</p>
-        <h2>Mais 16 certificações</h2>
-        <p>Separadas por área para facilitar a sua escolha.</p>
       </div>
 
       <!-- Cloud e Plataformas -->
@@ -746,7 +740,6 @@
       </div>
       <div class="course-grid">
         <a href="https://aws.amazon.com/training" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#6</span>
           <span class="course-platform">Amazon Web Services</span>
           <h3>AWS Cloud Practitioner Essentials</h3>
           <p>Conceitos de cloud, segurança, arquitetura e precificação da AWS. Base sólida para qualquer carreira em tecnologia.</p>
@@ -756,7 +749,6 @@
           </div>
         </a>
         <a href="https://aws.amazon.com/machine-learning/scholarship" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#7</span>
           <span class="course-platform">Amazon Web Services</span>
           <h3>AWS AI and ML Scholars Program</h3>
           <p>Prepara para a certificação AWS AI Practitioner. Mais de 50.000 pessoas em 170 países já concluíram. Inclui mentoria e projetos práticos.</p>
@@ -766,7 +758,6 @@
           </div>
         </a>
         <a href="https://skills.google/paths/420" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#8</span>
           <span class="course-platform">Google Cloud</span>
           <h3>Google Cloud Data Analytics</h3>
           <p>Análise de dados na nuvem com BigQuery e ferramentas Google. Não exige programação. Complementa bem o Google AI Essentials.</p>
@@ -784,7 +775,6 @@
       </div>
       <div class="course-grid">
         <a href="https://skillsbuild.org" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#9</span>
           <span class="course-platform">IBM SkillsBuild</span>
           <h3>IBM AI Fundamentals</h3>
           <p>Conceitos de IA, machine learning, NLP e ética. Inclui badge digital IBM no Credly para adicionar direto ao LinkedIn.</p>
@@ -794,7 +784,6 @@
           </div>
         </a>
         <a href="https://skillsbuild.org" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#10</span>
           <span class="course-platform">IBM SkillsBuild</span>
           <h3>IBM Generative AI for Everyone</h3>
           <p>Focado em ferramentas generativas como ChatGPT e geradores de imagem. Cobre casos de uso reais no ambiente de trabalho.</p>
@@ -804,7 +793,6 @@
           </div>
         </a>
         <a href="https://elementsofai.com" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#11</span>
           <span class="course-platform">Universidade de Helsinki</span>
           <h3>Elements of AI</h3>
           <p>Mais de 2 milhões de pessoas em 170 países já concluíram. Redes neurais, machine learning e aplicações reais. Sem necessidade de matemática ou programação.</p>
@@ -814,33 +802,12 @@
           </div>
         </a>
         <a href="https://nvidia.com/training" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#12</span>
           <span class="course-platform">NVIDIA Deep Learning Institute</span>
           <h3>NVIDIA Generative AI Explained</h3>
           <p>A empresa por trás de quase todos os chips de IA do planeta explica como IA generativa, LLMs e modelos de difusão funcionam na prática.</p>
           <div class="course-badges">
             <span class="badge level">Iniciante</span>
             <span class="badge time">~2 horas</span>
-          </div>
-        </a>
-        <a href="https://deeplearning.ai" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#13</span>
-          <span class="course-platform">DeepLearning.AI · OpenAI</span>
-          <h3>ChatGPT Prompt Engineering for Developers</h3>
-          <p>Ministrado por Andrew Ng e Isa Fulford, da OpenAI. O curso que deu início ao movimento de prompt engineering. Ensina a construir aplicações com a API da OpenAI.</p>
-          <div class="course-badges">
-            <span class="badge level">Iniciante a Intermediário</span>
-            <span class="badge time">~1,5 hora</span>
-          </div>
-        </a>
-        <a href="https://deeplearning.ai/short-courses" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#14</span>
-          <span class="course-platform">DeepLearning.AI</span>
-          <h3>AI Agentic Design Patterns with AutoGen</h3>
-          <p>Agentes de IA são o tema mais quente do setor agora. Cobre reflexão, uso de ferramentas, planejamento e colaboração entre múltiplos agentes.</p>
-          <div class="course-badges">
-            <span class="badge level">Intermediário</span>
-            <span class="badge time">~1,5 hora</span>
           </div>
         </a>
       </div>
@@ -852,7 +819,6 @@
       </div>
       <div class="course-grid">
         <a href="https://academy.hubspot.com" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#15</span>
           <span class="course-platform">HubSpot Academy</span>
           <h3>HubSpot AI for Business</h3>
           <p>IA aplicada a CRM, fluxos automáticos e criação de conteúdo. Complementa bem o certificado de Marketing Digital da própria HubSpot.</p>
@@ -862,7 +828,6 @@
           </div>
         </a>
         <a href="https://grow.google/certificates/project-management" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#16</span>
           <span class="course-platform">Google</span>
           <h3>Google Project Management Certificate</h3>
           <p>Gestão de projetos com Agile, Scrum e comunicação com stakeholders. Válido para qualquer cargo que envolva coordenação de equipes.</p>
@@ -872,7 +837,6 @@
           </div>
         </a>
         <a href="https://trailhead.salesforce.com" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#17</span>
           <span class="course-platform">Salesforce Trailhead</span>
           <h3>Salesforce AI Associate</h3>
           <p>O CRM mais usado do mundo oferece treinamento gratuito em IA aplicada a vendas, atendimento e operações. Indicado para áreas comerciais.</p>
@@ -882,7 +846,6 @@
           </div>
         </a>
         <a href="https://skillshop.google.com" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#18</span>
           <span class="course-platform">Google Skillshop</span>
           <h3>Google Analytics Certification</h3>
           <p>Google Analytics 4, rastreamento de eventos, criação de audiências e medição de conversões. Obrigatório para marketing e e-commerce.</p>
@@ -900,7 +863,6 @@
       </div>
       <div class="course-grid">
         <a href="https://freecodecamp.org" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#19</span>
           <span class="course-platform">freeCodeCamp</span>
           <h3>Machine Learning with Python</h3>
           <p>Certificação prática com TensorFlow. Inclui cinco projetos reais que você precisa concluir para ganhar o certificado. Completamente gratuito.</p>
@@ -910,7 +872,6 @@
           </div>
         </a>
         <a href="https://coursera.org" target="_blank" rel="noopener" class="course-card fade-in">
-          <span class="course-num">#20</span>
           <span class="course-platform">Stanford · DeepLearning.AI · Coursera</span>
           <h3>Machine Learning Specialization</h3>
           <p>O curso de machine learning de Andrew Ng, atualizado para 2024. Aprendizado supervisionado, não supervisionado e reinforcement learning. Possível auditar gratuitamente.</p>
@@ -925,10 +886,10 @@
       <div class="anthropic-special fade-in">
         <div class="anthropic-icon">🤖</div>
         <div class="anthropic-content">
-          <span class="num-badge">#21 · BÔNUS</span>
+          <span class="num-badge">BÔNUS</span>
           <h3>Anthropic AI Courses</h3>
           <p>A Anthropic, criadora do Claude, disponibiliza cursos gratuitos sobre uso e desenvolvimento com IA. Se você já usa o Claude no dia a dia, essa plataforma aprofunda o seu entendimento de como os modelos funcionam e como tirar mais proveito deles.</p>
-          <a href="https://anthropic.skilljar.com/" target="_blank" rel="noopener" class="btn-ghost">Acessar cursos gratuitos</a>
+          <a href="https://anthropic.skilljar.com/" target="_blank" rel="noopener" class="btn-ghost">Acessar o curso aqui</a>
         </div>
       </div>
 
@@ -948,19 +909,21 @@
 </footer>
 
 <script>
-if (typeof gsap !== 'undefined') {
+window.addEventListener('load', function () {
+  if (typeof gsap === 'undefined') return;
   gsap.registerPlugin(ScrollTrigger);
+  gsap.set('.fade-in', { opacity: 0, y: 20 });
   gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
   gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
   gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
   gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
   gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
-  gsap.utils.toArray('.fade-in').forEach(el => {
+  gsap.utils.toArray('.fade-in').forEach(function(el) {
     gsap.to(el, { opacity:1, y:0, duration:0.7, ease:'power3.out',
       scrollTrigger: { trigger:el, start:'top 88%', once:true }
     });
   });
-}
+});
 </script>
 
 </body>
