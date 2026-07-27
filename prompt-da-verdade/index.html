@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Prompt da Verdade · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #06B6D4;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent);
+      color: #090023;
+      padding: 0.5rem 1rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9,0,35,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--text-faint);
+      padding: 0.9rem 0;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .nav-mark {
+      background: var(--accent);
+      color: #090023;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 0.22rem 0.52rem;
+      border-radius: 0.3rem;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo small {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 0.85rem;
+    }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 8vw, 5rem);
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.16;
+      pointer-events: none;
+    }
+    .hero-blob.b1 {
+      width: 650px; height: 650px;
+      background: var(--accent);
+      top: -220px; left: -160px;
+    }
+    .hero-blob.b2 {
+      width: 500px; height: 500px;
+      background: #7c3aed;
+      bottom: -220px; right: -120px;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .side-card { order: -1; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+    .accent { color: var(--accent); }
+    .sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: 2rem;
+      text-decoration: none;
+      transition: transform 0.2s var(--ease), opacity 0.2s;
+    }
+    .hero-cta:hover { transform: translateY(-2px); opacity: 0.9; }
+
+    .hero-meta {
+      display: flex;
+      gap: 2.5rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-valor {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .meta-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* Side Card */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem;
+      padding: 1.6rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .side-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .side-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-bottom: 1.2rem;
+    }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .side-card li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+    .side-card li::before {
+      content: '✓';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* Sections */
+    section { padding: clamp(3rem, 8vw, 5rem) 0; }
+    .bg-elevated { background: var(--bg-elevated); }
+
+    .section-header { max-width: 640px; margin-bottom: 3rem; }
+    .section-header h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.9rem;
+    }
+    .section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+
+    /* Cards — Por que o Claude mente */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 0.9rem;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .card-icon { font-size: 1.6rem; margin-bottom: 0.85rem; }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* Prompt block */
+    .prompt-section-header {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 3rem;
+    }
+    .prompt-section-header h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.9rem;
+    }
+    .prompt-section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+
+    .prompt-wrapper {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem;
+      overflow: hidden;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .prompt-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.6rem;
+      border-bottom: 1px solid var(--text-faint);
+      background: var(--bg-elevated);
+      gap: 1rem;
+    }
+    .prompt-header-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--accent);
+      color: #090023;
+      border: none;
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, background 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { opacity: 0.85; transform: scale(1.03); }
+    .copy-btn.copied { background: #10B981; }
+
+    .prompt-body {
+      padding: 1.8rem;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      line-height: 1.8;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .prompt-body::-webkit-scrollbar { width: 5px; }
+    .prompt-body::-webkit-scrollbar-track { background: transparent; }
+    .prompt-body::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 99px; }
+
+    /* Steps — Como instalar */
+    .steps { display: flex; flex-direction: column; gap: 0; max-width: 640px; }
+    .step { display: flex; gap: 1.2rem; align-items: flex-start; padding-bottom: 1.2rem; }
+    .step-num {
+      width: 2.4rem;
+      height: 2.4rem;
+      min-width: 2.4rem;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .step-content p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+    .step-connector {
+      width: 1px;
+      height: 1.4rem;
+      background: var(--text-faint);
+      margin-left: 1.18rem;
+    }
+
+    /* Action Plan */
+    .action-box {
+      max-width: 720px;
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem;
+      padding: 2rem 2.2rem;
+    }
+    .action-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--text-faint);
+    }
+    .action-item:first-child { padding-top: 0; }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-num {
+      width: 2rem;
+      height: 2rem;
+      min-width: 2rem;
+      background: rgba(6,182,212,0.12);
+      border: 1px solid rgba(6,182,212,0.4);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.8rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .action-text {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      padding-top: 0.2rem;
+    }
+    .action-text strong { color: var(--text); font-weight: 600; }
+    .action-quote {
+      margin-top: 1.6rem;
+      padding: 1.2rem 1.5rem;
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+      font-size: 1rem;
+      font-style: italic;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--text-faint);
+      padding: 2.5rem 0;
+      text-align: center;
+    }
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+    .footer-note { font-size: 0.8rem; color: var(--text-faint); }
+
+    /* Animation utility */
+    .fade-in { opacity: 0; transform: translateY(20px); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="https://bperobelli.com.br" class="nav-logo">
+        <span class="nav-mark">BP</span>
+        Bruno Perobelli <small>· IA aplicada</small>
+      </a>
+      <a href="#o-prompt" class="nav-cta">Copiar o Prompt</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">IA APLICADA · PROMPTS</span>
+          <h1>Pare de receber respostas <span class="accent">inventadas</span> do Claude</h1>
+          <p class="sub">O Claude alucina com confiança — afirma datas, cita fontes e apresenta estatísticas que nunca existiram. Esse prompt força ele a verificar, checar e calibrar cada resposta antes de te entregar.</p>
+          <a href="#o-prompt" class="hero-cta">Copiar o Prompt</a>
+          <div class="hero-meta">
+            <div class="meta-item">
+              <span class="meta-valor">27%</span>
+              <span class="meta-label">Taxa de alucinação em IAs</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-valor">&lt;30s</span>
+              <span class="meta-label">Para instalar</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-valor">Grátis</span>
+              <span class="meta-label">Sem cadastro necessário</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <div class="side-card-title">O que o prompt faz</div>
+          <ul>
+            <li>Decompõe pedidos em partes verificáveis</li>
+            <li>Distingue fatos de suposições e opiniões</li>
+            <li>Calibra confiança de 0,0 a 1,0 por resposta</li>
+            <li>Refaz a resposta se a confiança for baixa</li>
+            <li>Nunca inventa fontes, links ou estatísticas</li>
+            <li>Aponta incertezas com transparência</li>
+            <li>Funciona no Claude, ChatGPT e Gemini</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- POR QUE O CLAUDE MENTE -->
+  <section class="bg-elevated" id="por-que">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">O PROBLEMA</span>
+        <h2>Por que o Claude mente com tanta confiança?</h2>
+        <p>Modelos de linguagem não buscam a verdade — eles preveem a próxima palavra mais provável. O resultado são respostas que soam certas, mas podem ser completamente inventadas.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card fade-in">
+          <div class="card-icon">📅</div>
+          <h3>Datas e eventos históricos</h3>
+          <p>O Claude pode afirmar com absoluta certeza que um evento aconteceu numa data específica — mesmo que essa data esteja errada ou o evento seja fictício.</p>
+        </div>
+        <div class="card fade-in">
+          <div class="card-icon">📎</div>
+          <h3>Fontes e links inventados</h3>
+          <p>Ele cria referências bibliográficas, artigos científicos e URLs que parecem reais mas simplesmente não existem em lugar nenhum.</p>
+        </div>
+        <div class="card fade-in">
+          <div class="card-icon">📊</div>
+          <h3>Estatísticas convincentes</h3>
+          <p>Números, percentuais e pesquisas com fontes citadas — tudo pode ser fabricado na hora para tornar a resposta mais autoritativa.</p>
+        </div>
+        <div class="card fade-in">
+          <div class="card-icon">🎭</div>
+          <h3>Opiniões apresentadas como fatos</h3>
+          <p>Inferências e suposições são entregues no mesmo tom que informações verificadas, sem qualquer distinção para quem está lendo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- O PROMPT -->
+  <section id="o-prompt">
+    <div class="wrap">
+      <div class="prompt-section-header fade-in">
+        <span class="eyebrow">A SOLUÇÃO</span>
+        <h2>Prompt da Verdade — Copie e instale agora</h2>
+        <p>Cole no campo de instruções personalizadas do Claude e ele passará a verificar cada resposta antes de te entregar.</p>
+      </div>
+      <div class="prompt-wrapper fade-in">
+        <div class="prompt-header">
+          <span class="prompt-header-label">Prompt da Verdade</span>
+          <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">
+            <span id="copyIcon">📋</span>
+            <span id="copyText">Copiar tudo</span>
+          </button>
+        </div>
+        <pre class="prompt-body" id="promptText">PROMPT DA VERDADE (COPIE ELE TODO)
+
+Assuma o papel de um assistente de raciocínio rigoroso, comprometido em buscar a verdade acima de tudo.
+
+Para qualquer pedido complexo ou factual, siga este processo:
+
+DECOMPOR
+Quebre o pedido em perguntas ou afirmações menores, que possam ser avaliadas uma a uma.
+
+DISTINGUIR
+Separe com clareza:
+- Fatos verificados
+- Inferências razoáveis
+- Suposições
+- Opiniões
+- Informações desconhecidas ou que faltam
+
+RESOLVER
+Trate cada parte com atenção. Nunca invente fatos, fontes, citações, estatísticas, links ou detalhes só para preencher lacunas.
+
+CONFERIR
+Antes de responder, verifique:
+- Se o raciocínio é consistente
+- Se as informações estão factualmente corretas
+- Se a resposta cobre o pedido por completo
+- Se falta algum contexto relevante
+- Se algum viés ou suposição sem sustentação pode estar distorcendo a resposta
+
+CALIBRAR A CONFIANÇA
+Dê uma nota de confiança de 0,0 a 1,0, baseada na qualidade das evidências disponíveis — nunca em quão convincente a resposta soa.
+
+REFAZER QUANDO PRECISAR
+Se a confiança ficar abaixo de 0,8:
+- Aponte os pontos mais frágeis do raciocínio
+- Repense a lógica usada
+- Revise a resposta
+- Peça um esclarecimento ou diga com clareza o que falta saber, caso a incerteza não dê pra resolver
+
+SEJA TRANSPARENTE SOBRE A INCERTEZA
+Nunca apresente uma suposição, projeção ou afirmação incerta como se fosse fato confirmado. Se não dá pra verificar algo, diga isso abertamente.
+
+FORMATO DE SAÍDA
+Toda resposta final deve seguir este formato:
+
+Resposta Direta:
+Traga a resposta mais precisa e útil possível.
+
+Nível de Confiança:
+Dê uma nota geral de 0,0 a 1,0 e explique rapidamente o porquê dela.
+
+Principais Ressalvas:
+Liste suposições, incertezas, informações que faltam, evidências contraditórias ou pontos que ainda precisam ser checados.</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO INSTALAR -->
+  <section class="bg-elevated" id="como-instalar">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">INSTALAÇÃO</span>
+        <h2>Como instalar em 3 passos</h2>
+        <p>Leva menos de 30 segundos. Depois de salvar, todo novo chat já vai usar o prompt automaticamente.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Abra o Claude e vá em Configurações</h3>
+            <p>Acesse claude.ai e clique no seu nome no canto inferior esquerdo da tela. No menu que aparecer, clique em <strong>Configurações</strong>.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step fade-in">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Encontre "Instruções para o Claude"</h3>
+            <p>Dentro de Configurações, procure o campo chamado <strong>Instruções para o Claude</strong>. É o espaço onde ele vai carregar o prompt em todo novo chat.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step fade-in">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Cole o prompt e clique em Salvar</h3>
+            <p>Copie o Prompt da Verdade acima, cole no campo e clique em <strong>Salvar</strong>. Abra uma nova conversa — está pronto.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANO DE AÇÃO -->
+  <section id="plano">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">PRÓXIMOS PASSOS</span>
+        <h2>Plano de Ação em 5 Minutos</h2>
+        <p>Tudo que você precisa fazer agora, na ordem certa.</p>
+      </div>
+      <div class="action-box fade-in">
+        <ol class="action-list">
+          <li class="action-item">
+            <span class="action-num">1</span>
+            <p class="action-text">Cole o prompt completo nas <strong>Instruções para o Claude</strong> e salve.</p>
+          </li>
+          <li class="action-item">
+            <span class="action-num">2</span>
+            <p class="action-text">Abra uma conversa <strong>NOVA</strong> — o prompt só ativa em chats novos.</p>
+          </li>
+          <li class="action-item">
+            <span class="action-num">3</span>
+            <p class="action-text">Faça uma pergunta com <strong>dado inventado</strong> e veja ele recusar em vez de confirmar.</p>
+          </li>
+          <li class="action-item">
+            <span class="action-num">4</span>
+            <p class="action-text">Salve o prompt num lugar fácil de acessar — ele também funciona no <strong>ChatGPT e no Gemini</strong>.</p>
+          </li>
+          <li class="action-item">
+            <span class="action-num">5</span>
+            <p class="action-text">A partir de agora, leia sempre as <strong>Principais Ressalvas</strong> antes de agir em cima de qualquer resposta.</p>
+          </li>
+        </ol>
+        <blockquote class="action-quote">
+          "Uma IA que diz 'não sei' vale mais do que dez que parecem certas."
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p class="footer-note">Guia gratuito · Bruno Perobelli · IA aplicada</p>
+  </div>
+</footer>
+
+<script>
+  function copyPrompt() {
+    var promptEl = document.getElementById('promptText');
+    var text = promptEl.innerText;
+    var btn = document.getElementById('copyBtn');
+    var btnText = document.getElementById('copyText');
+    var btnIcon = document.getElementById('copyIcon');
+
+    function onCopied() {
+      btn.classList.add('copied');
+      btnIcon.textContent = '✓';
+      btnText.textContent = 'Copiado!';
+      setTimeout(function() {
+        btn.classList.remove('copied');
+        btnIcon.textContent = '📋';
+        btnText.textContent = 'Copiar tudo';
+      }, 2200);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(onCopied).catch(function() {
+        fallbackCopy(text, onCopied);
+      });
+    } else {
+      fallbackCopy(text, onCopied);
+    }
+  }
+
+  function fallbackCopy(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); cb(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
+  window.addEventListener('load', function() {
+    if (typeof gsap !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+      gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+      gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+      gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+      gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+      gsap.utils.toArray('.fade-in').forEach(function(el) {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.7, ease:'power3.out',
+          scrollTrigger: { trigger:el, start:'top 88%', once:true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function(el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
