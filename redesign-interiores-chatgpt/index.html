@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Redesign de Interiores com ChatGPT · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --accent: #14B8A6;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent);
+      color: #090023;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      border-radius: 0 0 8px 8px;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 0; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9,0,35,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-faint);
+      padding: 0.875rem 0;
+    }
+    .nav .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 800;
+      font-size: 0.8rem;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .nav-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      color: var(--accent);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* EYEBROW */
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 8vw, 5rem);
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .hero-blob.b1 {
+      width: 600px; height: 600px;
+      background: var(--accent);
+      top: -200px; left: -150px;
+    }
+    .hero-blob.b2 {
+      width: 400px; height: 400px;
+      background: #8A45FB;
+      bottom: -100px; right: -100px;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .hero-meta-item .valor {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .hero-meta-item .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .side-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .side-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+    .side-card ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .side-card ul li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: clamp(3rem, 7vw, 5rem) 0;
+    }
+    section.elevated { background: var(--bg-elevated); }
+
+    .section-header {
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    .section-header .lead {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* STEP CARDS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .step-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .step-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .step-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .prompt-box {
+      background: var(--bg);
+      border: 1px solid var(--text-faint);
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 0.875rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--text-faint);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--accent); color: #090023; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* FADE IN — estado inicial via gsap.from(), sem CSS oculto */
+    .fade-in {}
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--text-faint);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .footer-logo .nav-mark { width: 24px; height: 24px; font-size: 0.65rem; }
+    footer p {
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <span class="nav-badge">IA APLICADA · DESIGN</span>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · DESIGN</p>
+          <h1>Da ideia do projeto para um ambiente montado com o <span class="accent">ChatGPT</span></h1>
+          <p class="sub">Envie uma foto do seu cômodo e o ChatGPT projeta a reforma como um arquiteto de alto padrão. No segundo prompt, você recebe a lista de compras completa com preços e links reais para executar o projeto.</p>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="valor">2</span>
+              <span class="label">Prompts no total</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="valor">Grátis</span>
+              <span class="label">Custo</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="valor">Real</span>
+              <span class="label">Resultado</span>
+            </div>
+          </div>
+        </div>
+        <div class="side-card">
+          <p class="side-card-title">O que você vai receber</p>
+          <ul>
+            <li>Redesign visual do seu cômodo gerado por IA</li>
+            <li>Projeto de alto padrão executável</li>
+            <li>Layout, iluminação e materiais otimizados</li>
+            <li>Lista de compras com preço por item</li>
+            <li>Links reais da Amazon e Mercado Livre</li>
+            <li>Justificativa de custo-benefício por item</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEÇÃO 1: OS 2 PROMPTS -->
+  <section id="prompts" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PASSO A PASSO</p>
+        <h2>Os 2 prompts para redesenhar qualquer cômodo</h2>
+        <p class="lead">Envie uma foto do seu ambiente, cole o primeiro prompt e siga para o segundo na mesma conversa.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 1</p>
+          <h3>Redesign de alto padrão</h3>
+          <div class="prompt-box">Aqui está uma foto do meu cômodo. Reprojete-o como um arquiteto de interiores de alto padrão faria. Preserve a estrutura original, mas otimize layout, iluminação, materiais, mobiliário e decoração para criar um ambiente sofisticado, acolhedor e funcional. O resultado deve parecer uma fotografia real de um projeto executável.</div>
+          <p class="step-desc">O ChatGPT gera imagens e entrega um projeto de redesign completo do seu cômodo.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt Bônus</p>
+          <h3>Lista de compras executável</h3>
+          <div class="prompt-box">Agora transforme esse projeto em uma versão executável. Priorize os itens com maior impacto visual por real investido, liste cada item com preço estimado, link da Amazon ou do Mercado Livre e justifique brevemente sua escolha.</div>
+          <p class="step-desc">O ChatGPT devolve a lista de compras completa com preço e link real para você montar o ambiente de verdade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 2: POR QUE FUNCIONA -->
+  <section>
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">POR QUE FUNCIONA</p>
+        <h2>De sonho a projeto executável em dois prompts</h2>
+        <p class="lead">O ChatGPT combina visão de design com dados reais de mercado para transformar uma foto qualquer num projeto concreto, com lista de compras pronta para usar.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🏠</div>
+          <h3>Projeto visual realista</h3>
+          <p>O ChatGPT gera imagens que parecem fotografias reais de projetos executáveis, preservando a estrutura do seu cômodo.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🛒</div>
+          <h3>Lista de compras com links</h3>
+          <p>Cada item vem com preço estimado e link direto da Amazon ou Mercado Livre — sem precisar pesquisar nada por conta própria.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">💡</div>
+          <h3>Custo-benefício por item</h3>
+          <p>O ChatGPT prioriza o que gera mais impacto visual por real investido e justifica cada escolha antes de você comprar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p>Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.prompt-box').forEach(box => {
+    const text = box.textContent.replace(/^"|"$/g, '').trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copiar';
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.style.position = 'relative';
+    box.style.paddingRight = '5rem';
+    box.appendChild(btn);
+  });
+
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+    gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+    gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+    gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+    gsap.utils.toArray('.fade-in').forEach(el => {
+      gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 88%', once:true }
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
