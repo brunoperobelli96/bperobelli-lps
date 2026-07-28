@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Planeje sua Viagem Inteira com ChatGPT · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --accent: #3B82F6;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      border-radius: 0 0 8px 8px;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 0; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9,0,35,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-faint);
+      padding: 0.875rem 0;
+    }
+    .nav .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8rem;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .nav-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      color: var(--accent);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* EYEBROW */
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 8vw, 5rem);
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .hero-blob.b1 {
+      width: 600px; height: 600px;
+      background: var(--accent);
+      top: -200px; left: -150px;
+    }
+    .hero-blob.b2 {
+      width: 400px; height: 400px;
+      background: #8A45FB;
+      bottom: -100px; right: -100px;
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .hero-meta-item .valor {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .hero-meta-item .label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .side-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .side-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+    }
+    .side-card ul li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .side-card ul li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.35rem;
+    }
+
+    /* SECTIONS */
+    section {
+      padding: clamp(3rem, 7vw, 5rem) 0;
+    }
+    section.elevated { background: var(--bg-elevated); }
+
+    .section-header {
+      max-width: 620px;
+      margin-bottom: 2.5rem;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    .section-header .lead {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* STEP CARDS */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .step-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .step-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .step-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .prompt-box {
+      background: var(--bg);
+      border: 1px solid var(--text-faint);
+      border-radius: 8px;
+      padding: 0.875rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+      margin-bottom: 0.875rem;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--text-faint);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--accent); color: #fff; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.625rem 1.25rem;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      margin-top: 1.5rem;
+    }
+    .download-btn:hover { background: var(--accent); color: #090023; }
+    .download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* FADE IN — estado inicial via gsap.from(), sem CSS oculto */
+    .fade-in {}
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--text-faint);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .footer-logo .nav-mark { width: 24px; height: 24px; font-size: 0.65rem; }
+    footer p {
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <span class="nav-badge">IA APLICADA · VIAGEM</span>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · VIAGEM</p>
+          <h1>Meu tio gastou 10 horas planejando uma viagem. O ChatGPT fez em <span class="accent">3 minutos</span> 🤯</h1>
+          <p class="sub">Do voo mais barato ao roteiro completo: 4 prompts para planejar cada detalhe da sua viagem, descobrir lugares secretos e ainda evitar os golpes mais comuns contra turistas.</p>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="valor">7</span>
+              <span class="label">Prompts no total</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="valor">Grátis</span>
+              <span class="label">Custo</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="valor">Minutos</span>
+              <span class="label">Tempo</span>
+            </div>
+          </div>
+          <button class="download-btn" onclick="gerarPDF()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Baixar todos os prompts
+          </button>
+        </div>
+        <div class="side-card">
+          <p class="side-card-title">O que você vai planejar</p>
+          <ul>
+            <li>Passagem mais barata com datas flexíveis</li>
+            <li>Aeroportos alternativos e estratégias de economia</li>
+            <li>Roteiro organizado por região</li>
+            <li>Restaurantes bem avaliados com estimativa de custos</li>
+            <li>Lugares secretos que moradores indicam</li>
+            <li>Golpes comuns e como evitar cada um</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEÇÃO 1: OS 4 PROMPTS -->
+  <section id="prompts" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PASSO A PASSO</p>
+        <h2>Os 4 prompts para planejar sua viagem do zero</h2>
+        <p class="lead">Use na mesma conversa, na ordem abaixo. Substitua [destino] e [período] com as suas informações antes de colar.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 1</p>
+          <h3>Passagem mais barata</h3>
+          <div class="prompt-box">Quero viajar para [destino] entre [período], mas minhas datas são flexíveis em até 7 dias. Mostre quais datas costumam ter passagens mais baratas, aeroportos alternativos e estratégias para economizar.</div>
+          <p class="step-desc">O ChatGPT mapeia janelas de preço mais baixo e alternativas de rota que você não encontraria facilmente.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 2</p>
+          <h3>Roteiro completo</h3>
+          <div class="prompt-box">Monte um roteiro completo para essa viagem. Organize os passeios por região para evitar deslocamentos desnecessários. Inclua horários, restaurantes bem avaliados e uma estimativa de custos.</div>
+          <p class="step-desc">O ChatGPT organiza cada dia da viagem por proximidade geográfica, com horários e estimativa de quanto vai custar.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 3</p>
+          <h3>Lugares que turista não conhece</h3>
+          <div class="prompt-box">Me mostre lugares que quase nenhum turista conhece por lá. Inclua praias, restaurantes, cafés, mirantes e experiências que os moradores indicam.</div>
+          <p class="step-desc">O ChatGPT vai além dos pontos óbvios e traz recomendações de quem vive no destino.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 4 — Especial</p>
+          <h3>Evite os golpes contra turistas</h3>
+          <div class="prompt-box">Liste os golpes mais comuns contra turistas nesse destino. Explique como identificar cada um e como evitar cair neles.</div>
+          <p class="step-desc">O ChatGPT mapeia os esquemas mais frequentes no destino e te ensina a reconhecer cada um antes de cair.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 2: PROMPTS BÔNUS -->
+  <section>
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PROMPTS BÔNUS</p>
+        <h2>Mais 3 prompts para aproveitar cada real da viagem</h2>
+        <p class="lead">Use esses prompts na mesma conversa para fechar o planejamento completo.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 5</p>
+          <h3>Economize na viagem</h3>
+          <div class="prompt-box">Tenho um orçamento de R$ [VALOR]. Monte um plano para economizar em hospedagem, alimentação, transporte e passeios sem perder qualidade.</div>
+          <p class="step-desc">O ChatGPT distribui seu orçamento por categoria e aponta onde cortar sem sacrificar a experiência.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 6</p>
+          <h3>Mala perfeita</h3>
+          <div class="prompt-box">Crie uma lista completa de bagagem para uma viagem de [X] dias para [DESTINO] em [MÊS]. Considere clima, documentos, eletrônicos, remédios e itens indispensáveis.</div>
+          <p class="step-desc">O ChatGPT monta a lista por categoria levando em conta clima e duração — zero item esquecido.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 7</p>
+          <h3>O que fazer de graça</h3>
+          <div class="prompt-box">Liste as melhores atrações gratuitas em [DESTINO]. Inclua parques, praias, museus gratuitos, feiras, mirantes, bairros para caminhar e eventos gratuitos durante minha viagem.</div>
+          <p class="step-desc">O ChatGPT lista o que vale a pena sem gastar nada — do mirante escondido ao evento local da semana.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEÇÃO 3: POR QUE FUNCIONA -->
+  <section class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">POR QUE FUNCIONA</p>
+        <h2>Um agente de viagens disponível 24h, sem custo</h2>
+        <p class="lead">O ChatGPT cruza informações de preço, logística, cultura local e segurança num único planejamento — o que antes exigia horas de pesquisa em vários sites diferentes.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card fade-in">
+          <div class="feature-icon">✈️</div>
+          <h3>Flexibilidade que economiza dinheiro</h3>
+          <p>Ao considerar janelas de 7 dias e aeroportos alternativos, o ChatGPT encontra combinações de voo que buscadores tradicionais não sugerem.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🗺️</div>
+          <h3>Roteiro otimizado por região</h3>
+          <p>Os passeios são organizados por proximidade geográfica para eliminar deslocamentos desnecessários e aproveitar cada hora do dia.</p>
+        </div>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🛡️</div>
+          <h3>Segurança antes de chegar</h3>
+          <p>Conhecer os golpes locais antes de embarcar é a diferença entre uma viagem tranquila e uma dor de cabeça que estraga a experiência toda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD FINAL -->
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p>Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+  function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxW = W - margin * 2;
+    let y = 0;
+
+    function checkPage(needed) {
+      if (y + needed > 270) { doc.addPage(); y = 20; }
+    }
+
+    // Header branding
+    doc.setFillColor(9, 0, 35);
+    doc.rect(0, 0, W, 28, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(59, 130, 246);
+    doc.text('@bperobelli', margin, 17);
+    doc.setFontSize(9);
+    doc.setTextColor(139, 127, 170);
+    doc.setFont('helvetica', 'normal');
+    doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+    y = 40;
+
+    // Título
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(9, 0, 35);
+    const titulo = '7 Prompts para Planejar sua Viagem com ChatGPT';
+    const tituloLines = doc.splitTextToSize(titulo, maxW);
+    doc.text(tituloLines, margin, y);
+    y += tituloLines.length * 7 + 4;
+
+    // Subtítulo
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(80, 70, 100);
+    const sub = 'Use na mesma conversa, na ordem abaixo. Substitua os campos entre [colchetes] com suas informações.';
+    const subLines = doc.splitTextToSize(sub, maxW);
+    doc.text(subLines, margin, y);
+    y += subLines.length * 5 + 10;
+
+    // Linha divisória
+    doc.setDrawColor(200, 195, 220);
+    doc.line(margin, y, W - margin, y);
+    y += 8;
+
+    // Prompts
+    const prompts = [
+      { num: 'Prompt 1', titulo: 'Passagem mais barata' },
+      { num: 'Prompt 2', titulo: 'Roteiro completo' },
+      { num: 'Prompt 3', titulo: 'Lugares que turista não conhece' },
+      { num: 'Prompt 4 — Especial', titulo: 'Evite os golpes contra turistas' },
+      { num: 'Prompt 5', titulo: 'Economize na viagem' },
+      { num: 'Prompt 6', titulo: 'Mala perfeita' },
+      { num: 'Prompt 7', titulo: 'O que fazer de graça' },
+    ];
+
+    document.querySelectorAll('.prompt-box').forEach((box, i) => {
+      const texto = box.textContent.replace(/^"|"$/g, '').trim();
+      const p = prompts[i] || { num: `Prompt ${i + 1}`, titulo: '' };
+
+      checkPage(30);
+
+      // Número do prompt
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(59, 130, 246);
+      doc.text(p.num.toUpperCase(), margin, y);
+      y += 5;
+
+      // Título do prompt
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(9, 0, 35);
+      doc.text(p.titulo, margin, y);
+      y += 6;
+
+      // Caixa de fundo cinza claro
+      const textoLines = doc.splitTextToSize(`"${texto}"`, maxW - 8);
+      const boxH = textoLines.length * 5.2 + 8;
+      checkPage(boxH + 4);
+      doc.setFillColor(245, 243, 252);
+      doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+
+      // Texto do prompt
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9.5);
+      doc.setTextColor(60, 50, 90);
+      doc.text(textoLines, margin + 4, y + 6);
+      y += boxH + 10;
+    });
+
+    // Rodapé na última página
+    const pages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(180, 170, 200);
+      doc.text('@bperobelli  ·  bperobelli.com.br', margin, 287);
+      doc.text(`${p} / ${pages}`, W - margin, 287, { align: 'right' });
+    }
+
+    doc.save('prompts-viagem-bperobelli.pdf');
+  }
+
+  document.querySelectorAll('.prompt-box').forEach(box => {
+    const text = box.textContent.replace(/^"|"$/g, '').trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copiar';
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.style.position = 'relative';
+    box.style.paddingRight = '5rem';
+    box.appendChild(btn);
+  });
+
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+    gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+    gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+    gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+    gsap.utils.toArray('.fade-in').forEach(el => {
+      gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 88%', once:true }
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
