@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Personal Stylist com ChatGPT · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --accent: #06B6D4;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent);
+      color: #090023;
+      padding: 0.5rem 1rem;
+      border-radius: 0 0 8px 8px;
+      font-weight: 700;
+      text-decoration: none;
+      z-index: 999;
+    }
+    .skip-link:focus { top: 0; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 0, 35, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-faint);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .nav-mark {
+      background: var(--accent);
+      color: #090023;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-cta {
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 8vw, 5rem);
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-blob.b1 {
+      width: 500px; height: 500px;
+      background: rgba(6, 182, 212, 0.12);
+      top: -100px; left: -100px;
+    }
+    .hero-blob.b2 {
+      width: 400px; height: 400px;
+      background: rgba(6, 182, 212, 0.08);
+      bottom: -80px; right: -80px;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .side-card { order: -1; }
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero .sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.875rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.9; transform: translateY(-2px); }
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .meta-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 1.5rem;
+      position: sticky;
+      top: 80px;
+    }
+    .side-card-title {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .side-card li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .side-card li::before {
+      content: '';
+      width: 6px; height: 6px; min-width: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: 0.45rem;
+    }
+
+    /* SECTIONS */
+    .section { padding: clamp(3rem, 8vw, 5rem) 0; }
+    .section-alt { background: var(--bg-elevated); }
+    .section-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .section-lead {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    /* STEPS */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .step-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .step-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .step-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* PROMPT CARDS */
+    .prompt-cards { display: flex; flex-direction: column; gap: 2rem; }
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: clamp(1.25rem, 4vw, 2rem);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .prompt-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .prompt-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .prompt-card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; }
+    .prompt-card-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.6; }
+
+    /* PROMPT BOX */
+    .prompt-box {
+      background: var(--bg);
+      border: 1px solid var(--text-faint);
+      border-radius: 10px;
+      padding: 1.25rem;
+      font-size: 0.82rem;
+      line-height: 1.65;
+      color: var(--text-muted);
+      position: relative;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'Figtree', sans-serif;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--text-faint);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--accent); color: #090023; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+
+    /* BONUS */
+    .bonus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .bonus-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .bonus-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .bonus-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .bonus-card h3 { font-size: 1rem; font-weight: 700; }
+    .bonus-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+    .bonus-card .prompt-box { font-size: 0.78rem; }
+
+    /* DOWNLOAD BTN */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.625rem 1.25rem;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      margin-top: 1.5rem;
+    }
+    .download-btn:hover { background: var(--accent); color: #090023; }
+    .download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--text-faint);
+      padding: 2rem 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    footer p { font-size: 0.8rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <a href="#prompts" class="nav-cta">Pegar os Prompts</a>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · MODA</p>
+          <h1>Transforme o ChatGPT no seu <span class="accent">personal stylist</span></h1>
+          <p class="sub">Dois prompts que analisam suas fotos, montam um guia de estilo personalizado e ainda encontram onde comprar cada peça — tudo em uma única conversa com o ChatGPT.</p>
+          <a href="#prompts" class="hero-cta">Pegar os Prompts</a>
+          <div class="hero-meta">
+            <div class="meta-item">
+              <span class="meta-val">2</span>
+              <span class="meta-label">Prompts principais</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-val">3</span>
+              <span class="meta-label">Prompts bônus</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-val">Grátis</span>
+              <span class="meta-label">Funciona no plano gratuito do ChatGPT</span>
+            </div>
+          </div>
+          <button class="download-btn" onclick="gerarPDF()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Baixar todos os prompts
+          </button>
+        </div>
+        <div class="side-card">
+          <p class="side-card-title">O que os prompts fazem</p>
+          <ul>
+            <li>Analisa suas fotos de corpo inteiro</li>
+            <li>Identifica cores que te valorizam</li>
+            <li>Recomenda cortes e modelagens ideais</li>
+            <li>Gera imagens fotorrealistas dos looks</li>
+            <li>Encontra onde comprar cada peça</li>
+            <li>Mostra preço, loja e link direto</li>
+            <li>Cruza com o que você já tem no guarda-roupa</li>
+            <li>Prioriza compras pelo seu orçamento</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- COMO FUNCIONA -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <p class="section-eyebrow fade-in">PASSO A PASSO</p>
+      <h2 class="section-title fade-in">Como funciona</h2>
+      <p class="section-lead fade-in">Você não precisa pagar um stylist ou entender de moda. Basta seguir a sequência abaixo dentro do ChatGPT.</p>
+      <div class="steps">
+        <div class="step-card fade-in">
+          <p class="step-num">Passo 1</p>
+          <h3>Tire fotos de corpo inteiro</h3>
+          <p>Fotografe-se em boa iluminação, de frente e de lado. Quanto melhor a foto, mais precisa será a análise.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Passo 2</p>
+          <h3>Envie o Prompt 1</h3>
+          <p>Cole o primeiro prompt no ChatGPT junto com suas fotos. Ele cria seu guia de estilo personalizado com looks e imagens geradas.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Passo 3</p>
+          <h3>Continue na mesma conversa</h3>
+          <p>No mesmo chat, envie o Prompt 2. O ChatGPT busca onde comprar cada peça do guia, com preço, loja e link.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Passo 4</p>
+          <h3>Use os prompts bônus</h3>
+          <p>Cruze com o que já tem no guarda-roupa, priorize por orçamento e compare custo-benefício entre as opções.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTS PRINCIPAIS -->
+  <section class="section" id="prompts">
+    <div class="wrap">
+      <p class="section-eyebrow fade-in">OS PROMPTS</p>
+      <h2 class="section-title fade-in">Copie e use agora</h2>
+      <p class="section-lead fade-in">Estes são os dois prompts do vídeo. Use-os na sequência, dentro da mesma conversa no ChatGPT.</p>
+      <div class="prompt-cards">
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-label">Prompt 1</p>
+          <h3 class="prompt-card-title">Personal Stylist Personalizado</h3>
+          <p class="prompt-card-desc">Analisa suas fotos, cria paleta de cores, recomenda cortes, monta looks completos e gera imagens fotorrealistas — tudo num único guia visual.</p>
+          <div class="prompt-box" data-copy="# Prompt: Personal Stylist Personalizado
+Você é meu personal stylist particular. Sua missão é criar um guia de estilo 100% personalizado, baseado na análise real das minhas fotos — nunca em suposições genéricas. Não presuma gênero, estilo ou preferências antes de analisar minhas fotos.
+
+Etapa 1 — Análise das fotos (referência obrigatória de identidade)
+Use minhas fotos como referência obrigatória. Preserve com máxima fidelidade meu rosto, cabelo, corpo e proporções reais. Não altere minha anatomia, peso, altura aparente ou características físicas para fazer as roupas parecerem melhores.
+
+Analise e me diga o que identificou em:
+- Subtom e tom de pele (quente, frio, neutro) — para definir a paleta de cores
+- Contraste natural (entre pele, cabelo e olhos) — para saber se combinam melhor cores vibrantes ou suaves
+- Biotipo/formato corporal aparente nas fotos
+- Formato do rosto — para sugerir decotes, gola e óculos, se relevante
+- Altura aparente e proporções — para cortes e caimentos que alonguem ou equilibrem
+
+Se alguma foto tiver iluminação ruim, ângulo limitado ou não permitir avaliar algum desses pontos com total segurança, siga em frente com a análise possível a partir do que está disponível e apenas sinalize, ao final dessa etapa, que fotos adicionais (outro ângulo, melhor luz, corpo inteiro etc.) deixariam a recomendação mais precisa. Isso é uma sugestão opcional — nunca um bloqueio: continue para as próximas etapas normalmente mesmo sem fotos extras.
+
+Etapa 2 — Recomendações
+Com base na análise da Etapa 1, recomende:
+- Paleta de cores que mais me favorece, com explicação do motivo (subtom/contraste)
+- Cortes, caimentos e tipos de tecido que valorizam meu biotipo
+- Combinações a evitar e por quê
+
+Etapa 3 — Looks completos
+Monte looks completos (roupa + calçado + acessórios) organizados por ocasião, em grupos de 4, com boa variedade de cor, tecido e formalidade dentro de cada grupo. Para cada look, explique em 1-2 frases por que funciona para mim especificamente (não genericamente).
+
+Priorize roupas e combinações realistas e atuais, que eu realmente poderia usar.
+
+Etapa 4 — Visualização
+Gere imagens fotorealistas minhas usando cada look, mantendo identidade fiel (rosto, corpo, proporções) conforme a Etapa 1.
+
+Formato de saída
+O entregável final deve ser um único material visual — um guia de estilo em formato &quot;one-pager&quot; (pôster/guia de bolso grande), reunindo tudo em uma peça só, com bom apelo visual e pronta para eu usar como referência:
+- Um layout único e coeso (não uma sequência solta de texto e imagens), organizado em seções claras: resumo da análise (Etapa 1), paleta de cores (Etapa 2) e os looks (Etapa 3), cada um com sua imagem gerada (Etapa 4) ao lado da explicação curta.
+- Hierarquia visual clara (títulos, blocos, ícones ou swatches de cor), como um guia de estilo editorial — pense em revista de moda ou infográfico de personal stylist, não em um documento de texto corrido.
+- A paleta de cores deve aparecer como amostras visuais (swatches), não apenas nomes de cor em texto.
+- Todos os looks e imagens organizados no mesmo material, mantendo consistência visual entre as seções.">Você é meu personal stylist particular. Crie um guia de estilo 100% personalizado a partir das minhas fotos — nunca por suposições genéricas.
+
+ETAPA 1 — ANÁLISE DAS FOTOS
+Analise: subtom e tom de pele · contraste natural · biotipo/formato corporal · formato do rosto · altura e proporções. Se a foto limitar algum ponto, siga em frente e sinalize ao final — nunca bloqueie as próximas etapas.
+
+ETAPA 2 — RECOMENDAÇÕES
+Paleta de cores que me favorece (com motivo) · Cortes, caimentos e tecidos ideais · Combinações a evitar e por quê.
+
+ETAPA 3 — LOOKS COMPLETOS
+Looks completos (roupa + calçado + acessórios) por ocasião, em grupos de 4. Para cada um, 1-2 frases explicando por que funciona especificamente para mim.
+
+ETAPA 4 — VISUALIZAÇÃO
+Gere imagens fotorrealistas minhas usando cada look, mantendo identidade fiel (rosto, corpo, proporções).
+
+FORMATO DE SAÍDA
+Um único guia visual tipo "one-pager" editorial: resumo da análise + paleta como swatches visuais + todos os looks com imagens — layout coeso, hierarquia clara, estilo revista de moda.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-label">Prompt 2</p>
+          <h3 class="prompt-card-title">Buscador de Peças do Guia de Estilo</h3>
+          <p class="prompt-card-desc">Continue na mesma conversa: lista cada peça dos looks e busca na web opções reais para comprar no Brasil, com preço, loja e link direto.</p>
+          <div class="prompt-box" data-copy="# Prompt: Buscador de Peças do Guia de Estilo
+Com base no guia de estilo que te enviei (imagem ou looks gerados anteriormente), faça o seguinte:
+
+Etapa 1 — Listar peças e cores
+Para cada look do guia, liste as peças que o compõem e a cor de cada uma. Use este formato:
+Look [número] — [nome do look]
+Peça: cor
+Peça: cor
+Peça: cor
+
+Etapa 2 — Buscar opções de compra
+Para cada peça listada, pesquise na web e traga de 2 a 3 opções reais disponíveis para compra online, priorizando lojas com entrega no Brasil. Para cada opção, informe:
+- Nome do produto e marca/loja
+- Preço aproximado
+- Link direto do produto
+
+Formato de saída
+Organize por look: primeiro a lista de peças/cores daquele look, seguida das opções de compra de cada peça. Não invente links — se não encontrar uma opção real, diga que não encontrou em vez de sugerir um produto fictício.">Com base no guia de estilo gerado anteriormente, faça o seguinte:
+
+ETAPA 1 — LISTAR PEÇAS E CORES
+Para cada look, liste as peças e a cor de cada uma:
+Look [número] — [nome do look]
+Peça: cor · Peça: cor
+
+ETAPA 2 — BUSCAR OPÇÕES DE COMPRA
+Para cada peça, pesquise na web de 2 a 3 opções reais disponíveis online no Brasil:
+Nome do produto e marca/loja · Preço aproximado · Link direto do produto
+
+FORMATO
+Organize por look — lista de peças primeiro, opções de compra logo abaixo. Não invente links: se não encontrar opção real, diga que não encontrou.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTS BÔNUS -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <p class="section-eyebrow fade-in">PROMPTS BÔNUS</p>
+      <h2 class="section-title fade-in">Continue na mesma conversa</h2>
+      <p class="section-lead fade-in">Após os dois prompts principais, estes três deixam seu guia ainda mais útil — sem precisar recomeçar uma nova conversa.</p>
+      <div class="bonus-grid">
+
+        <div class="bonus-card fade-in">
+          <p class="bonus-label">Bônus 1</p>
+          <h3>O Que Já Tenho</h3>
+          <p>Cruze o guia de estilo com o seu guarda-roupa atual. O ChatGPT classifica cada peça em "já tenho", "dá para adaptar" ou "falta comprar".</p>
+          <div class="prompt-box" data-copy="# Prompt: O Que Já Tenho
+
+Vou te enviar fotos do meu guarda-roupa atual. Cruze essas peças com a lista de peças e cores do guia de estilo.
+
+Etapa 1 — Classificação
+Para cada peça do guia, classifique em uma das três categorias:
+- Já tenho — encontrei uma peça equivalente nas fotos do guarda-roupa
+- Dá para adaptar — tenho algo parecido, mas em cor, corte ou tecido diferente do recomendado
+- Falta comprar — não tenho nada equivalente
+
+Etapa 2 — Justificativa
+Para as peças marcadas como &quot;já tenho&quot; ou &quot;dá para adaptar&quot;, diga qual peça das fotos você está considerando equivalente e por quê.
+
+Formato de saída
+Organize por look do guia, mostrando as três categorias e, ao final, uma lista consolidada só com as peças que realmente faltam comprar.">Vou te enviar fotos do meu guarda-roupa atual. Cruze com a lista de peças do guia de estilo.
+
+Para cada peça do guia, classifique em:
+• Já tenho — peça equivalente nas fotos
+• Dá para adaptar — tenho algo parecido em cor, corte ou tecido diferente
+• Falta comprar — não tenho nada equivalente
+
+Para "já tenho" e "dá para adaptar", diga qual peça das fotos está usando como referência e por quê.
+
+Organize por look, com lista consolidada no final só com o que falta comprar.</div>
+        </div>
+
+        <div class="bonus-card fade-in">
+          <p class="bonus-label">Bônus 2</p>
+          <h3>Priorização por Orçamento</h3>
+          <p>Informe quanto você tem para gastar. O ChatGPT organiza as compras por prioridade e distribui o orçamento entre as peças mais versáteis.</p>
+          <div class="prompt-box" data-copy="# Prompt: Priorização de Compras por Orçamento
+
+Tenho um orçamento total de R$[VALOR] para comprar as peças do guia de estilo. Com base nas peças e opções de compra já levantadas, me ajude a priorizar.
+
+Etapa 1 — Priorização
+Organize as peças em ordem de prioridade de compra, considerando:
+- Quais peças aparecem em mais looks (maior versatilidade)
+- Quais são essenciais para fechar o maior número de combinações possíveis
+
+Etapa 2 — Alocação do orçamento
+Distribua o orçamento informado entre as peças priorizadas, usando as opções de compra já encontradas. Para as peças que não couberem no orçamento, sugira uma alternativa mais barata (mesma cor/categoria) em vez de simplesmente excluir a peça.
+
+Formato de saída
+Apresente uma lista ordenada por prioridade, com o preço de cada peça, o total acumulado até aquele ponto, e um resumo final mostrando quanto do orçamento foi usado e o que ficou de fora.">Tenho um orçamento total de R$[VALOR] para comprar as peças do guia. Com base nas opções já levantadas, me ajude a priorizar.
+
+Organize as peças por prioridade considerando: quais aparecem em mais looks e quais fecham o maior número de combinações.
+
+Distribua o orçamento entre as priorizadas. Para as que não couberem, sugira alternativa mais barata em vez de excluir.
+
+Apresente lista ordenada por prioridade com preço de cada peça, total acumulado e resumo do que ficou de fora.</div>
+        </div>
+
+        <div class="bonus-card fade-in">
+          <p class="bonus-label">Bônus 3</p>
+          <h3>Comparação de Custo-Benefício</h3>
+          <p>Para cada peça, o ChatGPT monta uma tabela comparando as opções por preço, material e avaliação, e indica a melhor escolha.</p>
+          <div class="prompt-box" data-copy="# Prompt: Comparação de Custo-Benefício
+
+Com base nas opções de compra que você encontrou para cada peça do guia de estilo, monte uma comparação de custo-benefício.
+
+Etapa 1 — Tabela por peça
+Para cada peça, crie uma tabela comparando as opções encontradas, com as colunas:
+- Produto/loja
+- Preço
+- Material/tecido
+- Avaliação da loja ou do produto (se disponível)
+
+Etapa 2 — Indicação
+Ao final da tabela de cada peça, indique qual opção tem a melhor relação custo-benefício e por quê (não necessariamente a mais barata — considere durabilidade e qualidade do material informados).
+
+Formato de saída
+Organize por peça, uma tabela por vez, com a indicação logo abaixo de cada uma. Não invente avaliações ou dados que não estejam disponíveis nas fontes pesquisadas — se não houver informação de material ou avaliação, deixe o campo como &quot;não informado&quot;.">Com base nas opções de compra encontradas para cada peça, monte uma comparação de custo-benefício.
+
+Para cada peça, crie uma tabela com:
+Produto/loja · Preço · Material/tecido · Avaliação (se disponível)
+
+Ao final de cada tabela, indique qual tem a melhor relação custo-benefício e por quê — não necessariamente a mais barata; considere durabilidade e qualidade.
+
+Organize por peça, uma tabela por vez. Não invente dados: se não houver informação, deixe como "não informado".</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM DOWNLOAD -->
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p>Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+function gerarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth();
+  const margin = 20;
+  const maxW = W - margin * 2;
+  let y = 0;
+
+  function checkPage(needed) {
+    if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+
+  doc.setFillColor(9, 0, 35);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(6, 182, 212);
+  doc.text('@bperobelli', margin, 17);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 127, 170);
+  doc.setFont('helvetica', 'normal');
+  doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+  y = 40;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(9, 0, 35);
+  const titulo = 'Personal Stylist com ChatGPT — 5 Prompts Completos';
+  const tituloLines = doc.splitTextToSize(titulo, maxW);
+  doc.text(tituloLines, margin, y);
+  y += tituloLines.length * 7 + 4;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(80, 70, 100);
+  const sub = 'Use na mesma conversa, na ordem abaixo. Substitua os campos entre [colchetes] com suas informações.';
+  const subLines = doc.splitTextToSize(sub, maxW);
+  doc.text(subLines, margin, y);
+  y += subLines.length * 5 + 10;
+
+  doc.setDrawColor(200, 195, 220);
+  doc.line(margin, y, W - margin, y);
+  y += 8;
+
+  const prompts = [
+    { num: 'Prompt 1', titulo: 'Personal Stylist Personalizado' },
+    { num: 'Prompt 2', titulo: 'Buscador de Peças do Guia de Estilo' },
+    { num: 'Bônus 1', titulo: 'O Que Já Tenho' },
+    { num: 'Bônus 2', titulo: 'Priorização por Orçamento' },
+    { num: 'Bônus 3', titulo: 'Comparação de Custo-Benefício' },
+  ];
+
+  document.querySelectorAll('.prompt-box').forEach((box, i) => {
+    const raw = (box.getAttribute('data-copy') || box.textContent).replace(/^"|"$/g, '').trim();
+    const texto = raw.replace(/\n{2,}/g, '\n').trim();
+    const p = prompts[i] || { num: `Prompt ${i + 1}`, titulo: '' };
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    const textoLines = doc.splitTextToSize(texto, maxW - 8);
+    const boxH = textoLines.length * 4.2 + 8;
+    checkPage(10 + boxH);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(6, 182, 212);
+    doc.text(p.num.toUpperCase(), margin, y);
+    y += 4;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(9, 0, 35);
+    doc.text(p.titulo, margin, y);
+    y += 5;
+    doc.setFillColor(245, 243, 252);
+    doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(60, 50, 90);
+    doc.text(textoLines, margin + 4, y + 5);
+    y += boxH + 8;
+  });
+
+  const pages = doc.internal.getNumberOfPages();
+  for (let pg = 1; pg <= pages; pg++) {
+    doc.setPage(pg);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 170, 200);
+    doc.text('@bperobelli  ·  bperobelli.com.br', margin, 287);
+    doc.text(`${pg} / ${pages}`, W - margin, 287, { align: 'right' });
+  }
+
+  doc.save('personal-stylist-chatgpt-bperobelli.pdf');
+}
+
+document.querySelectorAll('.prompt-box').forEach(box => {
+  const text = (box.getAttribute('data-copy') || box.textContent).replace(/^"|"$/g, '').trim();
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copiar';
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.position = 'relative';
+  box.style.paddingRight = '5rem';
+  box.appendChild(btn);
+});
+
+if (typeof gsap !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+  gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+  gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+  gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+  gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+  gsap.utils.toArray('.fade-in').forEach(el => {
+    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+    });
+  });
+}
+</script>
+
+</body>
+</html>
