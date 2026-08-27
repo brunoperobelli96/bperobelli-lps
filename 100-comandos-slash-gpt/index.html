@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>138 Slash Commands Secretos do ChatGPT — Bruno Perobelli</title>
+<meta name="description" content="Os 138 slash commands que mudam como o ChatGPT responde. Cole no final do seu pedido e veja a diferença. Sem plugin, sem ferramenta extra.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --bg:#090023;
+  --bg-elevated:#0e0030;
+  --surface:#130040;
+  --text:#f0eaff;
+  --text-muted:#8b7faa;
+  --text-faint:#3d3560;
+  --brand:#8A45FB;
+  --hairline:rgba(255,255,255,0.07);
+  --ease:cubic-bezier(0.22,1,0.36,1);
+  --accent:#4D9EFF;
+  --accent-dim:rgba(77,158,255,0.12);
+  --accent-border:rgba(77,158,255,0.35);
+  --accent-code:#8AC4FF;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Figtree',ui-sans-serif,system-ui,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px clamp(20px,5vw,64px);
+  background:rgba(9,0,35,0.85);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--hairline);
+}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.nav-mark{
+  width:30px;height:30px;border-radius:8px;
+  background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:0.72rem;letter-spacing:-0.02em;flex-shrink:0;
+}
+.nav-name{font-size:0.85rem;font-weight:600;color:var(--text);}
+.nav-name span{color:var(--text-muted);font-weight:400;}
+.nav-cta{
+  display:flex;align-items:center;gap:6px;
+  background:var(--accent-dim);border:1px solid var(--accent-border);
+  color:var(--accent);font-size:0.78rem;font-weight:700;
+  padding:8px 14px;border-radius:999px;
+  font-family:inherit;
+  transition:transform 0.25s var(--ease),border-color 0.25s var(--ease);
+}
+.nav-cta:hover{transform:translateY(-1px);border-color:var(--accent);}
+@media(max-width:480px){.nav-cta .cta-label{display:none;}}
+
+/* ── HERO ── */
+.hero{
+  padding:140px clamp(20px,5vw,64px) 80px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.blob{position:absolute;border-radius:50%;filter:blur(110px);pointer-events:none;opacity:0.45;}
+.blob-1{width:500px;height:500px;background:var(--accent);top:-220px;right:-140px;}
+.blob-2{width:400px;height:400px;background:var(--brand);bottom:-160px;left:-120px;opacity:0.3;}
+.hero-inner{max-width:680px;margin:0 auto;position:relative;z-index:2;}
+.eyebrow{
+  display:inline-block;
+  color:var(--accent);text-transform:uppercase;letter-spacing:0.15em;
+  font-size:0.68rem;font-weight:700;margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:800;letter-spacing:-0.04em;
+  line-height:1.1;margin-bottom:20px;
+}
+.hero h1 .accent{color:var(--accent);font-style:italic;}
+.hero .sub{
+  font-size:1.05rem;color:var(--text-muted);
+  max-width:540px;margin:0 auto 36px;
+}
+
+/* Search */
+.search-wrap{
+  position:relative;max-width:520px;margin:0 auto 28px;
+}
+.search-input{
+  width:100%;padding:16px 52px 16px 20px;
+  background:var(--surface);border:1px solid var(--hairline);
+  border-radius:12px;color:var(--text);
+  font-family:'Figtree',sans-serif;font-size:1rem;
+  outline:none;-webkit-appearance:none;appearance:none;
+  transition:border-color 0.25s var(--ease),box-shadow 0.25s var(--ease);
+}
+.search-input::placeholder{color:var(--text-muted);}
+.search-input:focus{border-color:var(--accent-border);box-shadow:0 0 0 3px var(--accent-dim);}
+.search-icon{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;color:var(--text-muted);pointer-events:none;
+  transition:opacity 0.2s;
+}
+.search-clear{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:var(--text-faint);border:none;cursor:pointer;
+  color:var(--text-muted);width:24px;height:24px;border-radius:5px;
+  display:none;align-items:center;justify-content:center;
+  font-size:0.75rem;line-height:1;font-family:inherit;
+  transition:background 0.2s,color 0.2s;
+}
+.search-clear:hover{background:rgba(255,255,255,0.12);color:var(--text);}
+.search-clear.visible{display:flex;}
+.search-clear.visible ~ .search-icon{opacity:0;}
+
+.hero-meta{
+  display:flex;align-items:center;justify-content:center;
+  gap:14px;color:var(--text-muted);font-size:0.85rem;flex-wrap:wrap;
+}
+.hero-meta .sep{width:4px;height:4px;border-radius:50%;background:var(--text-faint);}
+.hero-meta strong{color:var(--text);font-weight:700;}
+@media(max-width:480px){
+  .hero-meta{flex-direction:column;gap:6px;}
+  .hero-meta .sep{display:none;}
+}
+
+/* ── TABS ── */
+.tabs-wrap{
+  position:sticky;top:61px;z-index:90;
+  background:rgba(9,0,35,0.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--hairline);
+  padding:0 clamp(20px,5vw,64px);
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs-wrap::-webkit-scrollbar{display:none;}
+.tabs{
+  display:flex;gap:4px;max-width:980px;margin:0 auto;
+  padding:10px 0;
+}
+.tab{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:6px;
+  background:none;border:1px solid transparent;border-radius:8px;
+  color:var(--text-muted);font-family:'Figtree',sans-serif;
+  font-size:0.82rem;font-weight:600;
+  padding:7px 14px;cursor:pointer;white-space:nowrap;
+  transition:color 0.2s,border-color 0.2s,background 0.2s;
+}
+.tab:hover{color:var(--text);border-color:var(--hairline);}
+.tab.active{
+  background:var(--accent-dim);
+  border-color:var(--accent-border);
+  color:var(--accent);
+}
+.tab-count{
+  font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:500;
+  background:rgba(255,255,255,0.07);padding:1px 7px;border-radius:4px;
+}
+.tab.active .tab-count{background:rgba(77,158,255,0.15);}
+
+/* ── LIST SECTION ── */
+.list-section{padding:36px clamp(20px,5vw,64px) 80px;}
+.list-inner{max-width:980px;margin:0 auto;}
+.list-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;min-height:24px;
+}
+.list-count{font-size:0.8rem;color:var(--text-muted);}
+.list-count strong{color:var(--text);font-weight:700;}
+
+/* Command list container */
+.cmd-list{
+  background:var(--surface);
+  border:1px solid var(--hairline);
+  border-radius:14px;
+  overflow:hidden;
+}
+
+/* Command row */
+.cmd-row{
+  display:grid;
+  grid-template-columns:52px 170px 1fr 72px;
+  align-items:center;
+  gap:0 16px;
+  padding:13px 20px;
+  border-bottom:1px solid var(--hairline);
+  cursor:pointer;
+  transition:background 0.18s var(--ease);
+}
+.cmd-row:last-child{border-bottom:none;}
+.cmd-row:hover{background:rgba(77,158,255,0.05);}
+.cmd-row:focus-visible{
+  outline:2px solid var(--accent);outline-offset:-2px;
+  background:rgba(77,158,255,0.05);
+}
+.cmd-row:hover .cmd-copy{opacity:1;}
+
+.cmd-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;color:var(--text-faint);
+  font-weight:500;text-align:right;
+}
+.cmd-name{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.81rem;font-weight:600;
+  color:var(--accent-code);
+  background:rgba(0,0,20,0.55);
+  border:1px solid var(--hairline);
+  border-left:2px solid var(--accent);
+  border-radius:6px;padding:5px 10px;
+  display:inline-block;white-space:nowrap;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;
+}
+.cmd-desc{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.cmd-pt{font-size:0.88rem;color:var(--text);line-height:1.4;}
+.cmd-en{font-size:0.78rem;color:var(--text-muted);line-height:1.3;}
+.cmd-copy{
+  font-size:0.74rem;color:var(--text-muted);
+  opacity:0;transition:opacity 0.2s;
+  display:flex;align-items:center;justify-content:flex-end;gap:4px;
+  white-space:nowrap;flex-shrink:0;
+}
+
+/* Search highlight */
+mark{
+  background:rgba(77,158,255,0.18);
+  color:var(--accent);
+  border-radius:2px;padding:0 1px;
+}
+
+/* No results */
+.no-results{
+  display:none;text-align:center;padding:64px 20px;
+  color:var(--text-muted);font-size:0.95rem;
+  background:var(--surface);border:1px solid var(--hairline);
+  border-radius:14px;
+}
+.no-results strong{color:var(--text);}
+.no-results .emoji{font-size:2rem;display:block;margin-bottom:12px;}
+
+/* ── CTA ── */
+.cta-section{padding:0 clamp(20px,5vw,64px) 80px;}
+.cta-inner{max-width:980px;margin:0 auto;}
+.cta-card{
+  background:var(--surface);border:1px solid var(--accent-border);
+  border-radius:18px;padding:48px clamp(24px,5vw,56px);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--brand));
+}
+.cta-card h2{
+  font-size:clamp(1.4rem,3vw,2rem);font-weight:800;
+  letter-spacing:-0.03em;margin-bottom:12px;
+}
+.cta-card p{color:var(--text-muted);max-width:420px;margin:0 auto 28px;}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Figtree',sans-serif;font-size:0.92rem;font-weight:700;
+  padding:14px 28px;border-radius:10px;border:none;cursor:pointer;
+  transition:transform 0.25s var(--ease),box-shadow 0.25s var(--ease);
+  min-height:44px;
+}
+.btn-primary{background:var(--accent);color:#04101f;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px var(--accent);}
+.arr{width:16px;height:16px;flex-shrink:0;}
+
+/* ── FOOTER ── */
+footer{
+  padding:32px clamp(20px,5vw,64px) 48px;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  text-align:center;border-top:1px solid var(--hairline);
+}
+.footer-logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:0.88rem;}
+.footer-note{color:var(--text-faint);font-size:0.78rem;}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--surface);border:1px solid var(--accent-border);
+  color:var(--text);font-size:0.875rem;font-weight:600;
+  padding:11px 22px;border-radius:10px;z-index:500;
+  opacity:0;pointer-events:none;white-space:nowrap;
+  transition:opacity 0.2s var(--ease),transform 0.2s var(--ease);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── ANIMATIONS ── */
+.fade-up{opacity:0;transform:translateY(24px);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .cmd-row{
+    grid-template-columns:36px 140px 1fr;
+    gap:0 12px;
+  }
+  .cmd-copy{display:none;}
+}
+@media(max-width:560px){
+  .cmd-row{
+    grid-template-columns:30px 1fr;
+    grid-template-rows:auto auto;
+    gap:6px 10px;
+    padding:12px 16px;
+  }
+  .cmd-num{grid-column:1;grid-row:1;align-self:center;text-align:right;}
+  .cmd-name{grid-column:2;grid-row:1;}
+  .cmd-desc{grid-column:1/-1;grid-row:2;padding-left:40px;}
+  .cmd-copy{display:none;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-left">
+    <span class="nav-mark" aria-hidden="true">BP</span>
+    <span class="nav-name">Bruno Perobelli <span>· IA aplicada</span></span>
+  </div>
+  <a href="#comandos" class="nav-cta">
+    <span class="cta-label">138 slash commands</span>
+    <span aria-hidden="true">↓</span>
+  </a>
+</nav>
+
+<header class="hero">
+  <div class="blob blob-1" aria-hidden="true"></div>
+  <div class="blob blob-2" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">ChatGPT · Slash Commands</span>
+    <h1>138 comandos <span class="accent">secretos</span><br>que transformam qualquer ideia</h1>
+    <p class="sub">Cole o comando no final do seu pedido e o ChatGPT muda completamente o formato de resposta. Sem plugin, sem ferramenta extra.</p>
+    <div class="search-wrap">
+      <input
+        type="search"
+        class="search-input"
+        id="searchInput"
+        placeholder="Buscar comando..."
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Buscar entre os 100 comandos"
+      >
+      <button class="search-clear" id="searchClear" aria-label="Limpar busca">✕</button>
+      <svg class="search-icon" id="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+    </div>
+    <div class="hero-meta">
+      <span><strong>138</strong> comandos</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span><strong>4</strong> categorias</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span>Clique para copiar</span>
+    </div>
+  </div>
+</header>
+
+<div class="tabs-wrap" id="comandos">
+  <div class="tabs" role="tablist" aria-label="Filtrar por categoria">
+    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">138</span></button>
+    <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">89</span></button>
+    <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">13</span></button>
+    <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">25</span></button>
+    <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">11</span></button>
+  </div>
+</div>
+
+<section class="list-section">
+  <div class="list-inner">
+    <div class="list-header">
+      <p class="list-count" id="listCount"><strong>138</strong> comandos</p>
+    </div>
+    <div class="cmd-list" id="cmdList" role="list"></div>
+    <div class="no-results" id="noResults">
+      <span class="emoji">🔍</span>
+      Nenhum resultado para "<strong id="searchTerm"></strong>"
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-card fade-up">
+      <h2>Mais conteúdo assim todo dia no Instagram</h2>
+      <p>Posto sobre IA aplicada a negócios, produtividade e ferramentas práticas todos os dias.</p>
+      <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" class="btn btn-primary">
+        Seguir @bperobelli
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://bperobelli.com.br" class="footer-logo">
+    <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+    Bruno Perobelli
+  </a>
+  <p class="footer-note">Guia gratuito · Bruno Perobelli · IA aplicada</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const DATA = [
+  { num:1,   cmd:"/handwritten",     pt:"Anotações estilo caderno manuscrito",              en:"Notebook-style handwritten notes",         cat:"visuais"  },
+  { num:2,   cmd:"/visualize",       pt:"Transforma ideias em explicações visuais",         en:"Turn ideas into visual explanations",      cat:"visuais"  },
+  { num:3,   cmd:"/stickynotes",     pt:"Uma ideia por post-it",                            en:"One idea per sticky note",                 cat:"visuais"  },
+  { num:4,   cmd:"/infographic",     pt:"Layout de infográfico",                            en:"Infographic layout",                       cat:"visuais"  },
+  { num:5,   cmd:"/diagram",         pt:"Desenha um diagrama de conceito",                  en:"Draw a concept diagram",                   cat:"visuais"  },
+  { num:6,   cmd:"/flowchart",       pt:"Fluxograma passo a passo",                        en:"Step-by-step flowchart",                   cat:"visuais"  },
+  { num:7,   cmd:"/mindmap",         pt:"Cria um mapa mental",                              en:"Create a mind map",                        cat:"visuais"  },
+  { num:8,   cmd:"/xray",            pt:"Mostra a estrutura interna",                       en:"Show internal structure",                  cat:"visuais"  },
+  { num:9,   cmd:"/blueprint",       pt:"Planta técnica (blueprint)",                       en:"Technical blueprint",                      cat:"visuais"  },
+  { num:10,  cmd:"/explodedview",    pt:"Divide o objeto em componentes",                   en:"Break object into components",             cat:"visuais"  },
+  { num:11,  cmd:"/thenvsnow",       pt:"Compara passado vs presente",                      en:"Compare past vs present",                  cat:"visuais"  },
+  { num:12,  cmd:"/timeline",        pt:"Linha do tempo cronológica",                       en:"Chronological timeline",                   cat:"visuais"  },
+  { num:13,  cmd:"/beforeafter",     pt:"Comparação de transformação (antes/depois)",       en:"Transformation comparison",                cat:"visuais"  },
+  { num:14,  cmd:"/cutaway",         pt:"Ilustração em corte",                              en:"Cutaway illustration",                     cat:"visuais"  },
+  { num:15,  cmd:"/anatomy",         pt:"Explica todas as partes",                          en:"Explain all parts",                        cat:"visuais"  },
+  { num:16,  cmd:"/layers",          pt:"Arquitetura camada por camada",                    en:"Layer-by-layer architecture",              cat:"visuais"  },
+  { num:17,  cmd:"/ecosystem",       pt:"Mostra todos os players conectados",               en:"Show all connected players",               cat:"visuais"  },
+  { num:18,  cmd:"/journey",         pt:"Jornada de ponta a ponta",                        en:"End-to-end journey",                       cat:"visuais"  },
+  { num:19,  cmd:"/process",         pt:"Explica um processo completo",                     en:"Explain a complete process",               cat:"visuais"  },
+  { num:20,  cmd:"/cycle",           pt:"Visualiza ciclos recorrentes",                     en:"Visualize recurring cycles",               cat:"visuais"  },
+  { num:21,  cmd:"/roadmap",         pt:"Roadmap de aprendizado ou execução",               en:"Learning or execution roadmap",            cat:"visuais"  },
+  { num:22,  cmd:"/dashboard",       pt:"Dashboard com KPIs",                               en:"Dashboard with KPIs",                      cat:"visuais"  },
+  { num:23,  cmd:"/comparison",      pt:"Comparação lado a lado",                           en:"Side-by-side comparison",                  cat:"visuais"  },
+  { num:24,  cmd:"/versus",          pt:"Formato de batalha frente a frente",               en:"Head-to-head battle format",               cat:"visuais"  },
+  { num:25,  cmd:"/scale",           pt:"Compara tamanhos visualmente",                     en:"Compare sizes visually",                   cat:"visuais"  },
+  { num:26,  cmd:"/evolution",       pt:"Mostra a evolução ao longo do tempo",              en:"Show evolution over time",                 cat:"visuais"  },
+  { num:27,  cmd:"/future",          pt:"Imagina cenários futuros",                         en:"Imagine future scenarios",                 cat:"visuais"  },
+  { num:28,  cmd:"/inside",          pt:"Revela o funcionamento interno",                   en:"Reveal inner workings",                    cat:"visuais"  },
+  { num:29,  cmd:"/microscopic",     pt:"Zoom em visão microscópica",                       en:"Zoom into microscopic view",               cat:"visuais"  },
+  { num:30,  cmd:"/macroscopic",     pt:"Zoom out para o nível do sistema",                 en:"Zoom out to system level",                 cat:"visuais"  },
+  { num:31,  cmd:"/crosssection",    pt:"Ilustração em seção transversal",                  en:"Cross-sectional illustration",             cat:"visuais"  },
+  { num:32,  cmd:"/map",             pt:"Mapa geográfico ou conceitual",                    en:"Geographic or concept map",                cat:"visuais"  },
+  { num:33,  cmd:"/heatmap",         pt:"Visualização de intensidade (mapa de calor)",      en:"Intensity visualization",                  cat:"visuais"  },
+  { num:34,  cmd:"/network",         pt:"Rede de relacionamentos",                          en:"Relationship network",                     cat:"visuais"  },
+  { num:35,  cmd:"/architecture",    pt:"Arquitetura de software/sistema",                  en:"Software/system architecture",             cat:"visuais"  },
+  { num:36,  cmd:"/wireframe",       pt:"Layout de site/app",                               en:"Website/app layout",                       cat:"visuais"  },
+  { num:37,  cmd:"/mockup",          pt:"Prévia realista de produto",                       en:"Realistic product preview",                cat:"visuais"  },
+  { num:38,  cmd:"/prototype",       pt:"Conceito inicial de produto",                      en:"Early product concept",                    cat:"visuais"  },
+  { num:39,  cmd:"/schematic",       pt:"Esquema técnico simples",                          en:"Simple technical schematic",               cat:"visuais"  },
+  { num:40,  cmd:"/isometric",       pt:"Ilustração isométrica 3D",                        en:"3D isometric illustration",                cat:"visuais"  },
+  { num:41,  cmd:"/birdseye",        pt:"Visão de cima (aérea)",                            en:"Top-down view",                            cat:"visuais"  },
+  { num:42,  cmd:"/360view",         pt:"Visualização em todos os ângulos",                 en:"All-angle visualization",                  cat:"visuais"  },
+  { num:43,  cmd:"/storyboard",      pt:"Storyboard cena a cena",                           en:"Scene-by-scene storyboard",                cat:"visuais"  },
+  { num:44,  cmd:"/comic",           pt:"Explica em quadrinhos",                            en:"Explain through comic panels",             cat:"visuais"  },
+  { num:45,  cmd:"/poster",          pt:"Design de pôster",                                 en:"Poster design",                            cat:"visuais"  },
+  { num:46,  cmd:"/cover",           pt:"Capa de livro/relatório",                          en:"Book/report cover",                        cat:"visuais"  },
+  { num:47,  cmd:"/adcreative",      pt:"Conceito de anúncio",                              en:"Advertising concept",                      cat:"visuais"  },
+  { num:48,  cmd:"/thumbnail",       pt:"Conceito de thumbnail para YouTube",               en:"YouTube thumbnail concept",                cat:"visuais"  },
+  { num:49,  cmd:"/carousel",        pt:"Carrossel para Instagram/LinkedIn",                en:"Instagram/LinkedIn carousel",              cat:"visuais"  },
+  { num:50,  cmd:"/socialvisual",    pt:"Arte para redes sociais",                          en:"Social media graphic",                     cat:"visuais"  },
+  { num:51,  cmd:"/quotevisual",     pt:"Citação como visual compartilhável",               en:"Quote as shareable visual",                cat:"visuais"  },
+  { num:52,  cmd:"/eli5",            pt:"Explica de forma simples (como para uma criança)", en:"Explain simply",                           cat:"estudo"   },
+  { num:53,  cmd:"/expert",          pt:"Explicação em nível de especialista",              en:"Expert-level explanation",                 cat:"estudo"   },
+  { num:54,  cmd:"/firstprinciples", pt:"Quebra até os fundamentos (primeiros princípios)", en:"Break to fundamentals",                    cat:"estudo"   },
+  { num:55,  cmd:"/deepdive",        pt:"Explicação completa e aprofundada",                en:"Comprehensive explanation",                cat:"estudo"   },
+  { num:56,  cmd:"/simplify",        pt:"Simplifica conteúdo difícil",                      en:"Simplify difficult content",               cat:"estudo"   },
+  { num:57,  cmd:"/analogy",         pt:"Explica com analogia",                             en:"Explain with analogy",                     cat:"estudo"   },
+  { num:58,  cmd:"/socratic",        pt:"Ensina usando perguntas",                          en:"Teach using questions",                    cat:"estudo"   },
+  { num:59,  cmd:"/teachme",         pt:"Tutoria estruturada",                              en:"Structured tutoring",                      cat:"estudo"   },
+  { num:60,  cmd:"/cheatsheet",      pt:"Notas de referência rápida",                       en:"Quick-reference notes",                    cat:"estudo"   },
+  { num:61,  cmd:"/flashcards",      pt:"Flashcards de estudo",                             en:"Study flashcards",                         cat:"estudo"   },
+  { num:62,  cmd:"/quiz",            pt:"Gera um quiz",                                     en:"Generate quiz",                            cat:"estudo"   },
+  { num:63,  cmd:"/viva",            pt:"Preparação para prova oral",                       en:"Viva preparation",                         cat:"estudo"   },
+  { num:64,  cmd:"/interview",       pt:"Entrevista simulada",                              en:"Mock interview",                           cat:"estudo"   },
+  { num:65,  cmd:"/devilsadvocate",  pt:"Desafia suposições (advogado do diabo)",           en:"Challenge assumptions",                    cat:"negocios" },
+  { num:66,  cmd:"/factcheck",       pt:"Verifica afirmações",                              en:"Verify claims",                            cat:"negocios" },
+  { num:67,  cmd:"/mythvsfact",      pt:"Separa mitos de fatos",                            en:"Separate myths from facts",                cat:"negocios" },
+  { num:68,  cmd:"/proscons",        pt:"Vantagens vs desvantagens",                        en:"Advantages vs disadvantages",              cat:"negocios" },
+  { num:69,  cmd:"/swot",            pt:"Análise SWOT",                                     en:"SWOT analysis",                            cat:"negocios" },
+  { num:70,  cmd:"/pestle",          pt:"Análise PESTLE",                                   en:"PESTLE analysis",                          cat:"negocios" },
+  { num:71,  cmd:"/fiveforces",      pt:"5 Forças de Porter",                               en:"Porter's Five Forces",                     cat:"negocios" },
+  { num:72,  cmd:"/rootcause",       pt:"Encontra a causa raiz",                            en:"Find root cause",                          cat:"negocios" },
+  { num:73,  cmd:"/fivewhys",        pt:"Análise dos 5 Porquês",                            en:"5 Why analysis",                           cat:"negocios" },
+  { num:74,  cmd:"/decisionmatrix",  pt:"Matriz de decisão ponderada",                      en:"Weighted decision matrix",                 cat:"negocios" },
+  { num:75,  cmd:"/scenario",        pt:"Planejamento de cenários",                         en:"Scenario planning",                        cat:"negocios" },
+  { num:76,  cmd:"/simulate",        pt:"Exercício de simulação",                           en:"Simulation exercise",                      cat:"negocios" },
+  { num:77,  cmd:"/roleplay",        pt:"Assume o papel de um especialista",                en:"Assume an expert role",                    cat:"negocios" },
+  { num:78,  cmd:"/consultant",      pt:"Conselho estilo consultoria",                      en:"Consulting-style advice",                  cat:"negocios" },
+  { num:79,  cmd:"/executivebrief",  pt:"Resumo executivo",                                 en:"Executive summary",                        cat:"negocios" },
+  { num:80,  cmd:"/insights",        pt:"Extrai insights",                                  en:"Extract insights",                         cat:"negocios" },
+  { num:81,  cmd:"/recommendations", pt:"Fornece recomendações",                            en:"Provide recommendations",                  cat:"negocios" },
+  { num:82,  cmd:"/prioritize",      pt:"Classifica por prioridade",                        en:"Rank by priority",                         cat:"negocios" },
+  { num:83,  cmd:"/benchmark",       pt:"Comparação de benchmark",                          en:"Benchmark comparison",                     cat:"negocios" },
+  { num:84,  cmd:"/marketmap",       pt:"Panorama do setor",                                en:"Industry landscape",                       cat:"negocios" },
+  { num:85,  cmd:"/strategy",        pt:"Planejamento estratégico",                         en:"Strategic planning",                       cat:"negocios" },
+  { num:86,  cmd:"/businessmodel",   pt:"Explicação de modelo de negócio",                  en:"Business model explanation",               cat:"negocios" },
+  { num:87,  cmd:"/pitch",           pt:"Pitch para investidor/startup",                    en:"Investor/startup pitch",                   cat:"negocios" },
+  { num:88,  cmd:"/investor",        pt:"Perspectiva de investidor",                        en:"Investor perspective",                     cat:"negocios" },
+  { num:89,  cmd:"/redteam",         pt:"Teste de estresse de um plano",                    en:"Stress-test a plan",                       cat:"negocios" },
+  { num:90,  cmd:"/premortem",       pt:"Assume o fracasso e analisa o porquê",             en:"Assume failure and analyze why",           cat:"pesquisa" },
+  { num:91,  cmd:"/reverseengineer", pt:"Faz engenharia reversa do sucesso",                en:"Break down success",                       cat:"pesquisa" },
+  { num:92,  cmd:"/promptengineer",  pt:"Otimiza prompts",                                  en:"Optimize prompts",                         cat:"pesquisa" },
+  { num:93,  cmd:"/research",        pt:"Pesquisa estruturada",                             en:"Structured research",                      cat:"pesquisa" },
+  { num:94,  cmd:"/sources",         pt:"Encontra fontes confiáveis",                       en:"Find reliable sources",                    cat:"pesquisa" },
+  { num:95,  cmd:"/summarize",       pt:"Resume conteúdo",                                  en:"Summarize content",                        cat:"pesquisa" },
+  { num:96,  cmd:"/extract",         pt:"Extrai informações-chave",                         en:"Extract key information",                  cat:"pesquisa" },
+  { num:97,  cmd:"/table",           pt:"Converte em tabela",                               en:"Convert into table",                       cat:"pesquisa" },
+  { num:98,  cmd:"/presentation",    pt:"Estrutura de apresentação",                        en:"Presentation outline",                     cat:"pesquisa" },
+  { num:99,  cmd:"/dashboardanalysis",pt:"Analisa dashboards",                             en:"Analyze dashboards",                        cat:"pesquisa" },
+  { num:100, cmd:"/actionplan",      pt:"Cria plano de ação passo a passo",                 en:"Create step-by-step action plan",          cat:"pesquisa" },
+
+  /* ── VER POR DENTRO ── */
+  { num:101, cmd:"/teardown",        pt:"Peças desmontadas sobre a mesa, vistas de cima, estética de reparo técnico", en:"All parts disassembled on table, top-down repair aesthetic",   cat:"visuais" },
+  { num:102, cmd:"/orthographic",    pt:"Três vistas (frontal, lateral, superior) numa prancha, padrão de ficha de produto", en:"Three-view sheet (front, side, top), product spec standard", cat:"visuais" },
+  { num:103, cmd:"/patentdrawing",   pt:"Linha preta sobre branco com hachura e numeração de referência, estilo patente", en:"Patent-style line drawing with hatching and reference numbers", cat:"visuais" },
+
+  /* ── MÃO E PAPEL ── */
+  { num:104, cmd:"/napkinsketch",    pt:"Rascunho em guardanapo com marcador, o clássico esboço de ideia de negócio", en:"Napkin sketch with marker, classic bar-pitch idea drawing",   cat:"visuais" },
+  { num:105, cmd:"/whiteboard",      pt:"Quadro branco com marcador, diagramas e setas explicativas", en:"Whiteboard with marker diagrams and explanatory arrows",    cat:"visuais" },
+  { num:106, cmd:"/moodboard",       pt:"Painel de referências visuais com recortes, cores e texturas em grid", en:"Visual reference board with swatches and textures in a grid", cat:"visuais" },
+  { num:107, cmd:"/scrapbook",       pt:"Colagem com fita, polaroids e papel rasgado sobrepostos", en:"Collage with tape, polaroids, and layered torn paper",       cat:"visuais" },
+  { num:108, cmd:"/annotated",       pt:"Foto real com anotações, círculos e setas desenhados por cima", en:"Real photo with handwritten annotations and markup arrows",  cat:"visuais" },
+
+  /* ── OBJETO E PRODUTO ── */
+  { num:109, cmd:"/knolling",        pt:"Objetos alinhados em 90 graus, vistos de cima, com simetria obsessiva", en:"Objects at 90° angles in a symmetrical top-down flat lay",   cat:"visuais" },
+  { num:110, cmd:"/productshot",     pt:"Foto de estúdio com fundo infinito, sombra controlada e reflexo limpo", en:"Studio product shot with clean background and controlled shadow", cat:"visuais" },
+  { num:111, cmd:"/actionfigure",    pt:"Transforma o sujeito em figura de ação dentro de blister plástico", en:"Subject as action figure packaged in blister card",          cat:"visuais" },
+  { num:112, cmd:"/packaging",       pt:"Mockup de embalagem com design aplicado (caixa, rótulo ou saco)", en:"Packaging mockup with applied label or box design",         cat:"visuais" },
+  { num:113, cmd:"/flatlay",         pt:"Composição cenital estilizada com objetos de apoio, estilo lifestyle", en:"Styled overhead shot with supporting lifestyle objects",     cat:"visuais" },
+  { num:114, cmd:"/macro",           pt:"Macro extremo com profundidade mínima revelando texturas em detalhe", en:"Extreme macro with shallow depth revealing fine texture",    cat:"visuais" },
+
+  /* ── CÂMERA E LUZ ── */
+  { num:115, cmd:"/cinematic",       pt:"Visual de cinema anamórfico com alto contraste e luz motivada", en:"Cinematic anamorphic look with high contrast and motivated light", cat:"visuais" },
+  { num:116, cmd:"/goldenhour",      pt:"Contraluz de sol baixo com luz dourada quente",              en:"Golden backlight from low sun with warm tones",               cat:"visuais" },
+  { num:117, cmd:"/neonoir",         pt:"Néon, chuva e alto contraste — cidade à noite com reflexos no asfalto", en:"Neon, rain, and high contrast noir cityscape",              cat:"visuais" },
+  { num:118, cmd:"/longexposure",    pt:"Rastros de luz com movimento transformado em linha contínua", en:"Light trails blurring motion into continuous lines",          cat:"visuais" },
+  { num:119, cmd:"/tiltshift",       pt:"Efeito miniatura com foco seletivo que faz cena real parecer maquete", en:"Tilt-shift effect making real scenes look like scale models",  cat:"visuais" },
+  { num:120, cmd:"/35mm",            pt:"Grão analógico, textura de filme e cor desviada",             en:"Analog grain, film texture, and color drift",                 cat:"visuais" },
+
+  /* ── MATÉRIA E ILUSTRAÇÃO ── */
+  { num:121, cmd:"/claymation",      pt:"Estética de massinha stop-motion com marcas de dedo e luz de set físico", en:"Clay stop-motion aesthetic with fingerprints and physical set light", cat:"visuais" },
+  { num:122, cmd:"/papercraft",      pt:"Camadas de papel recortado sobrepostas com sombras próprias", en:"Stacked cut paper layers with cast shadows",                 cat:"visuais" },
+  { num:123, cmd:"/lowpoly",         pt:"Geometria facetada com polígonos visíveis e cores planas",    en:"Faceted low-poly geometry with flat colors",                  cat:"visuais" },
+  { num:124, cmd:"/pixelart",        pt:"Pixel art com paleta limitada e grade visível",               en:"Pixel art with limited color palette and visible grid",       cat:"visuais" },
+  { num:125, cmd:"/linocut",         pt:"Gravura em linóleo com tinta sólida e talhe visível",         en:"Linocut print with solid ink and visible carving marks",      cat:"visuais" },
+  { num:126, cmd:"/watercolor",      pt:"Aquarela com bordas sangradas e pigmento que escorre",        en:"Watercolor with bleeding edges and flowing pigment",          cat:"visuais" },
+
+  /* ── RETRATO E PERSONAGEM ── */
+  { num:127, cmd:"/headshot",        pt:"Retrato corporativo com luz de três pontos e fundo limpo",    en:"Corporate headshot with three-point lighting and clean background", cat:"visuais" },
+  { num:128, cmd:"/charactersheet",  pt:"Folha de personagem com várias vistas e expressões do mesmo sujeito", en:"Character sheet with multiple views and expressions",         cat:"visuais" },
+  { num:129, cmd:"/doubleexposure",  pt:"Dupla exposição com silhueta preenchida por paisagem ou textura", en:"Double exposure silhouette filled with landscape or texture",  cat:"visuais" },
+  { num:130, cmd:"/caricature",      pt:"Caricatura com traços exagerados mantendo a semelhança do rosto", en:"Caricature with exaggerated features preserving likeness",     cat:"visuais" },
+  { num:131, cmd:"/statue",          pt:"Transforma o retrato em escultura de mármore com luz de museu", en:"Portrait as marble sculpture with museum lighting",           cat:"visuais" },
+  { num:132, cmd:"/minime",          pt:"Versão em miniatura 3D do sujeito colocada dentro de uma cena real", en:"3D miniature version of subject placed inside a normal scene", cat:"visuais" },
+
+  /* ── EDITORIAL E REMATE ── */
+  { num:133, cmd:"/bookcover",       pt:"Capa de livro com título, autor e selo editorial",            en:"Book cover with title, author name, and publisher seal",      cat:"visuais" },
+  { num:134, cmd:"/magazinecover",   pt:"Capa de revista com cabeçalho, manchetes laterais e sujeito ao centro", en:"Magazine cover with header, side blurbs, and centered subject", cat:"visuais" },
+  { num:135, cmd:"/movieposter",     pt:"Pôster de cinema com bloco de créditos e frase de gancho",   en:"Movie poster with credit block and tagline",                  cat:"visuais" },
+  { num:136, cmd:"/stickersheet",    pt:"Folha de adesivos com contorno branco, pronta para packs de download", en:"Sticker sheet with white outline, ready for download packs",  cat:"visuais" },
+  { num:137, cmd:"/logogrid",        pt:"Logo sobre grade de construção com guias, estilo sistema de identidade", en:"Logo on construction grid with guides, identity system style", cat:"visuais" },
+  { num:138, cmd:"/uimockup",        pt:"Tela de app dentro de dispositivo com sombra realista",      en:"App screen inside a device frame with realistic shadow",      cat:"visuais" },
+];
+
+/* ── State ── */
+let activeCat = 'all';
+let searchQuery = '';
+
+/* ── DOM refs ── */
+const cmdList     = document.getElementById('cmdList');
+const noResults   = document.getElementById('noResults');
+const listCount   = document.getElementById('listCount');
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const searchIcon  = document.getElementById('searchIcon');
+const searchTerm  = document.getElementById('searchTerm');
+const toast       = document.getElementById('toast');
+let   toastTimer;
+
+/* ── Helpers ── */
+function pad(n){ return n < 10 ? '0' + n : String(n); }
+
+function esc(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function highlight(text, q){
+  if(!q) return esc(text);
+  const safe = esc(text);
+  const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+  return safe.replace(re, '<mark>$1</mark>');
+}
+
+function getFiltered(){
+  const q = searchQuery.toLowerCase();
+  return DATA.filter(item => {
+    const catOk  = activeCat === 'all' || item.cat === activeCat;
+    const textOk = !q ||
+      item.cmd.toLowerCase().includes(q) ||
+      item.pt.toLowerCase().includes(q)  ||
+      item.en.toLowerCase().includes(q);
+    return catOk && textOk;
+  });
+}
+
+/* ── Render ── */
+function render(){
+  const filtered = getFiltered();
+  const q = searchQuery.toLowerCase();
+  const plural = filtered.length !== 1 ? 's' : '';
+  listCount.innerHTML = `<strong>${filtered.length}</strong> comando${plural}`;
+
+  if(filtered.length === 0){
+    cmdList.innerHTML   = '';
+    cmdList.style.display = 'none';
+    noResults.style.display = 'block';
+    searchTerm.textContent  = searchQuery;
+    return;
+  }
+
+  cmdList.style.display   = '';
+  noResults.style.display = 'none';
+
+  cmdList.innerHTML = filtered.map(item => `
+    <div class="cmd-row"
+         role="listitem"
+         tabindex="0"
+         data-cmd="${esc(item.cmd)}"
+         aria-label="Copiar ${esc(item.cmd)}: ${esc(item.pt)}">
+      <span class="cmd-num">${pad(item.num)}</span>
+      <span class="cmd-name">${highlight(item.cmd, q)}</span>
+      <div class="cmd-desc">
+        <span class="cmd-pt">${highlight(item.pt, q)}</span>
+        <span class="cmd-en">${highlight(item.en, q)}</span>
+      </div>
+      <span class="cmd-copy" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        copiar
+      </span>
+    </div>
+  `).join('');
+
+  cmdList.querySelectorAll('.cmd-row').forEach(row => {
+    row.addEventListener('click', () => copyCmd(row.dataset.cmd));
+    row.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); copyCmd(row.dataset.cmd); }
+    });
+  });
+}
+
+/* ── Copy ── */
+function copyCmd(cmd){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(cmd)
+      .then(() => showToast(`"${cmd}" copiado!`))
+      .catch(() => fallbackCopy(cmd));
+  } else {
+    fallbackCopy(cmd);
+  }
+}
+function fallbackCopy(cmd){
+  const ta = document.createElement('textarea');
+  ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); showToast(`"${cmd}" copiado!`); }
+  catch(e){ showToast('Copie: ' + cmd); }
+  document.body.removeChild(ta);
+}
+
+/* ── Toast ── */
+function showToast(msg){
+  clearTimeout(toastTimer);
+  toast.textContent = msg;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+/* ── Search ── */
+searchInput.addEventListener('input', () => {
+  searchQuery = searchInput.value.trim();
+  const hasVal = searchQuery.length > 0;
+  searchClear.classList.toggle('visible', hasVal);
+  searchIcon.style.opacity = hasVal ? '0' : '1';
+  render();
+});
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  searchQuery = '';
+  searchClear.classList.remove('visible');
+  searchIcon.style.opacity = '1';
+  searchInput.focus();
+  render();
+});
+
+/* ── Tabs ── */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.remove('active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected', 'true');
+    activeCat = tab.dataset.cat;
+    render();
+    /* Scroll to list on mobile when tab is clicked */
+    if(window.innerWidth < 768){
+      const top = cmdList.getBoundingClientRect().top + window.scrollY - 120;
+      window.scrollTo({ top, behavior:'smooth' });
+    }
+  });
+});
+
+/* ── Init ── */
+render();
+
+/* ── GSAP ── */
+if(typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined'){
+  gsap.registerPlugin(ScrollTrigger);
+  const ease = 'cubic-bezier(0.22,1,0.36,1)';
+  gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease, delay:0.05 });
+  gsap.from('.hero h1',       { opacity:0, y:30,  duration:1.0, ease, delay:0.15 });
+  gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease, delay:0.3  });
+  gsap.from('.search-wrap',   { opacity:0, y:16,  duration:0.8, ease, delay:0.45 });
+  gsap.from('.hero-meta',     { opacity:0, y:12,  duration:0.7, ease, delay:0.6  });
+  gsap.utils.toArray('.fade-up').forEach(el => {
+    gsap.to(el, {
+      opacity:1, y:0, duration:0.75, ease,
+      scrollTrigger:{ trigger:el, start:'top 90%', once:true }
+    });
+  });
+} else {
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.style.opacity = 1; el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>
