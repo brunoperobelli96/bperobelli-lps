@@ -351,7 +351,7 @@ footer{
         placeholder="Buscar comando..."
         autocomplete="off"
         spellcheck="false"
-        aria-label="Buscar entre os 100 comandos"
+        aria-label="Buscar entre os 179 comandos"
       >
       <button class="search-clear" id="searchClear" aria-label="Limpar busca">✕</button>
       <svg class="search-icon" id="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -359,7 +359,7 @@ footer{
       </svg>
     </div>
     <div class="hero-meta">
-      <span><strong>+150</strong> comandos</span>
+      <span><strong>+179</strong> comandos</span>
       <span class="sep" aria-hidden="true"></span>
       <span><strong>4</strong> categorias</span>
       <span class="sep" aria-hidden="true"></span>
@@ -370,8 +370,8 @@ footer{
 
 <div class="tabs-wrap" id="comandos">
   <div class="tabs" role="tablist" aria-label="Filtrar por categoria">
-    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">150</span></button>
-    <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">97</span></button>
+    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">179</span></button>
+    <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">126</span></button>
     <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">16</span></button>
     <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">25</span></button>
     <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">12</span></button>
@@ -588,6 +588,47 @@ const DATA = [
   { num:148, cmd:"/manga",           pt:"Transforma sua ideia ou imagem numa cena estilo mangá japonês",                       en:"Transform your idea or image into Japanese manga style",                       cat:"visuais" },
   { num:149, cmd:"/exploded",        pt:"Visão explodida do objeto com todas as peças separadas em perspectiva",               en:"Exploded-view diagram with all parts separated in perspective",                cat:"visuais" },
   { num:150, cmd:"/human",           pt:"Reformula a resposta para soar como se um humano tivesse escrito",                    en:"Rewrite the response to sound like it was written by a human",                cat:"pesquisa" },
+
+  /* ── DELIVERY ── */
+  { num:151, cmd:"/minimalposter-pt",   pt:"Arte limpa e minimalista para produto, sem excesso de elementos",                   en:"Clean minimalist product artwork with no visual clutter",                          cat:"visuais" },
+  { num:152, cmd:"/herooffer-minimal",  pt:"Arte de oferta com produto em destaque e layout minimalista",                       en:"Offer artwork with product as hero element and minimal layout",                    cat:"visuais" },
+  { num:153, cmd:"/cleanflyer",         pt:"Flyer com aparência limpa e profissional, sem cara de imagem gerada por IA",        en:"Clean, professional flyer that doesn't look AI-generated",                         cat:"visuais" },
+
+  /* ── FOTOS ── */
+  { num:154, cmd:"/skinpro",            pt:"Melhora a aparência da pele e a apresentação visual na foto",                       en:"Enhance skin appearance and overall visual presentation in the photo",              cat:"visuais" },
+  { num:155, cmd:"/deblur",             pt:"Remove o desfoque e restaura a nitidez da imagem",                                  en:"Remove blur and restore sharpness to the image",                                   cat:"visuais" },
+  { num:156, cmd:"/removepeoplebg",     pt:"Remove pessoas do fundo, deixando apenas o sujeito principal",                      en:"Erase people from the background, keeping only the main subject",                  cat:"visuais" },
+  { num:157, cmd:"/newbg",              pt:"Troca o fundo da foto por um cenário novo escolhido",                               en:"Replace the photo background with a new chosen scene",                             cat:"visuais" },
+  { num:158, cmd:"/jawline",            pt:"Ajusta e define o contorno da mandíbula e do rosto na foto",                        en:"Adjust and define jawline and facial contour in the photo",                        cat:"visuais" },
+  { num:159, cmd:"/together",           pt:"Combina duas fotos numa única imagem com composição natural",                       en:"Merge two photos into a single naturally composed image",                          cat:"visuais" },
+
+  /* ── CÓDIGOS VISUAIS ── */
+  { num:160, cmd:"/3dposter",           pt:"Pôster com efeito 3D e profundidade visual",                                        en:"Poster with 3D effect and visual depth",                                           cat:"visuais" },
+  { num:161, cmd:"/editorialcover",     pt:"Capa estilo editorial de moda com composição e paleta de revista",                  en:"Fashion editorial-style cover with magazine composition and palette",               cat:"visuais" },
+  { num:162, cmd:"/floating3d",         pt:"Objeto flutuando em espaço tridimensional com sombra projetada",                    en:"Object floating in 3D space with cast shadow below",                               cat:"visuais" },
+  { num:163, cmd:"/pantiesnatcher",     pt:"Visual estilo glamour e pin-up com iluminação e composição icônicas",               en:"Glamour and pin-up style with iconic lighting and composition",                    cat:"visuais" },
+  { num:164, cmd:"/doubleexposureviral",pt:"Dupla exposição com contraste forte para alto potencial de viralização",            en:"Double exposure with high contrast built for viral sharing",                       cat:"visuais" },
+  { num:165, cmd:"/impossibleangle",    pt:"Imagem fotografada de um ângulo fisicamente impossível para câmera real",           en:"Shot from a physically impossible camera angle",                                   cat:"visuais" },
+
+  /* ── COMANDOS SECRETOS ── */
+  { num:166, cmd:"/productexplosion",   pt:"Efeito de explosão artística irradiando a partir do produto",                       en:"Artistic explosion effect radiating out from the product",                         cat:"visuais" },
+  { num:167, cmd:"/floatingdisplay",    pt:"Produto em display flutuante com efeito premium de exposição",                      en:"Product in a floating display with premium showcase effect",                        cat:"visuais" },
+  { num:168, cmd:"/gravitydefying",     pt:"Cena com efeito de gravidade zero, tudo flutuando no ar",                          en:"Scene with zero-gravity effect, everything suspended in mid-air",                  cat:"visuais" },
+
+  /* ── HIGGSFIELD ── */
+  { num:169, cmd:"/scrollstopper",      pt:"Imagem visualmente impactante, projetada para travar o scroll do feed",             en:"Visually striking image designed to stop mid-feed scrolling",                      cat:"visuais" },
+  { num:170, cmd:"/sunbeam",            pt:"Raios de sol penetrando a cena com luz dramática e direcionada",                    en:"Sun rays piercing through the scene with dramatic directional light",               cat:"visuais" },
+  { num:171, cmd:"/landingpage",        pt:"Visual estilo landing page de produto, pronto para conversão",                      en:"Product landing-page-style visual built for conversion",                           cat:"visuais" },
+  { num:172, cmd:"/iridescent",         pt:"Efeito iridescente holográfico com gradientes que mudam de ângulo",                 en:"Holographic iridescent effect with angle-shifting gradients",                      cat:"visuais" },
+  { num:173, cmd:"/tinyplanet",         pt:"Projeção esférica 360° que transforma a cena num planeta minúsculo",               en:"Spherical 360° projection turning a scene into a tiny planet",                     cat:"visuais" },
+  { num:174, cmd:"/richvisual",         pt:"Visual elaborado com múltiplas camadas, texturas e detalhes premium",               en:"Rich layered visual with multiple textures and premium detail",                    cat:"visuais" },
+  { num:175, cmd:"/busstopad",          pt:"Composição de anúncio aplicado em abrigo de ponto de ônibus",                       en:"Ad placed on a bus shelter display, outdoor advertising style",                    cat:"visuais" },
+
+  /* ── EXTRAS ── */
+  { num:176, cmd:"/mirrorworld",        pt:"Mundo espelhado com reflexo simétrico invertido da cena original",                  en:"Mirror world with symmetrical inverted reflection of the original scene",           cat:"visuais" },
+  { num:177, cmd:"/adsplash",           pt:"Peça publicitária com splash visual de alto impacto para campanha",                 en:"Ad creative with high-impact visual splash for campaign use",                      cat:"visuais" },
+  { num:178, cmd:"/giantscale",         pt:"Sujeito ou objeto em escala gigante inserido num cenário real",                     en:"Subject or object at giant scale inserted into a real environment",                cat:"visuais" },
+  { num:179, cmd:"/neonvalley",         pt:"Cenário urbano noturno com neons coloridos e estética de vale futurista",           en:"Nighttime urban scene with colorful neons and futuristic valley aesthetic",         cat:"visuais" },
 ];
 
 /* ── State ── */
