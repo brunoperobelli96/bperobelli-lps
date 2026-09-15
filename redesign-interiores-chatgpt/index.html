@@ -7,6 +7,7 @@
   <title>Redesign de Interiores com ChatGPT · Bruno Perobelli</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
   <style>
@@ -160,6 +161,7 @@
       display: flex;
       gap: 2rem;
       flex-wrap: wrap;
+      margin-bottom: 1.75rem;
     }
     .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
     .hero-meta-item .valor {
@@ -173,6 +175,52 @@
       color: var(--text-muted);
       font-weight: 500;
     }
+
+    /* HERO ACTIONS */
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #090023;
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.875rem 1.5rem;
+      min-height: 44px;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      border: none;
+    }
+    .cta-primary:hover { opacity: 0.88; }
+    .cta-primary:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+    .pdf-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      padding: 0 1.25rem;
+      min-height: 44px;
+      border-radius: 8px;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .pdf-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .pdf-btn:hover { background: var(--accent); color: #090023; }
+    .pdf-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     /* SIDE CARD */
     .side-card {
@@ -234,53 +282,76 @@
       line-height: 1.7;
     }
 
-    /* STEP CARDS */
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-    .step-card {
-      background: var(--surface);
+    /* PROMPT ACCORDION */
+    .prompt-list {
       border: 1px solid var(--text-faint);
-      border-top: 2px solid var(--accent);
       border-radius: 12px;
-      padding: 1.5rem;
-      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+      overflow: hidden;
     }
-    .step-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
+    .prompt-item {
+      border-bottom: 1px solid var(--text-faint);
     }
-    .step-num {
+    .prompt-item:last-child {
+      border-bottom: none;
+    }
+    .prompt-header {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      transition: background 0.2s var(--ease);
+    }
+    .prompt-header:hover {
+      background: var(--bg-elevated);
+    }
+    .prompt-item.open > .prompt-header {
+      background: rgba(20, 184, 166, 0.07);
+    }
+    .prompt-toggle {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 1rem 1.25rem;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      min-width: 0;
+      min-height: 44px;
+    }
+    .prompt-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-radius: 4px;
+    }
+    .pnum {
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.1em;
-      text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 0.5rem;
+      min-width: 2.2ch;
+      flex-shrink: 0;
     }
-    .step-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
+    .ptitle {
+      flex: 1;
     }
-    .prompt-box {
-      background: var(--bg);
-      border: 1px solid var(--text-faint);
-      border-radius: 8px;
-      padding: 0.875rem 1rem;
-      font-size: 0.82rem;
+    .ptoggle {
+      font-size: 0.8rem;
       color: var(--text-muted);
-      line-height: 1.6;
-      font-style: italic;
-      margin-bottom: 0.875rem;
+      transition: transform 0.3s var(--ease);
+      flex-shrink: 0;
+      margin-right: 0.25rem;
     }
-    .copy-btn {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
+    .prompt-item.open .ptoggle {
+      transform: rotate(180deg);
+    }
+    .copy-q-btn {
+      flex-shrink: 0;
+      margin-right: 1rem;
       background: var(--text-faint);
       border: none;
       border-radius: 6px;
@@ -290,13 +361,49 @@
       font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.04em;
-      padding: 0.25rem 0.6rem;
+      padding: 0 0.75rem;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
       transition: background 0.15s, color 0.15s;
       white-space: nowrap;
     }
-    .copy-btn:hover { background: var(--accent); color: #090023; }
-    .copy-btn.copied { background: #10B981; color: #fff; }
-    .step-desc {
+    .copy-q-btn:hover { background: var(--accent); color: #090023; }
+    .copy-q-btn.copied { background: #10B981; color: #fff; }
+    .copy-q-btn:focus-visible {
+      outline: 2px solid var(--accent);
+      border-radius: 4px;
+    }
+
+    /* Grid-rows accordion */
+    .prompt-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s var(--ease);
+    }
+    .prompt-item.open .prompt-body {
+      grid-template-rows: 1fr;
+    }
+    .prompt-body-inner {
+      overflow: hidden;
+    }
+    .prompt-body-content {
+      padding: 1.25rem;
+      border-top: 1px solid var(--text-faint);
+    }
+    .prompt-text {
+      background: var(--bg);
+      border: 1px solid var(--text-faint);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+      white-space: pre-wrap;
+    }
+    .prompt-desc {
       font-size: 0.85rem;
       color: var(--text-muted);
       line-height: 1.5;
@@ -313,15 +420,21 @@
       border: 1px solid var(--text-faint);
       border-radius: 12px;
       padding: 1.5rem;
-      transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+      transition: border-color 0.2s var(--ease);
+      cursor: default;
     }
     .feature-card:hover {
       border-color: var(--accent);
-      transform: translateY(-3px);
     }
     .feature-icon {
-      font-size: 1.75rem;
+      width: 2rem;
+      height: 2rem;
+      color: var(--accent);
       margin-bottom: 0.75rem;
+    }
+    .feature-icon svg {
+      width: 100%;
+      height: 100%;
     }
     .feature-card h3 {
       font-size: 1rem;
@@ -334,32 +447,23 @@
       line-height: 1.6;
     }
 
-    /* PDF BUTTON */
-    .pdf-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-      background: transparent;
-      border: 1.5px solid var(--accent);
-      color: var(--accent);
-      padding: 0.6rem 1.25rem;
-      border-radius: 8px;
-      font-family: 'Figtree', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+    /* REDUCED MOTION */
+    @media (prefers-reduced-motion: reduce) {
+      .prompt-body,
+      .ptoggle,
+      .feature-card,
+      .copy-q-btn,
+      .pdf-btn,
+      .cta-primary,
+      .prompt-header { transition: none; }
     }
-    .pdf-btn:hover { background: var(--accent); color: #090023; }
 
-    /* FADE IN — estado inicial via gsap.from(), sem CSS oculto */
     .fade-in {}
 
     /* PRINT */
     @media print {
       .nav, .hero-blob, footer,
-      .hero-meta, .side-card, .pdf-btn, .copy-btn { display: none !important; }
+      .hero-meta, .side-card, .hero-actions, .ptoggle, .copy-q-btn { display: none !important; }
       body { background: #fff; color: #111; }
       .hero { padding: 1.5rem 0 1rem; }
       .hero-grid { grid-template-columns: 1fr; }
@@ -368,15 +472,20 @@
       .hero .sub { color: #444; font-size: 0.9rem; margin-bottom: 0; }
       .eyebrow { color: #0d9488; }
       section.elevated { background: #fff; }
-      .steps-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
-      .step-card { background: #fff; border: 1px solid #ccc; border-top: 2px solid #0d9488; break-inside: avoid; page-break-inside: avoid; }
-      .step-num { color: #0d9488; }
-      .step-card h3 { color: #111; }
-      .prompt-box { background: #f5f5f5; border: 1px solid #ddd; color: #222; font-style: italic; }
-      .step-desc { color: #555; }
+      .prompt-list { border: none; border-radius: 0; }
+      .prompt-item { border-bottom: 1px solid #ddd; page-break-inside: avoid; }
+      .prompt-header { background: #fff; }
+      .prompt-toggle { padding: 0.75rem 0; color: #111; }
+      .pnum { color: #0d9488; }
+      .prompt-body { display: block !important; grid-template-rows: unset !important; }
+      .prompt-body-inner { overflow: visible; }
+      .prompt-body-content { padding: 0 0 1rem; border-top: 1px solid #eee; }
+      .prompt-text { background: #f5f5f5; border: 1px solid #ddd; color: #222; }
+      .prompt-desc { color: #555; }
       .section-header h2 { color: #111; }
       .section-header .lead { color: #444; }
       .wrap { padding: 0 1rem; }
+      .feature-icon svg { display: none; }
     }
 
     /* FOOTER */
@@ -428,7 +537,7 @@
         <div class="hero-copy">
           <p class="eyebrow">IA APLICADA · DESIGN</p>
           <h1>Da ideia do projeto para um ambiente montado com o <span class="accent">ChatGPT</span></h1>
-          <p class="sub">Envie uma foto do seu cômodo e o ChatGPT projeta a reforma como um arquiteto de alto padrão. São 9 prompts no total: 2 principais para redesign e lista de compras, mais 7 para ir fundo em transformação, estilo, orçamento, layout, cores e design da casa inteira.</p>
+          <p class="sub">Envie uma foto do seu cômodo e o ChatGPT projeta a reforma como um arquiteto de alto padrão. Um toolkit completo com 9 prompts: do redesign visual e lista de compras até transformação de estilo, orçamento, layout, cores e auditoria da casa inteira.</p>
           <div class="hero-meta">
             <div class="hero-meta-item">
               <span class="valor">9</span>
@@ -443,9 +552,13 @@
               <span class="label">Resultado</span>
             </div>
           </div>
-          <button class="pdf-btn" onclick="window.print()">
-            ↓ Baixar PDF com os prompts
-          </button>
+          <div class="hero-actions">
+            <a href="#prompts" class="cta-primary">Ver os 9 prompts ↓</a>
+            <button class="pdf-btn" onclick="gerarPDF()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              Baixar PDF
+            </button>
+          </div>
         </div>
         <div class="side-card">
           <p class="side-card-title">O que você vai receber</p>
@@ -462,125 +575,232 @@
     </div>
   </header>
 
-  <!-- SEÇÃO 1: OS 2 PROMPTS -->
+  <!-- OS 9 PROMPTS -->
   <section id="prompts" class="elevated">
     <div class="wrap">
       <div class="section-header fade-in">
-        <p class="eyebrow">PASSO A PASSO</p>
-        <h2>Os 2 prompts para redesenhar qualquer cômodo</h2>
-        <p class="lead">Envie uma foto do seu ambiente, cole o primeiro prompt e siga para o segundo na mesma conversa.</p>
+        <p class="eyebrow">OS 9 PROMPTS</p>
+        <h2>Tudo que você precisa para redesenhar qualquer cômodo</h2>
+        <p class="lead">Clique no título para ler o prompt completo, ou copie direto sem precisar expandir. Use na mesma conversa ou em sessões separadas.</p>
       </div>
-      <div class="steps-grid">
-        <div class="step-card fade-in">
-          <p class="step-num">Prompt 1</p>
-          <h3>Redesign de alto padrão</h3>
-          <div class="prompt-box">Aqui está uma foto do meu cômodo. Reprojete-o como um arquiteto de interiores de alto padrão faria. Preserve a estrutura original, mas otimize layout, iluminação, materiais, mobiliário e decoração para criar um ambiente sofisticado, acolhedor e funcional. O resultado deve parecer uma fotografia real de um projeto executável.</div>
-          <p class="step-desc">O ChatGPT gera imagens e entrega um projeto de redesign completo do seu cômodo.</p>
+
+      <div class="prompt-list fade-in">
+
+        <div class="prompt-item" id="p1">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p1')" aria-expanded="false" aria-controls="pb1">
+              <span class="pnum">01</span>
+              <span class="ptitle">Redesign de alto padrão</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p1')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb1" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Aqui está uma foto do meu cômodo. Reprojete-o como um arquiteto de interiores de alto padrão faria. Preserve a estrutura original, mas otimize layout, iluminação, materiais, mobiliário e decoração para criar um ambiente sofisticado, acolhedor e funcional. O resultado deve parecer uma fotografia real de um projeto executável.</p>
+                <p class="prompt-desc">O ChatGPT gera imagens e entrega um projeto de redesign completo do seu cômodo.</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="step-card fade-in">
-          <p class="step-num">Prompt Bônus</p>
-          <h3>Lista de compras executável</h3>
-          <div class="prompt-box">Agora transforme esse projeto em uma versão executável. Priorize os itens com maior impacto visual por real investido, liste cada item com preço estimado, link da Amazon ou do Mercado Livre e justifique brevemente sua escolha.</div>
-          <p class="step-desc">O ChatGPT devolve a lista de compras completa com preço e link real para você montar o ambiente de verdade.</p>
+
+        <div class="prompt-item" id="p2">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p2')" aria-expanded="false" aria-controls="pb2">
+              <span class="pnum">02</span>
+              <span class="ptitle">Lista de compras executável</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p2')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb2" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Agora transforme esse projeto em uma versão executável. Priorize os itens com maior impacto visual por real investido, liste cada item com preço estimado, link da Amazon ou do Mercado Livre e justifique brevemente sua escolha.</p>
+                <p class="prompt-desc">O ChatGPT devolve a lista de compras completa com preço e link real para você montar o ambiente de verdade.</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div class="prompt-item" id="p3">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p3')" aria-expanded="false" aria-controls="pb3">
+              <span class="pnum">03</span>
+              <span class="ptitle">Transformação completa do ambiente</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p3')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb3" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Vou enviar uma foto do meu quarto. Atue como um designer de interiores profissional. Analise o layout, os móveis, a iluminação, as cores, as paredes, o piso e o equilíbrio visual geral. Depois, me dê um plano completo de transformação usando o quarto atual como ponto de partida. Diga exatamente o que remover, mover, repintar, substituir, adicionar e reorganizar, em ordem de prioridade. Meu orçamento máximo é [ORÇAMENTO: ex. R$500, R$2.000] e meu estilo preferido é [ESTILO: ex. minimalista, escandinavo, moderno, boho].</p>
+                <p class="prompt-desc">Receba um plano completo de transformação personalizado para o seu cômodo, do layout à decoração.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p4">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p4')" aria-expanded="false" aria-controls="pb4">
+              <span class="pnum">04</span>
+              <span class="ptitle">Faça seu ambiente parecer mais caro</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p4')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb4" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Analise a foto do meu quarto que enviei e me mostre como fazer com que ele pareça mais sofisticado sem gastar muito. Identifique as mudanças mais baratas que causam o maior impacto visual. Dê recomendações específicas de iluminação, cortinas, cores, disposição dos móveis, decoração de parede, roupa de cama, plantas, tapetes e acessórios com base no que você consegue ver na foto.</p>
+                <p class="prompt-desc">Descubra as mudanças de maior impacto visual pelo menor custo para elevar a aparência do seu espaço.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p5">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p5')" aria-expanded="false" aria-controls="pb5">
+              <span class="pnum">05</span>
+              <span class="ptitle">Modo "Quarto do Pinterest"</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p5')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb5" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Vou enviar uma foto do meu quarto. Analise o que está fazendo ele parecer comum ou sem personalidade. Depois, crie um conceito de design estilo [ESTÉTICA: ex. Pinterest minimalista, boho moderno, escandinavo, japandi], com paleta de cores, posicionamento dos móveis, iluminação, tratamento de paredes, tecidos, decoração, plantas e toques finais. Mantenha tudo realista para o tamanho e a estrutura reais do quarto.</p>
+                <p class="prompt-desc">Transforme seu cômodo num ambiente editorial com um conceito de design completo e executável.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p6">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p6')" aria-expanded="false" aria-controls="pb6">
+              <span class="pnum">06</span>
+              <span class="ptitle">Reforma dentro do orçamento</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p6')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb6" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Vou enviar a foto do meu quarto. Redesenhe-o para que fique dramaticamente melhor com um orçamento máximo de [ORÇAMENTO]. Priorize as mudanças que criem o maior impacto visual pelo menor custo. Diga o que eu devo manter, remover, reorganizar, fazer por conta própria, repintar ou comprar. Divida as recomendações em obrigatórias, de alto impacto e opcionais, para que eu saiba exatamente para onde meu dinheiro deve ir.</p>
+                <p class="prompt-desc">Receba um plano de reforma priorizado em três categorias para saber exatamente onde colocar cada real.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p7">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p7')" aria-expanded="false" aria-controls="pb7">
+              <span class="pnum">07</span>
+              <span class="ptitle">Corrija o layout do seu ambiente</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p7')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb7" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Analise o layout do meu quarto com base na foto enviada. Identifique espaço desperdiçado, posicionamento ruim dos móveis, áreas de circulação ruins, desequilíbrio visual e pontos que fazem o quarto parecer menor. Depois, me dê uma nova disposição usando só as peças que eu já tenho. Explique exatamente onde cada item deve ficar e por quê. Se necessário, sugira no máximo 2 acessórios baratos que fariam grande diferença.</p>
+                <p class="prompt-desc">Reorganize os móveis que você já tem para melhorar a circulação, o equilíbrio e a sensação de amplitude.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p8">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p8')" aria-expanded="false" aria-controls="pb8">
+              <span class="pnum">08</span>
+              <span class="ptitle">Escolha perfeita de cores e iluminação</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p8')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb8" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Analise a foto do meu quarto que enviei e recomende a melhor paleta de cores e configuração de iluminação para este espaço. Considere o tamanho do quarto, a luz natural, os móveis existentes, o piso, as cores das paredes e a atmosfera geral. Dê orientações específicas sobre cores de parede, temperatura de cor das lâmpadas, posicionamento das luminárias, recomendações de cortinas e cores de destaque. O objetivo é fazer o quarto parecer [MAIOR / LUXUOSO / ACONCHEGANTE / MODERNO / CALMO].</p>
+                <p class="prompt-desc">Descubra a paleta de cores e iluminação ideal para o seu cômodo com base no que já existe no espaço.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="prompt-item" id="p9">
+          <div class="prompt-header">
+            <button class="prompt-toggle" onclick="togglePrompt('p9')" aria-expanded="false" aria-controls="pb9">
+              <span class="pnum">09</span>
+              <span class="ptitle">Auditoria completa do design da casa</span>
+              <span class="ptoggle">↓</span>
+            </button>
+            <button class="copy-q-btn" onclick="copyPrompt(event,'p9')">Copiar</button>
+          </div>
+          <div class="prompt-body" id="pb9" role="region">
+            <div class="prompt-body-inner">
+              <div class="prompt-body-content">
+                <p class="prompt-text">Vou enviar fotos de diferentes cômodos da minha casa. Analise-as em conjunto, não separadamente. Identifique inconsistências em cores, estilos de móveis, iluminação, decoração e fluidez visual entre os ambientes. Depois, crie uma direção de design coesa para a casa inteira, com paleta de cores consistente, materiais, iluminação, estilo de móveis e linguagem decorativa. Meu estilo preferido é [ESTILO: ex. moderno, clássico, minimalista, mediterrâneo]. Me diga o que deve mudar primeiro.</p>
+                <p class="prompt-desc">Unifique o design de toda a casa com uma única direção visual coesa, do mais urgente ao opcional.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 0;">
+        <button class="pdf-btn" onclick="gerarPDF()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          Baixar todos os prompts em PDF
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- SEÇÃO 2: POR QUE FUNCIONA -->
+  <!-- POR QUE FUNCIONA -->
   <section>
     <div class="wrap">
       <div class="section-header fade-in">
         <p class="eyebrow">POR QUE FUNCIONA</p>
-        <h2>De sonho a projeto executável em dois prompts</h2>
+        <h2>De sonho a projeto executável em poucos prompts</h2>
         <p class="lead">O ChatGPT combina visão de design com dados reais de mercado para transformar uma foto qualquer num projeto concreto, com lista de compras pronta para usar.</p>
       </div>
       <div class="features-grid">
         <div class="feature-card fade-in">
-          <div class="feature-icon">🏠</div>
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+          </div>
           <h3>Projeto visual realista</h3>
           <p>O ChatGPT gera imagens que parecem fotografias reais de projetos executáveis, preservando a estrutura do seu cômodo.</p>
         </div>
         <div class="feature-card fade-in">
-          <div class="feature-icon">🛒</div>
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+          </div>
           <h3>Lista de compras com links</h3>
           <p>Cada item vem com preço estimado e link direto da Amazon ou Mercado Livre — sem precisar pesquisar nada por conta própria.</p>
         </div>
         <div class="feature-card fade-in">
-          <div class="feature-icon">💡</div>
+          <div class="feature-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+          </div>
           <h3>Custo-benefício por item</h3>
           <p>O ChatGPT prioriza o que gera mais impacto visual por real investido e justifica cada escolha antes de você comprar.</p>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- SEÇÃO 3: PROMPTS BÔNUS -->
-  <section class="elevated">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <p class="eyebrow">PROMPTS BÔNUS</p>
-        <h2>Mais prompts que podem te ajudar</h2>
-        <p class="lead">Use esses prompts na mesma conversa ou em sessões separadas para ir ainda mais fundo na transformação do seu ambiente.</p>
-      </div>
-      <div class="steps-grid">
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 1</p>
-          <h3>Transformação completa do ambiente</h3>
-          <div class="prompt-box">Vou enviar uma foto do meu quarto. Atue como um designer de interiores profissional. Analise o layout, os móveis, a iluminação, as cores, as paredes, o piso e o equilíbrio visual geral. Depois, me dê um plano completo de transformação usando o quarto atual como ponto de partida. Diga exatamente o que remover, mover, repintar, substituir, adicionar e reorganizar, em ordem de prioridade. Meu orçamento máximo é [ORÇAMENTO: ex. R$500, R$2.000] e meu estilo preferido é [ESTILO: ex. minimalista, escandinavo, moderno, boho].</div>
-          <p class="step-desc">Receba um plano completo de transformação personalizado para o seu cômodo, do layout à decoração.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 2</p>
-          <h3>Faça seu ambiente parecer mais caro</h3>
-          <div class="prompt-box">Analise a foto do meu quarto que enviei e me mostre como fazer com que ele pareça mais sofisticado sem gastar muito. Identifique as mudanças mais baratas que causam o maior impacto visual. Dê recomendações específicas de iluminação, cortinas, cores, disposição dos móveis, decoração de parede, roupa de cama, plantas, tapetes e acessórios com base no que você consegue ver na foto.</div>
-          <p class="step-desc">Descubra as mudanças de maior impacto visual pelo menor custo para elevar a aparência do seu espaço.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 3</p>
-          <h3>Modo "Quarto do Pinterest"</h3>
-          <div class="prompt-box">Vou enviar uma foto do meu quarto. Analise o que está fazendo ele parecer comum ou sem personalidade. Depois, crie um conceito de design estilo [ESTÉTICA: ex. Pinterest minimalista, boho moderno, escandinavo, japandi], com paleta de cores, posicionamento dos móveis, iluminação, tratamento de paredes, tecidos, decoração, plantas e toques finais. Mantenha tudo realista para o tamanho e a estrutura reais do quarto.</div>
-          <p class="step-desc">Transforme seu cômodo num ambiente editorial com um conceito de design completo e executável.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 4</p>
-          <h3>Reforma dentro do orçamento</h3>
-          <div class="prompt-box">Vou enviar a foto do meu quarto. Redesenhe-o para que fique dramaticamente melhor com um orçamento máximo de [ORÇAMENTO]. Priorize as mudanças que criem o maior impacto visual pelo menor custo. Diga o que eu devo manter, remover, reorganizar, fazer por conta própria, repintar ou comprar. Divida as recomendações em obrigatórias, de alto impacto e opcionais, para que eu saiba exatamente para onde meu dinheiro deve ir.</div>
-          <p class="step-desc">Receba um plano de reforma priorizado em três categorias para saber exatamente onde colocar cada real.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 5</p>
-          <h3>Corrija o layout do seu ambiente</h3>
-          <div class="prompt-box">Analise o layout do meu quarto com base na foto enviada. Identifique espaço desperdiçado, posicionamento ruim dos móveis, áreas de circulação ruins, desequilíbrio visual e pontos que fazem o quarto parecer menor. Depois, me dê uma nova disposição usando só as peças que eu já tenho. Explique exatamente onde cada item deve ficar e por quê. Se necessário, sugira no máximo 2 acessórios baratos que fariam grande diferença.</div>
-          <p class="step-desc">Reorganize os móveis que você já tem para melhorar a circulação, o equilíbrio e a sensação de amplitude.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 6</p>
-          <h3>Escolha perfeita de cores e iluminação</h3>
-          <div class="prompt-box">Analise a foto do meu quarto que enviei e recomende a melhor paleta de cores e configuração de iluminação para este espaço. Considere o tamanho do quarto, a luz natural, os móveis existentes, o piso, as cores das paredes e a atmosfera geral. Dê orientações específicas sobre cores de parede, temperatura de cor das lâmpadas, posicionamento das luminárias, recomendações de cortinas e cores de destaque. O objetivo é fazer o quarto parecer [MAIOR / LUXUOSO / ACONCHEGANTE / MODERNO / CALMO].</div>
-          <p class="step-desc">Descubra a paleta de cores e iluminação ideal para o seu cômodo com base no que já existe no espaço.</p>
-        </div>
-
-        <div class="step-card fade-in">
-          <p class="step-num">Bônus 7</p>
-          <h3>Auditoria completa do design da casa</h3>
-          <div class="prompt-box">Vou enviar fotos de diferentes cômodos da minha casa. Analise-as em conjunto, não separadamente. Identifique inconsistências em cores, estilos de móveis, iluminação, decoração e fluidez visual entre os ambientes. Depois, crie uma direção de design coesa para a casa inteira, com paleta de cores consistente, materiais, iluminação, estilo de móveis e linguagem decorativa. Meu estilo preferido é [ESTILO: ex. moderno, clássico, minimalista, mediterrâneo]. Me diga o que deve mudar primeiro.</div>
-          <p class="step-desc">Unifique o design de toda a casa com uma única direção visual coesa, do mais urgente ao opcional.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <div class="wrap" style="text-align:center;padding:2rem 0 3rem;">
-    <button class="pdf-btn" onclick="window.print()">↓ Baixar PDF com os prompts</button>
-  </div>
 
 </main>
 
@@ -595,30 +815,147 @@
 </footer>
 
 <script>
-  document.querySelectorAll('.prompt-box').forEach(box => {
-    const text = box.textContent.replace(/^"|"$/g, '').trim();
-    const btn = document.createElement('button');
-    btn.className = 'copy-btn';
-    btn.textContent = 'Copiar';
-    btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(text).then(() => {
-        btn.textContent = 'Copiado!';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
-      });
-    });
-    box.style.position = 'relative';
-    box.style.paddingRight = '5rem';
-    box.appendChild(btn);
-  });
+  function togglePrompt(id) {
+    const item = document.getElementById(id);
+    const isOpen = item.classList.contains('open');
+    item.classList.toggle('open', !isOpen);
+    item.querySelector('.prompt-toggle').setAttribute('aria-expanded', String(!isOpen));
+  }
 
-  if (typeof gsap !== 'undefined') {
+  function copyPrompt(event, id) {
+    event.stopPropagation();
+    const text = document.getElementById(id).querySelector('.prompt-text').textContent.trim();
+    const btn = event.currentTarget;
+    const write = () => {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(write);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      write();
+    }
+  }
+
+  function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxW = W - margin * 2;
+    let y = 0;
+
+    function checkPage(needed) {
+      if (y + needed > 270) { doc.addPage(); y = 20; }
+    }
+
+    doc.setFillColor(9, 0, 35);
+    doc.rect(0, 0, W, 28, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(20, 184, 166);
+    doc.text('@bperobelli', margin, 17);
+    doc.setFontSize(9);
+    doc.setTextColor(139, 127, 170);
+    doc.setFont('helvetica', 'normal');
+    doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+    y = 40;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.setTextColor(9, 0, 35);
+    const titulo = '9 Prompts de Redesign de Interiores com ChatGPT';
+    const tituloLines = doc.splitTextToSize(titulo, maxW);
+    doc.text(tituloLines, margin, y);
+    y += tituloLines.length * 7 + 4;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(80, 70, 100);
+    const sub = 'Envie a foto do seu cômodo e use os prompts abaixo na mesma conversa. Substitua os campos entre [colchetes] com suas informações.';
+    const subLines = doc.splitTextToSize(sub, maxW);
+    doc.text(subLines, margin, y);
+    y += subLines.length * 5 + 10;
+
+    doc.setDrawColor(200, 195, 220);
+    doc.line(margin, y, W - margin, y);
+    y += 8;
+
+    const prompts = [
+      { num: 'Prompt 01', titulo: 'Redesign de alto padrão' },
+      { num: 'Prompt 02', titulo: 'Lista de compras executável' },
+      { num: 'Prompt 03', titulo: 'Transformação completa do ambiente' },
+      { num: 'Prompt 04', titulo: 'Faça seu ambiente parecer mais caro' },
+      { num: 'Prompt 05', titulo: 'Modo "Quarto do Pinterest"' },
+      { num: 'Prompt 06', titulo: 'Reforma dentro do orçamento' },
+      { num: 'Prompt 07', titulo: 'Corrija o layout do seu ambiente' },
+      { num: 'Prompt 08', titulo: 'Escolha perfeita de cores e iluminação' },
+      { num: 'Prompt 09', titulo: 'Auditoria completa do design da casa' },
+    ];
+
+    document.querySelectorAll('.prompt-text').forEach((box, i) => {
+      const texto = box.textContent.trim();
+      const p = prompts[i] || { num: 'Prompt ' + (i + 1), titulo: '' };
+      checkPage(30);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(20, 184, 166);
+      doc.text(p.num.toUpperCase(), margin, y);
+      y += 5;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(9, 0, 35);
+      doc.text(p.titulo, margin, y);
+      y += 6;
+      const textoLines = doc.splitTextToSize('"' + texto + '"', maxW - 8);
+      const boxH = textoLines.length * 5.2 + 8;
+      checkPage(boxH + 4);
+      doc.setFillColor(245, 243, 252);
+      doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(9.5);
+      doc.setTextColor(60, 50, 90);
+      doc.text(textoLines, margin + 4, y + 6);
+      y += boxH + 10;
+    });
+
+    const pages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(180, 170, 200);
+      doc.text('@bperobelli  \xB7  bperobelli.com.br', margin, 287);
+      doc.text(p + ' / ' + pages, W - margin, 287, { align: 'right' });
+    }
+
+    doc.save('redesign-interiores-chatgpt-bperobelli.pdf');
+  }
+
+  // Auto-open first prompt
+  (function() {
+    var first = document.getElementById('p1');
+    first.classList.add('open');
+    first.querySelector('.prompt-toggle').setAttribute('aria-expanded', 'true');
+  })();
+
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof gsap !== 'undefined' && !reducedMotion) {
     gsap.registerPlugin(ScrollTrigger);
     gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
     gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+    gsap.from('.hero-actions', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
     gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
     gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
-    gsap.utils.toArray('.fade-in').forEach(el => {
+    gsap.utils.toArray('.fade-in').forEach(function(el) {
       gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
         scrollTrigger: { trigger:el, start:'top 88%', once:true }
       });
