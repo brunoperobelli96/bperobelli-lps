@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>7 Prompts para Aumentar sua Renda com ChatGPT · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --accent: #F59E0B;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .skip-link {
+      position: absolute; top: -40px; left: 0;
+      background: var(--accent); color: #090023;
+      font-weight: 700; padding: 0.5rem 1rem;
+      text-decoration: none; transition: top 0.2s; z-index: 100;
+    }
+    .skip-link:focus { top: 0; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(9,0,35,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-faint);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      text-decoration: none; color: var(--text);
+      font-weight: 700; font-size: 0.95rem;
+    }
+    .nav-mark {
+      background: var(--accent); color: #090023;
+      font-weight: 800; font-size: 0.8rem;
+      padding: 0.25rem 0.45rem; border-radius: 6px; letter-spacing: 0.02em;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; }
+    .nav-cta {
+      background: var(--accent); color: #090023;
+      font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.1rem; border-radius: 8px;
+      text-decoration: none; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero { position: relative; overflow: hidden; padding: clamp(4rem,10vw,7rem) 0 clamp(3rem,8vw,5rem); }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; opacity: 0.18; }
+    .hero-blob.b1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -150px; }
+    .hero-blob.b2 { width: 400px; height: 400px; background: #8A45FB; bottom: -100px; right: -100px; }
+    .hero-grid {
+      position: relative;
+      display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: start;
+    }
+    @media (max-width: 768px) { .hero-grid { grid-template-columns: 1fr; } }
+    .eyebrow {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin-bottom: 1rem;
+    }
+    .hero h1 { font-size: clamp(2rem,5vw,3.2rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.25rem; }
+    .accent { color: var(--accent); }
+    .sub { font-size: clamp(1rem,2vw,1.15rem); color: var(--text-muted); max-width: 520px; margin-bottom: 2rem; line-height: 1.7; }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #090023;
+      font-weight: 700; font-size: 1rem;
+      padding: 0.85rem 1.75rem; border-radius: 10px;
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.88; transform: translateY(-2px); }
+    .hero-meta { display: flex; gap: 2rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .hero-meta-item .valor { font-size: 1.6rem; font-weight: 800; color: var(--accent); line-height: 1; }
+    .hero-meta-item .label { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface); border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem;
+    }
+    .side-card-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .side-card li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+    .side-card li::before { content: ''; display: block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-top: 0.45rem; flex-shrink: 0; }
+
+    /* DOWNLOAD BTN */
+    .download-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; border: 1.5px solid var(--accent); border-radius: 8px;
+      color: var(--accent); cursor: pointer;
+      font-family: 'Figtree', sans-serif; font-size: 0.875rem; font-weight: 700;
+      padding: 0.625rem 1.25rem; transition: background 0.2s, color 0.2s;
+      text-decoration: none; margin-top: 1.5rem;
+    }
+    .download-btn:hover { background: var(--accent); color: #090023; }
+    .download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* SECTIONS */
+    section { padding: clamp(3rem,8vw,5rem) 0; }
+    section:nth-child(even) { background: var(--bg-elevated); }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-header h2 { font-size: clamp(1.6rem,3.5vw,2.4rem); font-weight: 800; margin-bottom: 0.75rem; }
+    .section-header p { color: var(--text-muted); font-size: 1rem; max-width: 560px; margin: 0 auto; }
+
+    /* PROMPTS */
+    .prompts-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+    .prompt-card {
+      background: var(--surface); border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .prompt-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .prompt-number { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+    .prompt-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+    .prompt-box {
+      background: var(--bg); border: 1px solid var(--text-faint); border-radius: 8px;
+      padding: 1rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; position: relative;
+    }
+    .copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: var(--text-faint); border: none; border-radius: 6px;
+      color: var(--text-muted); cursor: pointer;
+      font-family: 'Figtree', sans-serif; font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.04em; padding: 0.25rem 0.6rem;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--accent); color: #090023; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+
+    /* STEPS */
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .step-card {
+      background: var(--surface); border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent); border-radius: 12px; padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .step-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .step-num {
+      width: 36px; height: 36px; background: var(--accent); color: #090023;
+      font-weight: 800; font-size: 1rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;
+    }
+    .step-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer { background: var(--bg); border-top: 1px solid var(--text-faint); padding: 2rem 0; text-align: center; }
+    .footer-logo { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--text-muted); font-size: 0.9rem; text-decoration: none; margin-bottom: 0.5rem; }
+    .footer-note { font-size: 0.78rem; color: var(--text-faint); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="https://bperobelli.com.br" class="nav-logo">
+        <span class="nav-mark">BP</span>
+        Bruno Perobelli <small>· IA aplicada</small>
+      </a>
+      <a href="#prompts" class="nav-cta">Pegar os prompts</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">IA APLICADA · RENDA</p>
+          <h1>Descubra as oportunidades de <span class="accent">renda</span> que você nem sabia que tinha</h1>
+          <p class="sub">Joguei meu salário e histórico profissional no ChatGPT. Em poucos minutos, ele me mostrou caminhos que eu nem imaginava. Aqui estão os 7 prompts que usei.</p>
+          <a href="#prompts" class="hero-cta">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5-7.5 7.5-7.5-7.5"/></svg>
+            Pegar os prompts
+          </a>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <div class="valor">7</div>
+              <div class="label">prompts prontos para usar</div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="valor">&lt;5min</div>
+              <div class="label">para testar cada um</div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="valor">90</div>
+              <div class="label">dias de plano incluído</div>
+            </div>
+          </div>
+          <button class="download-btn" onclick="gerarPDF()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Baixar todos os prompts
+          </button>
+        </div>
+        <div class="side-card fade-in">
+          <p class="side-card-title">O que você vai receber</p>
+          <ul>
+            <li>Habilidades ocultas mapeadas</li>
+            <li>10 fontes de renda realistas</li>
+            <li>Sua experiência transformada em serviço</li>
+            <li>A oportunidade de maior impacto</li>
+            <li>Cargos que pagam mais para o seu perfil</li>
+            <li>Renda extra com menos de 5h/semana</li>
+            <li>Plano de ação para os próximos 90 dias</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="prompts">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">OS 7 PROMPTS</p>
+        <h2>Copie, cole e substitua pelo seu perfil</h2>
+        <p>Use o ChatGPT com cada prompt na sequência. Quanto mais contexto você der, melhores as respostas.</p>
+      </div>
+      <div class="prompts-grid">
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 1</p>
+          <p class="prompt-title">Descubra minhas habilidades ocultas</p>
+          <div class="prompt-box">Analise meu currículo, histórico profissional, formação, projetos e conquistas e identifique as 10 habilidades mais valiosas que provavelmente estou subestimando. Explique por que cada uma tem valor, quão rara ela é e quem pagaria por ela. Mostre como a IA pode potencializar cada habilidade e sugira uma forma prática de monetização.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 2</p>
+          <p class="prompt-title">Encontre novas oportunidades de renda</p>
+          <div class="prompt-box">Com base na minha experiência, interesses e disponibilidade de tempo, sugira 10 formas realistas de gerar entre R$ 5 mil e R$ 15 mil extras por mês. Para cada opção, informe investimento inicial, tempo até a primeira receita, dedicação semanal, dificuldade e potencial de ganhos. Considere também quanto do trabalho pode ser acelerado ou automatizado com IA.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 3</p>
+          <p class="prompt-title">Transforme minha experiência em renda</p>
+          <div class="prompt-box">Atue como um estrategista de negócios e transforme minha experiência atual em oportunidades de receita. Sugira serviços, consultorias, freelas, produtos digitais ou soluções com IA que eu poderia vender usando habilidades que já tenho. Para cada ideia, indique público-alvo, faixa de preço e melhor canal de aquisição. Priorize opções que possam ser testadas em até 14 dias.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 4</p>
+          <p class="prompt-title">Encontre minha oportunidade de maior impacto</p>
+          <div class="prompt-box">Se seu único objetivo fosse me ajudar a aumentar minha renda o mais rápido possível usando minhas habilidades atuais, em que você focaria primeiro? Escolha apenas uma oportunidade principal e explique por que ela supera as demais. Mostre o potencial de ganho, os principais riscos e o que eu deveria ignorar. Crie também um plano de ação para os primeiros 30 dias.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 5</p>
+          <p class="prompt-title">Mostre onde eu poderia ganhar mais</p>
+          <div class="prompt-box">Com base na minha experiência, identifique cargos, setores ou oportunidades em que eu poderia ganhar significativamente mais do que ganho hoje. Para cada opção, explique por que meu perfil é compatível e quais lacunas eu precisaria preencher. Inclua faixa de remuneração, demanda do mercado e dificuldade de transição. Priorize oportunidades realistas.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 6</p>
+          <p class="prompt-title">Crie uma fonte de renda extra usando IA</p>
+          <div class="prompt-box">Com base nas minhas habilidades e experiência, sugira 5 serviços apoiados por IA que eu poderia começar dedicando menos de 5 horas por semana. Para cada serviço, explique o problema resolvido, o cliente ideal, o preço sugerido e as ferramentas de IA necessárias. Priorize modelos simples de vender e entregar. Destaque qual tem maior chance de gerar receita mais rápido.</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-number">Prompt 7</p>
+          <p class="prompt-title">Crie meu plano de 90 dias</p>
+          <div class="prompt-box">Meu objetivo é aumentar minha segurança profissional e criar uma nova fonte de renda nos próximos 90 dias. Com base no meu histórico, experiência e disponibilidade, monte um plano dividido por semanas com ações concretas. Inclua metas, prioridades, testes que devo fazer e indicadores para saber se estou avançando. Evite recomendações genéricas e foque no caminho mais realista para gerar receita.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="como-usar" style="background: var(--bg-elevated);">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">COMO USAR</p>
+        <h2>Três passos para começar agora</h2>
+        <p>Não precisa de nenhuma configuração. Só o ChatGPT e as suas informações reais.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <div class="step-num">1</div>
+          <h3>Abra o ChatGPT</h3>
+          <p>Funciona no ChatGPT gratuito. Se tiver acesso ao GPT-4, os resultados ficam ainda mais detalhados.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">2</div>
+          <h3>Cole seu contexto primeiro</h3>
+          <p>Antes de usar os prompts, cole seu currículo, resumo profissional ou histórico de experiências. Quanto mais específico, melhor.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">3</div>
+          <h3>Use os prompts na sequência</h3>
+          <p>Eles foram pensados para funcionar juntos. Comece pelo 1 e siga até o 7. O último entrega um plano de ação completo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p class="footer-note">Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+function gerarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth();
+  const margin = 20;
+  const maxW = W - margin * 2;
+  let y = 0;
+
+  function checkPage(needed) {
+    if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+
+  doc.setFillColor(9, 0, 35);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(245, 158, 11);
+  doc.text('@bperobelli', margin, 17);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 127, 170);
+  doc.setFont('helvetica', 'normal');
+  doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+  y = 40;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(9, 0, 35);
+  const titulo = '7 Prompts para Aumentar sua Renda com ChatGPT';
+  const tituloLines = doc.splitTextToSize(titulo, maxW);
+  doc.text(tituloLines, margin, y);
+  y += tituloLines.length * 7 + 4;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(80, 70, 100);
+  const sub = 'Use na mesma conversa, na ordem abaixo. Cole seu currículo ou histórico profissional antes de começar.';
+  const subLines = doc.splitTextToSize(sub, maxW);
+  doc.text(subLines, margin, y);
+  y += subLines.length * 5 + 10;
+
+  doc.setDrawColor(200, 195, 220);
+  doc.line(margin, y, W - margin, y);
+  y += 8;
+
+  const prompts = [
+    { num: 'Prompt 1', titulo: 'Descubra minhas habilidades ocultas' },
+    { num: 'Prompt 2', titulo: 'Encontre novas oportunidades de renda' },
+    { num: 'Prompt 3', titulo: 'Transforme minha experiência em renda' },
+    { num: 'Prompt 4', titulo: 'Encontre minha oportunidade de maior impacto' },
+    { num: 'Prompt 5', titulo: 'Mostre onde eu poderia ganhar mais' },
+    { num: 'Prompt 6', titulo: 'Crie uma fonte de renda extra usando IA' },
+    { num: 'Prompt 7', titulo: 'Crie meu plano de 90 dias' },
+  ];
+
+  document.querySelectorAll('.prompt-box').forEach((box, i) => {
+    const texto = box.textContent.replace(/^"|"$/g, '').trim();
+    const p = prompts[i] || { num: `Prompt ${i + 1}`, titulo: '' };
+    checkPage(30);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(245, 158, 11);
+    doc.text(p.num.toUpperCase(), margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(9, 0, 35);
+    doc.text(p.titulo, margin, y);
+    y += 6;
+    const textoLines = doc.splitTextToSize(`"${texto}"`, maxW - 8);
+    const boxH = textoLines.length * 5.2 + 8;
+    checkPage(boxH + 4);
+    doc.setFillColor(245, 243, 252);
+    doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9.5);
+    doc.setTextColor(60, 50, 90);
+    doc.text(textoLines, margin + 4, y + 6);
+    y += boxH + 10;
+  });
+
+  const pages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= pages; p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 170, 200);
+    doc.text('@bperobelli  ·  bperobelli.com.br', margin, 287);
+    doc.text(`${p} / ${pages}`, W - margin, 287, { align: 'right' });
+  }
+
+  doc.save('7-prompts-renda-chatgpt-bperobelli.pdf');
+}
+
+document.querySelectorAll('.prompt-box').forEach(box => {
+  const text = box.textContent.replace(/^"|"$/g, '').trim();
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copiar';
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.position = 'relative';
+  box.style.paddingRight = '5rem';
+  box.appendChild(btn);
+});
+
+if (typeof gsap !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+  gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+  gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+  gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+  gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+  gsap.utils.toArray('.fade-in').forEach(el => {
+    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+    });
+  });
+}
+</script>
+
+</body>
+</html>
