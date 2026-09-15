@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>8 Prompts ChatGPT para Planilha Excel · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --accent: #14B8A6;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 1rem;
+      background: var(--accent);
+      color: #090023;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .skip-link:focus { left: 1rem; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9,0,35,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-faint);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.875rem 0;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .nav-mark {
+      background: var(--accent);
+      color: #090023;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.45rem;
+      border-radius: 5px;
+      letter-spacing: 0.04em;
+    }
+    .nav-logo span { font-weight: 600; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-size: 0.8rem; }
+    .nav-badge {
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(4rem, 10vw, 7rem) 0 clamp(3rem, 7vw, 5rem);
+    }
+    .hero-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+    }
+    .hero-blob.b1 {
+      width: 600px; height: 600px;
+      background: var(--accent);
+      top: -200px; left: -150px;
+    }
+    .hero-blob.b2 {
+      width: 500px; height: 500px;
+      background: #8A45FB;
+      bottom: -200px; right: -100px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .side-card { order: -1; }
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--accent); }
+
+    .sub {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 54ch;
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--accent);
+      color: #090023;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .hero-cta:hover { opacity: 0.88; }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 0.15rem; }
+    .hero-meta-item .val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .hero-meta-item .lbl {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* SIDE CARD */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 1.5rem;
+    }
+    .side-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .side-card ul li {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .side-card ul li::before {
+      content: '\2713';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05em;
+    }
+
+    /* DOWNLOAD BTN */
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.625rem 1.25rem;
+      transition: background 0.2s, color 0.2s;
+      text-decoration: none;
+      margin-top: 1.5rem;
+    }
+    .download-btn:hover { background: var(--accent); color: #090023; }
+    .download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* SECTIONS */
+    section {
+      padding: clamp(3rem, 7vw, 5rem) 0;
+    }
+    section:nth-child(even) { background: var(--bg-elevated); }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    .section-header h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .section-header .lead {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 55ch;
+      margin: 0 auto;
+    }
+
+    /* PROMPT CARDS */
+    .prompts-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .prompt-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 14px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .prompt-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+    .prompt-num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .prompt-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .prompt-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--text-faint);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      position: relative;
+    }
+    .prompt-box em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    /* COPY BTN */
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--text-faint);
+      border: none;
+      border-radius: 6px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: var(--accent); color: #090023; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--text-faint);
+      padding: 2rem 0;
+      text-align: center;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    footer p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteudo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="https://bperobelli.com.br" class="nav-logo">
+        <span class="nav-mark">BP</span>
+        <span>Bruno Perobelli <small>· IA aplicada</small></span>
+      </a>
+      <a href="#prompts" class="nav-badge">Ver os prompts</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <header class="hero">
+    <div class="hero-blob b1"></div>
+    <div class="hero-blob b2"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">IA APLICADA · PRODUTIVIDADE</p>
+          <h1>Mandei uma planilha pro ChatGPT. Ele encontrou erros, corrigiu formulas e montou <span class="accent">projecoes</span> que eu nao sabia que eram possiveis.</h1>
+          <p class="sub">Esses sao os 8 prompts que eu usei. Copie, substitua os campos entre colchetes e aplique na sua planilha agora.</p>
+          <a href="#prompts" class="hero-cta">Ver os prompts</a>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="val">8</span>
+              <span class="lbl">prompts prontos</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="val">100%</span>
+              <span class="lbl">gratis pra copiar</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="val">&lt;5min</span>
+              <span class="lbl">pra analisar</span>
+            </div>
+          </div>
+          <button class="download-btn" onclick="gerarPDF()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Baixar todos os prompts
+          </button>
+        </div>
+        <div class="side-card">
+          <h3>O que voce vai receber</h3>
+          <ul>
+            <li>Limpeza e auditoria da planilha</li>
+            <li>Analise completa dos dados</li>
+            <li>Criacao de formulas automaticas</li>
+            <li>Dashboard de indicadores</li>
+            <li>Comparacao budget x realizado</li>
+            <li>Insights que voce nao esta vendo</li>
+            <li>Projecao para os proximos 12 meses</li>
+            <li>Relatorio executivo com decisoes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="prompts">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">OS 8 PROMPTS</p>
+        <h2>Copie e aplique na sua planilha</h2>
+        <p class="lead">Substitua os campos em <em style="color:var(--accent);font-style:italic">colchetes</em> com suas informacoes. Use na mesma conversa, na ordem que precisar.</p>
+      </div>
+      <div class="prompts-grid">
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 1</p>
+          <p class="prompt-title">Limpe e audite minha planilha</p>
+          <div class="prompt-box">"Antes de analisar, quero garantir que minha planilha esta confiavel. Verifique: linhas duplicadas; celulas vazias que deveriam ter valor; dados inconsistentes na mesma coluna (ex: 'SP', 'Sao Paulo', 'sao paulo'); valores que parecem erro (ex: datas em coluna de numero, zeros onde nao faz sentido). Para cada problema encontrado, explique o impacto e diga exatamente como corrigir."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 2</p>
+          <p class="prompt-title">Analise minha planilha</p>
+          <div class="prompt-box">"Vou anexar uma planilha de <em>[DESCREVA O QUE E: vendas, financeiro, RH, operacoes]</em>. Antes de analisar, entenda a estrutura e identifique o que cada coluna representa. Depois, encontre: principais tendencias; anomalias; dados fora do padrao; possiveis erros; oportunidades; e os 5 insights mais importantes. Nao descreva apenas os numeros. Explique o que eles significam e quais decisoes eu poderia tomar."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 3</p>
+          <p class="prompt-title">Crie as formulas por mim</p>
+          <div class="prompt-box">"Preciso fazer <em>[DESCREVA O QUE PRECISA CALCULAR]</em> nesta planilha. Analise as colunas disponiveis e crie a formula necessaria. Diga exatamente: 1. qual formula usar; 2. em qual coluna/celula inserir; 3. como ela funciona; 4. como replica-la para as demais linhas. Se houver uma forma mais simples de chegar ao resultado, sugira."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 4</p>
+          <p class="prompt-title">Transforme os dados em dashboard</p>
+          <div class="prompt-box">"Analise esta planilha e identifique os indicadores mais importantes para acompanhar <em>[OBJETIVO: ex. resultado de vendas, controle de custos, desempenho da equipe]</em>. Crie uma proposta de dashboard contendo: KPIs principais; comparacoes relevantes; alertas; e as informacoes que exigem decisao. Organize para que qualquer pessoa entenda o cenario em menos de 1 minuto."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 5</p>
+          <p class="prompt-title">Budget x Realizado</p>
+          <div class="prompt-box">"Compare os valores planejados com os realizados nesta planilha. Calcule as diferencas absolutas e percentuais. Identifique: maiores desvios; categorias acima do orcamento; categorias abaixo; padroes recorrentes; possiveis causas; e pontos que precisam de atencao. Depois, escreva um resumo executivo com os 5 principais achados e as acoes recomendadas."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 6</p>
+          <p class="prompt-title">Encontre o que eu nao estou vendo</p>
+          <div class="prompt-box">"Analise esta planilha como um analista de dados, procurando algo que passou despercebido. Nao me entregue apenas o obvio. Procure: correlacoes; mudancas de comportamento; tendencias escondidas; valores atipicos; quedas ou crescimentos incomuns; possiveis gargalos; oportunidades. Depois, responda: 'Se eu pudesse prestar atencao em apenas 3 coisas nesta planilha, seriam estas:' e explique por que."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 7</p>
+          <p class="prompt-title">Projete os proximos 12 meses</p>
+          <div class="prompt-box">"Usando os dados historicos desta planilha, crie uma projecao para os proximos 12 meses de <em>[VARIAVEL PRINCIPAL: receita, custos, volume de vendas]</em>. Explique quais premissas esta usando. Crie tres cenarios: conservador; realista; otimista. Para cada um, mostre os numeros projetados, os principais riscos e o que devo acompanhar mes a mes. Nao invente dados ausentes. Quando precisar assumir algo, sinalize claramente."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 8</p>
+          <p class="prompt-title">Transforme a planilha em decisao</p>
+          <div class="prompt-box">"Analise esta planilha e transforme os dados em um relatorio executivo. Estruture em: 1. O que aconteceu 2. Por que provavelmente aconteceu 3. O que merece atencao 4. Oportunidades identificadas 5. Riscos 6. Proximas decisoes recomendadas. Escreva para um executivo que nao quer analisar a planilha inteira e precisa entender o cenario em poucos minutos."</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem); background: var(--bg-elevated);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-logo">
+      <span class="nav-mark">BP</span>
+      <span style="font-weight:600">Bruno Perobelli</span>
+    </div>
+    <p>Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+function gerarPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth();
+  const margin = 20;
+  const maxW = W - margin * 2;
+  let y = 0;
+
+  function checkPage(needed) {
+    if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+
+  doc.setFillColor(9, 0, 35);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(20, 184, 166);
+  doc.text('@bperobelli', margin, 17);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 127, 170);
+  doc.setFont('helvetica', 'normal');
+  doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+  y = 40;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(9, 0, 35);
+  const titulo = '8 Prompts ChatGPT para Planilha Excel';
+  const tituloLines = doc.splitTextToSize(titulo, maxW);
+  doc.text(tituloLines, margin, y);
+  y += tituloLines.length * 7 + 4;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(80, 70, 100);
+  const sub = 'Use na mesma conversa, na ordem abaixo. Substitua os campos entre [colchetes] com suas informacoes.';
+  const subLines = doc.splitTextToSize(sub, maxW);
+  doc.text(subLines, margin, y);
+  y += subLines.length * 5 + 10;
+
+  doc.setDrawColor(200, 195, 220);
+  doc.line(margin, y, W - margin, y);
+  y += 8;
+
+  const prompts = [
+    { num: 'Prompt 1', titulo: 'Limpe e audite minha planilha' },
+    { num: 'Prompt 2', titulo: 'Analise minha planilha' },
+    { num: 'Prompt 3', titulo: 'Crie as formulas por mim' },
+    { num: 'Prompt 4', titulo: 'Transforme os dados em dashboard' },
+    { num: 'Prompt 5', titulo: 'Budget x Realizado' },
+    { num: 'Prompt 6', titulo: 'Encontre o que eu nao estou vendo' },
+    { num: 'Prompt 7', titulo: 'Projete os proximos 12 meses' },
+    { num: 'Prompt 8', titulo: 'Transforme a planilha em decisao' },
+  ];
+
+  document.querySelectorAll('.prompt-box').forEach((box, i) => {
+    const texto = box.textContent.replace(/^"|"$/g, '').trim();
+    const p = prompts[i] || { num: 'Prompt ' + (i + 1), titulo: '' };
+    checkPage(30);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(20, 184, 166);
+    doc.text(p.num.toUpperCase(), margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(9, 0, 35);
+    doc.text(p.titulo, margin, y);
+    y += 6;
+    const textoLines = doc.splitTextToSize('"' + texto + '"', maxW - 8);
+    const boxH = textoLines.length * 5.2 + 8;
+    checkPage(boxH + 4);
+    doc.setFillColor(245, 243, 252);
+    doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9.5);
+    doc.setTextColor(60, 50, 90);
+    doc.text(textoLines, margin + 4, y + 6);
+    y += boxH + 10;
+  });
+
+  const pages = doc.internal.getNumberOfPages();
+  for (let pg = 1; pg <= pages; pg++) {
+    doc.setPage(pg);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 170, 200);
+    doc.text('@bperobelli  ·  bperobelli.com.br', margin, 287);
+    doc.text(pg + ' / ' + pages, W - margin, 287, { align: 'right' });
+  }
+
+  doc.save('8-prompts-planilha-chatgpt-bperobelli.pdf');
+}
+
+document.querySelectorAll('.prompt-box').forEach(box => {
+  const text = box.textContent.replace(/^"|"$/g, '').trim();
+  const btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copiar';
+  btn.addEventListener('click', () => {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.position = 'relative';
+  box.style.paddingRight = '5rem';
+  box.appendChild(btn);
+});
+
+if (typeof gsap !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+  gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+  gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+  gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
+  gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+  gsap.utils.toArray('.fade-in').forEach(el => {
+    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+    });
+  });
+}
+</script>
+
+</body>
+</html>
