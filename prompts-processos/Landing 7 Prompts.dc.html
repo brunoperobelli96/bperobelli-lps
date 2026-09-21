@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet" />
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #060811; }
+  a { color: #A07CF8; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  @keyframes bpRise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes bpFade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ── Mobile header ── */
+  @media (max-width: 640px) {
+    .hdr-nav-secondary { display: none !important; }
+  }
+
+  /* ── Print / PDF ── */
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    @page { size: A4 portrait; margin: 12mm 14mm; }
+    html, body { background: #060811 !important; }
+    .tab-chevron { display: none !important; }
+    [data-copy] { display: none !important; }
+    #print-cover { page-break-after: always; break-after: page; }
+  }
+
+  /* ── Prompts: shared ── */
+  .tab-num { font-size:10px;font-weight:700;letter-spacing:0.1em;flex:0 0 auto;padding-top:2px; }
+  .tab-body { display:flex;flex-direction:column;gap:2px;flex:1;min-width:0; }
+  .tab-label { font-size:15.5px;font-weight:600;letter-spacing:-0.01em;display:block; }
+  .tab-sub { font-size:13px;font-weight:400;color:#788098;line-height:1.4;display:block; }
+  .prompt-btn::-webkit-details-marker,.prompt-btn::marker { display:none; }
+  .prompt-panel { display:none;flex-direction:column; }
+  .prompt-item[open] .prompt-panel { display:flex; }
+  .tab-chevron { transition:transform .35s cubic-bezier(.22,1,.36,1); }
+  .prompt-item[open] .tab-chevron { transform:rotate(180deg); }
+
+  /* Desktop: 2-col grid */
+  @media (min-width: 701px) {
+    .prompts-grid { display:grid;grid-template-columns:360px 1fr;gap:0 clamp(24px,3vw,44px);align-items:start; }
+    .prompt-item { display:contents; }
+    .prompt-btn { grid-column:1;display:flex;align-items:flex-start;gap:14px;text-align:left;background:transparent;border:0;border-left:2px solid #1A2440;color:#E8EDF5;font-family:'Figtree',-apple-system,sans-serif;padding:16px 18px;cursor:pointer;transition:background .25s cubic-bezier(.22,1,.36,1);width:100%; }
+    .prompt-btn:hover,.prompt-item[open] .prompt-btn { background:#0B1020; }
+    .prompt-panel { grid-column:2;grid-row:1 / span 7;align-self:start;gap:20px; }
+    .tab-chevron { display:none !important; }
+  }
+
+  /* Mobile: accordion */
+  @media (max-width: 700px) {
+    .prompts-grid { display:flex;flex-direction:column; }
+    .prompt-item { border-bottom:1px solid #1A2440; }
+    .prompt-item:first-child { border-top:1px solid #1A2440; }
+    .prompt-btn { width:100%;display:flex;align-items:center;gap:14px;text-align:left;background:transparent;border:0;color:#E8EDF5;font-family:'Figtree',-apple-system,sans-serif;padding:18px 20px;cursor:pointer;transition:background .25s cubic-bezier(.22,1,.36,1);justify-content:space-between; }
+    .prompt-btn:hover,.prompt-item[open] .prompt-btn { background:#0D1628; }
+    .tab-chevron { flex-shrink:0;color:#788098; }
+    .prompt-panel { gap:16px;padding:4px 20px 24px; }
+  }
+</style>
+</helmet>
+
+<div class="lp-screen" style="background:#060811;color:#E8EDF5;font-family:'Figtree',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden">
+
+  <!-- PDF: Cover (hidden on screen, shown via JS before print) -->
+  <div id="print-cover" style="display:none;padding:32px 40px 40px;border-bottom:1px solid #1A2440;margin-bottom:40px;background:#060811;color:#E8EDF5">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#8A45FB;margin-bottom:20px">Kit de prompts · theGarage IA LAB</div>
+    <h1 style="margin:0 0 14px;font-size:2.2rem;font-weight:800;line-height:1.08;letter-spacing:-0.04em;font-family:'Figtree',-apple-system,sans-serif">7 Prompts para descobrir o que vale a pena <span style="color:#A07CF8">automatizar</span></h1>
+    <p style="margin:0 0 18px;font-size:1rem;line-height:1.65;color:#788098;max-width:520px">Analise processos, estime o retorno e decida onde investir — mesmo sem formação técnica.</p>
+    <div style="font-size:12px;color:#3A4A6A;margin-bottom:32px">Uso livre · sem cadastro · Bruno Perobelli · thegarageia.com.br</div>
+    <div style="border:1px solid #1A2440;background:#0B1020">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;height:3px"><div style="background:#A07CF8"></div><div style="background:#5BA394"></div><div style="background:#C8963C"></div><div style="background:#5A9AB8"></div></div>
+      <div style="padding:22px 26px 26px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8;margin-bottom:10px">Próximo passo</div>
+        <h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;letter-spacing:-0.02em;font-family:'Figtree',-apple-system,sans-serif">Precisa de ajuda para revisar seus processos?</h3>
+        <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#788098">Em 30 minutos, analiso o seu cenário e digo se vale avançar com automação.</p>
+        <div style="font-size:13px;font-weight:600;color:#8A45FB">wa.me/5511994636698</div>
+        <div style="margin-top:7px;font-size:11.5px;color:#3A4A6A">Conversa gratuita · Resposta no mesmo dia · Sem compromisso</div>
+      </div>
+    </div>
+  </div>
+
+  <header style="position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px clamp(20px,5vw,72px);flex-wrap:wrap;border-bottom:1px solid #1A2440">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:16px;height:2px;background:#8A45FB"></div>
+      <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Bruno Perobelli</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:clamp(12px,2vw,22px)">
+      <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" class="hdr-nav-secondary" style="font-size:13.5px;font-weight:500;color:#788098;transition:color .25s cubic-bezier(.22,1,.36,1)" style-hover="color:#E8EDF5">@bperobelli</a>
+      <a href="https://thegarageia.com.br/" target="_blank" rel="noopener" class="hdr-nav-secondary" style="display:inline-flex;align-items:center;gap:7px;border:1px solid #1A2440;color:#E8EDF5;padding:10px 16px;font-size:13.5px;font-weight:500;letter-spacing:-0.01em;transition:border-color .25s cubic-bezier(.22,1,.36,1)" style-hover="border-color:#8A45FB">theGarage IA</a>
+      <a data-wa="" href="https://wa.me/5511994636698" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#8A45FB;color:#FFFFFF;padding:11px 18px;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;transition:transform .25s cubic-bezier(.22,1,.36,1),background .25s" style-hover="transform:translateY(-2px);background:#9B5DFF;color:#FFFFFF">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.6A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+        Falar comigo
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="sec-hero" style="position:relative;padding:clamp(36px,8vw,130px) clamp(20px,5vw,72px) clamp(48px,8vw,120px);max-width:1180px;margin:0 auto">
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:34px;animation:bpFade .9s cubic-bezier(.22,1,.36,1) both">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#8A45FB">Kit de prompts</span>
+      <span style="width:1px;height:10px;background:#2A3560"></span>
+      <span style="font-size:11px;font-weight:500;letter-spacing:0.1em;color:#3A4A6A;text-transform:uppercase">Uso livre · sem cadastro</span>
+    </div>
+
+    <!-- Signature element: pipeline visual -->
+    <div class="pipe-track" style="display:flex;align-items:center;gap:0;max-width:500px;margin-bottom:38px;animation:bpFade 1s cubic-bezier(.22,1,.36,1) .12s both">
+      <div class="pipe-node-active" style="flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:#8A45FB;border:1px solid #8A45FB;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;color:#FFF;letter-spacing:.04em;flex-shrink:0">01</div>
+      <div style="flex:1;min-width:4px;height:1px;background:linear-gradient(90deg,#8A45FB,#1A2440)"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">02</div>
+      <div style="flex:1;min-width:4px;height:1px;background:#1A2440"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">03</div>
+      <div style="flex:1;min-width:4px;height:1px;background:#1A2440"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">04</div>
+      <div style="flex:1;min-width:4px;height:1px;background:#1A2440"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">05</div>
+      <div style="flex:1;min-width:4px;height:1px;background:#1A2440"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">06</div>
+      <div style="flex:1;min-width:4px;height:1px;background:#1A2440"></div>
+      <div class="pipe-node-rest" style="flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:1px solid #1A2440;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#3A4A6A;letter-spacing:.04em;flex-shrink:0">07</div>
+    </div>
+
+    <h1 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(2rem,7vw,5.6rem);line-height:1.06;letter-spacing:-0.03em;font-weight:700;max-width:880px;text-wrap:balance;animation:bpRise 1s cubic-bezier(.22,1,.36,1) .08s both">7 prompts para descobrir o que vale a pena <span style="color:#A07CF8">automatizar</span></h1>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:clamp(28px,4vw,42px);max-width:560px;animation:bpRise 1s cubic-bezier(.22,1,.36,1) .16s both">
+      <p style="margin:0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.5;font-weight:400;color:#E8EDF5">Analise processos, estime o retorno e decida onde investir.</p>
+      <p style="margin:0;font-size:clamp(1.05rem,2vw,1.3rem);line-height:1.5;font-weight:300;color:#788098">Mesmo que você não entenda de tecnologia.</p>
+    </div>
+
+    <div style="margin-top:clamp(28px,4vw,40px);max-width:600px;border-left:2px solid #8A45FB;padding:2px 0 2px 18px;display:flex;flex-direction:column;gap:8px;animation:bpRise 1s cubic-bezier(.22,1,.36,1) .22s both">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#8A45FB">theGarage IA</span>
+      <p style="margin:0;font-size:clamp(0.95rem,1.5vw,1.05rem);line-height:1.68;color:#788098">Já tem um processo em mente, ou quer um olhar de fora sobre onde a IA pode ajudar o seu negócio? É isso que o time do theGarage IA faz todos os dias.</p>
+      <p style="margin:0;font-size:clamp(0.95rem,1.5vw,1.05rem);line-height:1.68;color:#E8EDF5;font-weight:500">Pra quem chegou até aqui, estou liberando meu contato direto: me chama e a gente marca uma conversa.</p>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:clamp(26px,4vw,38px);animation:bpRise 1s cubic-bezier(.22,1,.36,1) .28s both">
+      <a href="#sec-prompts" style="display:inline-flex;flex:1 1 200px;justify-content:center;align-items:center;gap:9px;background:#FFFFFF;color:#060811;padding:16px 28px;font-size:15.5px;font-weight:600;letter-spacing:-0.01em;transition:transform .25s cubic-bezier(.22,1,.36,1),background .25s" style-hover="transform:translateY(-2px);background:#EEF0F5;color:#060811">
+        Ver os 7 prompts
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"></path></svg>
+      </a>
+      <a data-wa="" href="https://wa.me/5511994636698" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:9px;flex:1 1 200px;justify-content:center;border:1px solid #1A2440;color:#E8EDF5;padding:16px 28px;font-size:15.5px;font-weight:500;letter-spacing:-0.01em;text-align:center;transition:border-color .25s cubic-bezier(.22,1,.36,1),transform .25s" style-hover="border-color:#8A45FB;transform:translateY(-2px);color:#E8EDF5">Fale comigo no WhatsApp</a>
+      <a href="uploads/PDF%20PROCESSOS%20TG.pdf" style="display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;border:1px solid #1A2440;color:#788098;padding:16px 22px;font-size:14px;font-weight:500;letter-spacing:-0.01em;transition:border-color .25s cubic-bezier(.22,1,.36,1),color .25s" style-hover="border-color:#3A4A6A;color:#E8EDF5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Baixar PDF
+      </a>
+    </div>
+
+  </section>
+
+  <!-- BEFORE THE TOOL -->
+  <section id="sec-before" style="padding:clamp(56px,9vw,120px) clamp(20px,5vw,72px);background:#0B1020;border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,5vw,72px);align-items:start">
+      <div data-reveal="">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#8A45FB;margin-bottom:18px">Antes da ferramenta</div>
+        <h2 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.7rem,4.5vw,3.1rem);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">Toda empresa tem alguma tarefa que toma tempo demais</h2>
+      </div>
+      <div data-reveal="" style="display:flex;flex-direction:column;gap:16px;font-size:clamp(1rem,1.5vw,1.07rem);line-height:1.72;color:#788098;max-width:560px">
+        <p style="margin:0">Uma planilha preenchida à mão. Dados copiados de um sistema para outro. Conferências repetitivas. Informações que passam por várias pessoas até chegar ao lugar certo.</p>
+        <p style="margin:0">A automação pode ajudar. Mas também pode tornar um processo confuso ainda mais difícil de manter.</p>
+        <p style="margin:0;font-size:clamp(1.1rem,2vw,1.35rem);font-weight:600;line-height:1.3;color:#E8EDF5;letter-spacing:-0.02em">Por isso, comece pelo processo.</p>
+        <p style="margin:0">Os sete prompts abaixo ajudam você a encontrar os gargalos, avaliar riscos, estimar o retorno e decidir se vale a pena automatizar. São gratuitos e você pode usar agora, sem cadastro.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE 7 PROMPTS -->
+  <section id="sec-prompts" style="padding:clamp(56px,9vw,120px) clamp(20px,5vw,72px);scroll-margin-top:20px;border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal="" style="max-width:720px;margin-bottom:clamp(36px,5vw,58px)">
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8;margin-bottom:16px">Os sete prompts</div>
+        <h2 style="margin:0 0 14px;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.7rem,4.5vw,3.1rem);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">Escolha um passo, copie o prompt, cole no ChatGPT ou Claude</h2>
+        <p style="margin:0;font-size:clamp(1rem,1.5vw,1.07rem);line-height:1.65;color:#788098">As respostas de um passo alimentam o seguinte. Se puder, faça tudo na mesma conversa e substitua os campos entre colchetes por informações reais da empresa.</p>
+      </div>
+
+      <div class="prompts-grid" data-reveal="">
+
+        <details class="prompt-item" open>
+          <summary data-tab="1" class="prompt-btn">
+            <span class="tab-num" style="color:#A07CF8">01</span>
+            <span class="tab-body">
+              <span class="tab-label">Entenda o processo</span>
+              <span class="tab-sub">Onde sua equipe perde tempo?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="1" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8">Prompt 1 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Diagnóstico</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Entenda o processo</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Use quando o processo parece lento, pesado ou confuso e você ainda não sabe onde está o problema. Ele ajuda a encontrar gargalos, tarefas manuais, erros e etapas que podem ser simplificadas.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um consultor de operações. Vou descrever um processo da minha empresa e quero que você encontre onde ele trava.
+
+Processo: [NOME DO PROCESSO]
+Resultado que ele precisa entregar: [O QUE SAI NO FINAL]
+Pessoas envolvidas: [CARGOS E QUANTIDADE]
+Volume: [QUANTOS CASOS POR SEMANA OU MÊS]
+Tempo gasto: [HORAS POR PESSOA POR SEMANA]
+Etapas, na ordem: [O PASSO A PASSO COMO ACONTECE HOJE]
+Sistemas usados: [PLANILHA, ERP, E-MAIL, WHATSAPP]
+Último erro que aconteceu: [CONTE O CASO REAL]
+
+Me entregue:
+1. O processo em etapas numeradas, cada uma marcada como manual, parcial ou automática.
+2. Os três maiores gargalos e por que eles travam.
+3. O que é repetitivo e o que exige julgamento humano.
+4. Onde existe retrabalho e qual é a causa.
+5. O que pode ser simplificado ou eliminado antes de automatizar.
+6. O que ainda falta levantar para fechar o diagnóstico.
+
+Use linguagem simples, sem termos técnicos. Se algo estiver vago, pergunte antes de concluir.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #A07CF8;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Pessoas envolvidas</span><span>Tempo gasto</span><span>Quantidade de casos</span>
+                <span>Etapas do processo</span><span>Sistemas utilizados</span><span>Exemplos de erros e exceções</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="2" class="prompt-btn">
+            <span class="tab-num" style="color:#5BA394">02</span>
+            <span class="tab-body">
+              <span class="tab-label">Avalie a viabilidade</span>
+              <span class="tab-sub">Esse processo pode ser automatizado?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="2" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#5BA394">Prompt 2 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Viabilidade</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Avalie a viabilidade</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Uma tarefa repetitiva pode depender de dados desorganizados, sistemas fechados ou decisões humanas. Este prompt mostra o que é simples, o que é difícil e o que precisa ser organizado antes.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um especialista em automação de processos falando com um dono de empresa sem formação técnica.
+
+Processo analisado: [COLE O RESUMO DO PROMPT 1]
+Onde estão os dados: [SISTEMA, PLANILHA, PAPEL, E-MAIL]
+Formato dos dados: [ORGANIZADO, BAGUNÇADO, TEXTO LIVRE, IMAGEM]
+Sistemas envolvidos: [NOMES E SE JÁ CONVERSAM ENTRE SI]
+Regras e exceções: [O QUE MUDA DE CASO PARA CASO]
+Restrições de acesso: [QUEM LIBERA, O QUE É BLOQUEADO]
+
+Me entregue:
+1. Para cada etapa: fácil, difícil ou inviável de automatizar hoje, com o motivo.
+2. O que precisa ser organizado antes de qualquer automação.
+3. Onde a IA ajuda de verdade e onde uma regra simples resolveria melhor.
+4. Os três maiores obstáculos, explicados em linguagem de negócio.
+5. Uma primeira fatia do processo que dá para automatizar sozinha.
+6. As perguntas que eu deveria levar para a TI ou para um fornecedor.
+
+Não recomende ferramentas ou marcas. Explique tudo sem jargão.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #5BA394;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Resposta do Prompt 1</span><span>Origem dos dados</span><span>Sistemas utilizados</span>
+                <span>Quantidade de casos</span><span>Regras e exceções</span><span>Restrições de acesso</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="3" class="prompt-btn">
+            <span class="tab-num" style="color:#C8963C">03</span>
+            <span class="tab-body">
+              <span class="tab-label">Mapeie os riscos</span>
+              <span class="tab-sub">O que acontece quando a automação erra?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="3" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C8963C">Prompt 3 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Risco</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Mapeie os riscos</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Alguns erros são percebidos e corrigidos rapidamente. Outros geram cobranças indevidas, problemas fiscais ou impactos para clientes. Este prompt mede esse risco e define onde uma pessoa precisa continuar no controle.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um especialista em risco operacional. Quero entender o que acontece se uma automação errar neste processo.
+
+Ação que será automatizada: [O QUE O SISTEMA VAI FAZER SOZINHO]
+Consequência de um erro: [O QUE DÁ ERRADO NA PRÁTICA]
+Quem é afetado: [CLIENTE, EQUIPE, FORNECEDOR, ÓRGÃO PÚBLICO]
+Dados envolvidos: [PESSOAIS, FINANCEIROS, FISCAIS, NENHUM]
+Regras legais ou contratuais: [O QUE PRECISA SER CUMPRIDO]
+Quem revisa hoje: [PESSOA OU CARGO, E COM QUE FREQUÊNCIA]
+
+Me entregue:
+1. Os erros possíveis, com chance de acontecer e gravidade de cada um.
+2. Quais erros são percebidos rápido e quais passam sem ninguém notar.
+3. Onde uma pessoa precisa aprovar antes da ação acontecer.
+4. Os controles mínimos: registro, alerta, limite e forma de voltar atrás.
+5. Um nível de risco geral, baixo, médio ou alto, com justificativa.
+6. O que deve ficar fora da automação por enquanto.
+
+Seja conservador. Se faltar informação, diga o que precisa ser levantado.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #C8963C;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Ação que será automatizada</span><span>Consequências de um erro</span><span>Pessoas afetadas</span>
+                <span>Dados envolvidos</span><span>Regras legais ou financeiras</span><span>Responsável pela revisão</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="4" class="prompt-btn">
+            <span class="tab-num" style="color:#5A9AB8">04</span>
+            <span class="tab-body">
+              <span class="tab-label">Calcule o retorno</span>
+              <span class="tab-sub">O investimento se paga?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="4" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#5A9AB8">Prompt 4 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Retorno</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Calcule o retorno</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">A conta precisa incluir implantação, ferramentas, treinamento e manutenção. Este prompt compara esses custos com o tempo liberado, a redução de erros e os outros ganhos esperados.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um analista financeiro. Quero saber se automatizar este processo se paga.
+
+Horas gastas hoje: [HORAS POR SEMANA, SOMANDO TODAS AS PESSOAS]
+Custo aproximado da hora: [VALOR CHEIO, COM ENCARGOS]
+Investimento inicial estimado: [VALOR OU "NÃO SEI"]
+Custos mensais previstos: [FERRAMENTAS, LICENÇAS, MANUTENÇÃO]
+Tempo que pode ser liberado: [HORAS OU % QUE ESPERO ECONOMIZAR]
+Custo dos erros atuais: [RETRABALHO, MULTAS, PERDA DE CLIENTE]
+
+Me entregue:
+1. O custo atual do processo por mês e por ano.
+2. O ganho esperado, separando horas liberadas de redução de erros.
+3. O payback em meses, com a conta aberta.
+4. Três cenários: conservador, provável e otimista.
+5. O que faria esse projeto não se pagar.
+6. Ganhos que não entram na planilha, como prazo, qualidade e satisfação.
+
+Mostre as suposições que usou e marque como estimativa tudo que eu não informei.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #5A9AB8;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Horas gastas</span><span>Custo aproximado da hora</span><span>Investimento inicial</span>
+                <span>Custos mensais</span><span>Tempo que pode ser liberado</span><span>Custo dos erros atuais</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="5" class="prompt-btn">
+            <span class="tab-num" style="color:#A07CF8">05</span>
+            <span class="tab-body">
+              <span class="tab-label">Escolha como implementar</span>
+              <span class="tab-sub">Fazer internamente ou contratar?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="5" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8">Prompt 5 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Decisão</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Escolha como implementar</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Construir com a equipe traz controle, mas exige tempo e conhecimento. Um fornecedor pode acelerar o projeto, porém alguém precisará acompanhar e manter a solução. Este prompt compara os caminhos.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um consultor independente, sem interesse em vender nada. Quero decidir como implementar esta automação.
+
+Análises anteriores: [COLE AS CONCLUSÕES DOS PROMPTS 1 A 4]
+Conhecimento da equipe: [O QUE MEU TIME SABE FAZER HOJE]
+Tempo disponível do time: [HORAS POR SEMANA]
+Prazo desejado: [QUANDO PRECISA ESTAR RODANDO]
+Orçamento: [FAIXA DE VALOR OU "NÃO DEFINIDO"]
+Quem vai manter depois: [PESSOA, CARGO OU "NINGUÉM DEFINIDO"]
+
+Me entregue:
+1. Três caminhos: equipe interna, fornecedor e modelo combinado.
+2. Para cada um: prazo, custo aproximado, risco e o que exige de mim.
+3. Qual caminho você recomenda para o meu cenário, e por quê.
+4. O que acontece com a solução se a pessoa responsável sair da empresa.
+5. Perguntas que ajudam a eliminar fornecedores ruins.
+6. O que precisa estar no contrato: acessos, documentação, suporte e saída.
+
+Considere o custo de manter a solução viva, não só o de construir.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #A07CF8;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Respostas anteriores</span><span>Conhecimento da equipe</span><span>Tempo disponível</span>
+                <span>Prazo</span><span>Orçamento</span><span>Responsável pela manutenção</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="6" class="prompt-btn">
+            <span class="tab-num" style="color:#5BA394">06</span>
+            <span class="tab-body">
+              <span class="tab-label">Verifique o piloto</span>
+              <span class="tab-sub">A primeira versão aguenta a rotina?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="6" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#5BA394">Prompt 6 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Piloto</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Verifique o piloto</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Use se a empresa já testou uma primeira versão da automação. Ele verifica se os testes foram suficientes, quais erros ainda existem e o que falta para levar a solução à operação.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é responsável por qualidade em operações. Já testamos uma primeira versão desta automação e quero saber se ela está pronta para a rotina.
+
+O que a automação faz: [DESCREVA EM UMA FRASE]
+Casos testados: [QUANTOS E DE QUE TIPO]
+Período de teste: [DE QUANDO A QUANDO]
+Taxa de acerto observada: [% OU "NÃO MEDIMOS"]
+Principais erros que apareceram: [DESCREVA]
+Volume esperado na operação: [CASOS POR DIA OU MÊS]
+Plano para quando falhar: [O QUE ACONTECE HOJE]
+
+Me entregue:
+1. Se o teste foi suficiente para o volume esperado, com justificativa.
+2. Os casos que ainda não foram testados e deveriam ser.
+3. O que medir na rotina e qual número indica que algo saiu do controle.
+4. O que precisa existir antes de liberar: alerta, registro e volta atrás.
+5. Uma lista de verificação final, com responsável para cada item.
+6. Uma recomendação clara: liberar, liberar com limites ou continuar testando.
+
+Se os dados não sustentam uma conclusão, diga isso em vez de arriscar um palpite.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #5BA394;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Casos testados</span><span>Período de teste</span><span>Taxa de acerto</span>
+                <span>Principais erros</span><span>Volume esperado</span><span>Plano para falhas</span>
+                <span>Responsável pela operação</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+        <details class="prompt-item">
+          <summary data-tab="7" class="prompt-btn">
+            <span class="tab-num" style="color:#C8963C">07</span>
+            <span class="tab-body">
+              <span class="tab-label">Monte o business case</span>
+              <span class="tab-sub">Como apresentar o projeto?</span>
+            </span>
+            <svg class="tab-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </summary>
+          <article data-panel="7" class="prompt-panel">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C8963C">Prompt 7 de 7</span>
+              <span style="font-size:12.5px;font-weight:500;color:#3A4A6A">Aprovação</span>
+            </div>
+            <h3 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.4rem,3.2vw,2.2rem);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Monte o business case</h3>
+            <p style="margin:0;font-size:15px;line-height:1.68;color:#788098;max-width:640px">Quem aprova precisa entender o problema, o investimento, o retorno e os riscos. Este prompt organiza essas informações e prepara uma apresentação curta, com uma decisão clara no final.</p>
+            <div style="background:#0B1020;padding:clamp(20px,3vw,28px);border:1px solid #1A2440">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="width:14px;height:1px;background:#8A45FB"></div>
+                  <span style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#A07CF8">Copie este prompt</span>
+                </div>
+                <button data-copy="" type="button" style="display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 14px;cursor:pointer;transition:border-color .25s,background .25s" style-hover="border-color:#8A45FB;background:#101828;color:#E8EDF5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11"></rect><path d="M5 15V5a1 1 0 0 1 1-1h9"></path></svg>
+                  <span data-copy-label="">Copiar</span>
+                </button>
+              </div>
+              <div data-prompt-text="" style="font-size:13.5px;line-height:1.72;color:#C0CCE0;white-space:pre-wrap;overflow-wrap:anywhere;font-weight:300">Você é um diretor experiente preparando uma proposta interna. Organize as informações abaixo em um business case curto.
+
+Problema e custo atual: [RESUMA COM NÚMEROS]
+Solução proposta: [O QUE SERÁ AUTOMATIZADO E COMO]
+Investimento: [VALOR INICIAL E CUSTO MENSAL]
+Prazo: [TEMPO ATÉ ENTRAR EM OPERAÇÃO]
+Retorno esperado: [GANHO E PAYBACK]
+Riscos e controles: [O QUE PODE DAR ERRADO E COMO CONTROLAMOS]
+Quem vai decidir: [CARGO E O QUE ESSA PESSOA VALORIZA]
+Decisão que eu quero: [APROVAÇÃO, PILOTO, ORÇAMENTO]
+
+Me entregue:
+1. Um resumo de até 150 palavras, começando pelo problema.
+2. Uma estrutura de 5 slides, com o título e a mensagem de cada um.
+3. Os números que sustentam a decisão, com a origem de cada um.
+4. As três perguntas difíceis que vão me fazer, com respostas curtas.
+5. O custo de não fazer nada.
+6. Um pedido final claro, com prazo e responsável.
+
+Escreva para quem não acompanha o dia a dia do processo. Sem termos técnicos.</div>
+            </div>
+            <div style="border:1px solid #1A2440;border-top:2px solid #C8963C;padding:18px clamp(18px,3vw,24px)">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5;margin-bottom:12px">Você preenche · separe antes de começar</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 20px;font-size:13.5px;line-height:1.5;color:#788098">
+                <span>Custo atual</span><span>Solução proposta</span><span>Investimento</span>
+                <span>Prazo</span><span>Retorno esperado</span><span>Riscos</span>
+                <span>Público da apresentação</span><span>Decisão desejada</span>
+              </div>
+            </div>
+          </article>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO USAR -->
+  <section style="padding:clamp(32px,5vw,72px) clamp(20px,5vw,72px);background:#0B1020;border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal="" style="display:flex;align-items:baseline;gap:clamp(16px,3vw,32px);flex-wrap:wrap;margin-bottom:clamp(18px,2.5vw,28px)">
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#8A45FB;white-space:nowrap">Como usar</span>
+        <p style="margin:0;font-size:clamp(0.9rem,1.4vw,1rem);line-height:1.5;color:#3A4A6A">Faça na mesma conversa. Substitua os colchetes por dados reais. Se não souber, escreva "não sei".</p>
+      </div>
+      <div data-reveal="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:1px;background:#1A2440">
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">01</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Siga a ordem</span>
+        </div>
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">02</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Troque os exemplos</span>
+        </div>
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">03</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Escreva "não sei"</span>
+        </div>
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">04</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Use casos reais</span>
+        </div>
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">05</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Questione</span>
+        </div>
+        <div style="background:#0B1020;padding:14px 18px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;color:#A07CF8;flex:0 0 auto">06</span>
+          <span style="font-size:14px;font-weight:600;letter-spacing:-0.01em">Proteja os dados</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FECHAMENTO -->
+  <section style="padding:clamp(32px,5vw,72px) clamp(20px,5vw,72px);border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto">
+      <div data-reveal="" style="display:flex;align-items:baseline;gap:clamp(16px,3vw,32px);flex-wrap:wrap;margin-bottom:clamp(18px,2.5vw,28px)">
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8;white-space:nowrap">Fechamento</span>
+        <p style="margin:0;font-size:clamp(0.9rem,1.4vw,1rem);line-height:1.5;color:#3A4A6A">Se as quatro respostas forem sim, você tem um caso para levar adiante.</p>
+      </div>
+      <div data-reveal="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:1px;background:#1A2440">
+        <div style="background:#060811;padding:14px 18px">
+          <div style="border-top:2px solid #A07CF8;padding-top:10px">
+            <span style="font-size:14px;font-weight:600;line-height:1.35;letter-spacing:-0.01em">O problema merece atenção?</span>
+          </div>
+        </div>
+        <div style="background:#060811;padding:14px 18px">
+          <div style="border-top:2px solid #5BA394;padding-top:10px">
+            <span style="font-size:14px;font-weight:600;line-height:1.35;letter-spacing:-0.01em">Existe uma solução viável?</span>
+          </div>
+        </div>
+        <div style="background:#060811;padding:14px 18px">
+          <div style="border-top:2px solid #C8963C;padding-top:10px">
+            <span style="font-size:14px;font-weight:600;line-height:1.35;letter-spacing:-0.01em">Dá para começar com segurança?</span>
+          </div>
+        </div>
+        <div style="background:#060811;padding:14px 18px">
+          <div style="border-top:2px solid #5A9AB8;padding-top:10px">
+            <span style="font-size:14px;font-weight:600;line-height:1.35;letter-spacing:-0.01em">O retorno compensa?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PDF: Fechamento (hidden on screen, shown via JS before print) -->
+  <div id="print-fechamento" style="display:none;padding:32px 40px 40px;background:#060811;color:#E8EDF5">
+    <div style="padding-top:28px;border-top:1px solid #1A2440;margin-bottom:24px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#8A45FB;margin-bottom:14px">Fechamento</div>
+      <h2 style="margin:0 0 8px;font-size:1.35rem;font-weight:700;letter-spacing:-0.03em;font-family:'Figtree',-apple-system,sans-serif">Terminou? Olhe para estes quatro pontos</h2>
+      <p style="margin:0 0 18px;font-size:14px;line-height:1.65;color:#788098">Se as quatro respostas forem sim, você tem um caso para levar adiante.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:#1A2440;margin-bottom:24px">
+        <div style="background:#060811;padding:13px 14px 15px"><div style="height:2px;background:#A07CF8;margin-bottom:9px"></div><p style="margin:0;font-size:13px;font-weight:600">O problema merece atenção?</p></div>
+        <div style="background:#060811;padding:13px 14px 15px"><div style="height:2px;background:#5BA394;margin-bottom:9px"></div><p style="margin:0;font-size:13px;font-weight:600">Existe uma solução viável?</p></div>
+        <div style="background:#060811;padding:13px 14px 15px"><div style="height:2px;background:#C8963C;margin-bottom:9px"></div><p style="margin:0;font-size:13px;font-weight:600">Dá para começar com segurança?</p></div>
+        <div style="background:#060811;padding:13px 14px 15px"><div style="height:2px;background:#5A9AB8;margin-bottom:9px"></div><p style="margin:0;font-size:13px;font-weight:600">O retorno compensa?</p></div>
+      </div>
+      <div style="border:1px solid #1A2440;background:#0B1020">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;height:3px"><div style="background:#A07CF8"></div><div style="background:#5BA394"></div><div style="background:#C8963C"></div><div style="background:#5A9AB8"></div></div>
+        <div style="padding:22px 26px 26px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8;margin-bottom:10px">Próximo passo</div>
+          <h3 style="margin:0 0 8px;font-size:1.15rem;font-weight:700;letter-spacing:-0.02em;font-family:'Figtree',-apple-system,sans-serif">Precisa de ajuda para decidir o que automatizar?</h3>
+          <p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#788098">Você rodou os sete prompts e encontrou uma oportunidade. Em 30 minutos, defino um próximo passo concreto com você.</p>
+          <div style="font-size:13px;font-weight:600;color:#8A45FB">wa.me/5511994636698</div>
+          <div style="margin-top:7px;font-size:11.5px;color:#3A4A6A">Conversa gratuita · Resposta no mesmo dia · Sem compromisso</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOWNLOAD PDF -->
+  <section id="sec-download" style="padding:clamp(20px,3vw,36px) clamp(20px,5vw,72px);background:#0B1020;border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+      <div>
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#8A45FB;display:block;margin-bottom:5px">Download gratuito</span>
+        <span style="font-size:15px;font-weight:600;color:#E8EDF5;letter-spacing:-0.01em">Leve os 7 prompts para o seu computador</span>
+      </div>
+      <a href="uploads/PDF%20PROCESSOS%20TG.pdf" style="display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid #1A2440;color:#E8EDF5;padding:12px 20px;font-size:14px;font-weight:600;letter-spacing:-0.01em;text-decoration:none;transition:border-color .25s cubic-bezier(.22,1,.36,1),background .25s" style-hover="border-color:#8A45FB;background:#060811;color:#E8EDF5">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Baixar PDF
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section id="sec-cta" style="padding:clamp(56px,9vw,130px) clamp(20px,5vw,72px);background:#0B1020;border-top:1px solid #1A2440">
+    <div data-reveal="" style="max-width:1020px;margin:0 auto;border:1px solid #1A2440">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;height:3px">
+        <div style="background:#A07CF8"></div>
+        <div style="background:#5BA394"></div>
+        <div style="background:#C8963C"></div>
+        <div style="background:#5A9AB8"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(30px,4vw,56px);padding:clamp(28px,5vw,60px)">
+
+        <div style="display:flex;flex-direction:column;gap:clamp(16px,2.5vw,22px)">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:20px;height:1px;background:#8A45FB"></div>
+            <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#A07CF8">Próximo passo</span>
+          </div>
+          <h2 style="margin:0;font-family:'Figtree',-apple-system,sans-serif;font-size:clamp(1.7rem,5vw,3.1rem);line-height:1.1;letter-spacing:-0.03em;font-weight:700;text-wrap:balance">Precisa de ajuda para revisar e automatizar seus processos?</h2>
+          <p style="margin:0;font-size:clamp(1rem,1.8vw,1.2rem);line-height:1.5;font-weight:500;color:#E8EDF5">Fale comigo. São 30 minutos, direto ao ponto, sobre o seu processo.</p>
+          <p style="margin:0;font-size:15px;line-height:1.7;color:#788098">Você rodou os sete prompts e encontrou uma possível oportunidade. Eu ajudo você a decidir se vale avançar. Sem apresentação pronta e sem compromisso de contratação.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:2px">
+            <a data-wa="" href="https://wa.me/5511994636698" target="_blank" rel="noopener" style="display:inline-flex;flex:1 1 220px;justify-content:center;align-items:center;gap:10px;background:#8A45FB;color:#FFFFFF;padding:18px 28px;font-size:16.5px;font-weight:600;letter-spacing:-0.01em;text-align:center;transition:transform .25s cubic-bezier(.22,1,.36,1),background .25s" style-hover="transform:translateY(-2px);background:#9B5DFF;color:#FFFFFF">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.6A8.4 8.4 0 1 1 21 11.5z"></path></svg>
+              Falar comigo no WhatsApp
+            </a>
+            <a href="https://thegarageia.com.br/" target="_blank" rel="noopener" style="display:inline-flex;flex:1 1 180px;justify-content:center;align-items:center;gap:8px;border:1px solid #1A2440;color:#E8EDF5;padding:18px 24px;font-size:15.5px;font-weight:500;letter-spacing:-0.01em;text-align:center;transition:border-color .25s cubic-bezier(.22,1,.36,1),transform .25s" style-hover="border-color:#8A45FB;transform:translateY(-2px);color:#E8EDF5">
+              Conhecer o theGarage IA
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M7 17 17 7M9 7h8v8"></path></svg>
+            </a>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:7px 16px;font-size:13px;font-weight:500;color:#3A4A6A">
+            <span>Conversa gratuita</span>
+            <span style="color:#1A2440">·</span>
+            <span>Resposta no mesmo dia</span>
+            <span style="color:#1A2440">·</span>
+            <span>Sem compromisso</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0;align-self:start;border:1px solid #1A2440">
+          <div style="padding:16px clamp(16px,2.5vw,22px);border-bottom:1px solid #1A2440;font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#E8EDF5">O que a gente faz nesses 30 minutos</div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:16px clamp(16px,2.5vw,22px);border-bottom:1px solid #1A2440">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#A07CF8;padding-top:3px;flex:0 0 auto">01</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:15.5px;font-weight:600;letter-spacing:-0.01em">Revisamos o seu processo</span>
+              <span style="font-size:13.5px;line-height:1.55;color:#788098">Você conta como funciona hoje e onde trava.</span>
+            </span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:16px clamp(16px,2.5vw,22px);border-bottom:1px solid #1A2440">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#5BA394;padding-top:3px;flex:0 0 auto">02</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:15.5px;font-weight:600;letter-spacing:-0.01em">Checamos risco e retorno</span>
+              <span style="font-size:13.5px;line-height:1.55;color:#788098">O que dá para automatizar agora e o que é melhor esperar.</span>
+            </span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:16px clamp(16px,2.5vw,22px)">
+            <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#C8963C;padding-top:3px;flex:0 0 auto">03</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:15.5px;font-weight:600;letter-spacing:-0.01em">Você sai com um próximo passo</span>
+              <span style="font-size:13.5px;line-height:1.55;color:#788098">Escrito, na ordem, com ou sem a minha ajuda na execução.</span>
+            </span>
+          </div>
+          <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:9px;padding:15px clamp(16px,2.5vw,22px);border-top:1px solid #1A2440;font-size:13.5px;font-weight:500;color:#788098;transition:color .25s,background .25s" style-hover="color:#E8EDF5;background:#101828">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg>
+            Me acompanhe no Instagram: @bperobelli
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer style="padding:30px clamp(20px,5vw,72px) 40px;border-top:1px solid #1A2440">
+    <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
+      <span style="font-size:13px;font-weight:500;color:#3A4A6A">Bruno Perobelli · IA aplicada a problemas reais</span>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px">
+        <a href="https://thegarageia.com.br/" target="_blank" rel="noopener" style="font-size:13px;font-weight:500;color:#A07CF8;transition:color .25s" style-hover="color:#E8EDF5">thegarageia.com.br</a>
+        <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" style="font-size:13px;font-weight:500;color:#A07CF8;transition:color .25s" style-hover="color:#E8EDF5">@bperobelli</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;whatsappNumber&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;5511994636698&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contato&quot;},&quot;whatsappMessage&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Oi Bruno! Rodei os 7 prompts e queria uma segunda opinião sobre um processo da minha empresa.&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contato&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.root = document;
+    this.applyWhatsapp();
+    this.wireTabs();
+    this.wireCopy();
+    this.wireReveal();
+  }
+
+  componentDidUpdate() { this.applyWhatsapp(); }
+
+  applyWhatsapp() {
+    const num = String(this.props.whatsappNumber ?? "5511994636698").replace(/\D/g, "");
+    const msg = this.props.whatsappMessage ?? "Oi Bruno! Rodei os 7 prompts e queria uma segunda opinião sobre um processo da minha empresa.";
+    const url = "https://wa.me/" + num + "?text=" + encodeURIComponent(msg);
+    (this.root || document).querySelectorAll("[data-wa]").forEach(a => { a.href = url; });
+  }
+
+  wireTabs() {
+    const items = [...document.querySelectorAll("details.prompt-item")];
+    if (!items.length) return;
+    const isMobile = () => window.innerWidth <= 700;
+
+    items.forEach(details => {
+      details.addEventListener("toggle", () => {
+        if (!details.open) {
+          const b = details.querySelector(".prompt-btn");
+          if (b) b.style.borderLeftColor = "";
+          return;
+        }
+        // close all others (exclusive tabs on desktop + single accordion on mobile)
+        items.forEach(other => { if (other !== details) other.open = false; });
+        // accent left border on desktop
+        if (!isMobile()) {
+          const accent = details.querySelector(".tab-num")?.style?.color || "#8A45FB";
+          items.forEach(other => {
+            const b = other.querySelector(".prompt-btn");
+            if (b) b.style.borderLeftColor = other === details ? accent : "";
+          });
+        }
+        // scroll header into view on mobile
+        if (isMobile()) {
+          setTimeout(() => details.querySelector(".prompt-btn")?.scrollIntoView({ behavior:"smooth", block:"nearest" }), 50);
+        }
+      });
+    });
+
+    // set initial accent border for first open item on desktop
+    if (!isMobile()) {
+      const first = items.find(d => d.open);
+      if (first) {
+        const b = first.querySelector(".prompt-btn");
+        const accent = first.querySelector(".tab-num")?.style?.color || "#8A45FB";
+        if (b) b.style.borderLeftColor = accent;
+      }
+    }
+  }
+
+  wireCopy() {
+    this.root.querySelectorAll("[data-copy]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const panel = btn.closest("[data-panel]");
+        const text = panel && panel.querySelector("[data-prompt-text]");
+        const label = btn.querySelector("[data-copy-label]");
+        if (!text) return;
+        try {
+          await navigator.clipboard.writeText(text.textContent);
+        } catch (e) {
+          const ta = document.createElement("textarea");
+          ta.value = text.textContent;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand("copy"); } catch (e2) {}
+          ta.remove();
+        }
+        if (label) {
+          label.textContent = "Copiado";
+          btn.style.borderColor = "#8A45FB";
+          clearTimeout(this._t);
+          this._t = setTimeout(() => { label.textContent = "Copiar"; btn.style.borderColor = "#1A2440"; }, 2200);
+        }
+      });
+    });
+  }
+
+  wireReveal() {
+    const items = [...this.root.querySelectorAll("[data-reveal]")];
+    if (!items.length) return;
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) return;
+    items.forEach(el => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(24px)";
+      el.style.transition = "opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1)";
+    });
+    const reveal = (el, delay) => {
+      setTimeout(() => { el.style.opacity = "1"; el.style.transform = "none"; }, delay || 0);
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        const el = entry.target;
+        if (!entry.isIntersecting && entry.boundingClientRect.bottom > 0) return;
+        reveal(el, entry.isIntersecting ? i * 90 : 0);
+        io.unobserve(el);
+      });
+    }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
+    items.forEach(el => io.observe(el));
+    const sweep = () => {
+      items.forEach(el => {
+        if (el.style.opacity === "1") return;
+        if (el.getBoundingClientRect().top < window.innerHeight) {
+          reveal(el, 0);
+          io.unobserve(el);
+        }
+      });
+    };
+    sweep();
+    window.addEventListener("scroll", sweep, { passive: true });
+    window.addEventListener("load", sweep);
+  }
+}
+</script>
+</body>
+</html>
