@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090023">
+<title>ChatGPT se candidata a 500 vagas enquanto você dorme · Bruno Perobelli</title>
+<meta name="description" content="4 prompts que transformam o ChatGPT num assistente de candidatura automática. Configure uma vez, durma — e acorde com entrevistas na caixa de entrada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --accent: #3B82F6;
+  --bg: #090023;
+  --bg-elevated: #0e0030;
+  --surface: #110035;
+  --text: #f0eaff;
+  --text-muted: #8b7faa;
+  --text-faint: #3d3560;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+.skip-link {
+  position: absolute; top: -40px; left: 1rem;
+  background: var(--accent); color: #090023;
+  padding: 0.5rem 1rem; border-radius: 0 0 6px 6px;
+  font-weight: 700; z-index: 200; transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px clamp(1rem,5vw,2rem);
+  background: rgba(9,0,35,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent); color: #090023;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.7rem; letter-spacing: -0.02em; flex-shrink: 0;
+}
+.nav-name { font-size: 0.88rem; font-weight: 600; }
+.nav-name small { color: var(--text-muted); font-weight: 400; }
+.nav-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.35);
+  color: var(--accent);
+  font-size: 0.78rem; font-weight: 700;
+  padding: 7px 14px; border-radius: 999px; min-height: 36px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.nav-badge:hover { background: rgba(59,130,246,0.2); border-color: var(--accent); }
+
+/* WRAP */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem,5vw,2rem); }
+
+/* HERO */
+.hero {
+  padding: clamp(5rem,12vw,8rem) 0 clamp(3rem,7vw,5rem);
+  position: relative; overflow: hidden;
+}
+.hero-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); pointer-events: none;
+}
+.hero-blob.b1 {
+  width: 600px; height: 600px;
+  background: var(--accent);
+  top: -260px; right: -180px; opacity: 0.18;
+}
+.hero-blob.b2 {
+  width: 440px; height: 440px;
+  background: #8A45FB;
+  bottom: -200px; left: -120px; opacity: 0.14;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: clamp(2rem,5vw,3.5rem);
+  align-items: start;
+  position: relative; z-index: 2;
+}
+.eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+  font-weight: 700; margin-bottom: 1rem;
+}
+.hero h1 {
+  font-size: clamp(2rem,4.5vw,3.2rem);
+  font-weight: 800; letter-spacing: -0.04em;
+  line-height: 1.1; margin-bottom: 1.1rem;
+}
+.accent { color: var(--accent); font-style: italic; }
+.hero .sub {
+  font-size: 1.05rem; color: var(--text-muted);
+  max-width: 520px; margin-bottom: 1.75rem;
+  line-height: 1.6;
+}
+
+/* HERO ACTIONS */
+.hero-actions {
+  display: flex; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+.cta-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #090023;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 0.95rem;
+  padding: 0.875rem 1.5rem; min-height: 44px;
+  border-radius: 8px; text-decoration: none;
+  cursor: pointer; border: none;
+  transition: opacity 0.2s;
+}
+.cta-primary:hover { opacity: 0.88; }
+.cta-primary:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+/* DOWNLOAD BTN */
+.download-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent;
+  border: 1.5px solid var(--accent); border-radius: 8px;
+  color: var(--accent); cursor: pointer;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.875rem; font-weight: 700;
+  padding: 0 1.25rem; min-height: 44px;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.download-btn:hover { background: var(--accent); color: #090023; }
+.download-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* HERO META */
+.hero-meta {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.meta-valor {
+  font-size: 1.75rem; font-weight: 800;
+  color: var(--accent); letter-spacing: -0.03em; line-height: 1;
+}
+.meta-label { font-size: 0.8rem; color: var(--text-muted); }
+
+/* SIDE CARD */
+.side-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid var(--accent);
+  border-radius: 14px;
+  padding: 1.5rem;
+  position: sticky; top: 80px;
+}
+.side-card-title {
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 1rem;
+}
+.side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.side-card li {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.88rem; color: var(--text-muted);
+  line-height: 1.4;
+}
+.side-card li svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+
+/* SECTIONS */
+section { padding: clamp(3rem,7vw,5rem) 0; }
+section.alt { background: var(--bg-elevated); }
+.section-header { margin-bottom: 2.5rem; }
+.section-header h2 {
+  font-size: clamp(1.5rem,3vw,2.1rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  margin-top: 0.5rem;
+}
+.section-header .lead {
+  color: var(--text-muted); font-size: 1rem;
+  margin-top: 0.75rem; max-width: 580px; line-height: 1.6;
+}
+
+/* PROMPTS GRID */
+.prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
+  gap: 1.25rem;
+}
+.prompt-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.prompt-num {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 0.5rem;
+}
+.prompt-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
+.prompt-box {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  font-style: italic;
+  position: relative;
+}
+
+/* TAG MODO WORK */
+.tag-work {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(59,130,246,0.15);
+  border: 1px solid rgba(59,130,246,0.4);
+  color: var(--accent);
+  font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+.tag-work svg { width: 12px; height: 12px; }
+
+/* COPY BTN */
+.copy-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  background: var(--text-faint);
+  border: none; border-radius: 6px;
+  color: var(--text-muted); cursor: pointer;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: var(--accent); color: #090023; }
+.copy-btn:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
+.copy-btn.copied { background: #10B981; color: #fff; }
+
+/* HOW IT WORKS */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 1.25rem;
+}
+.step-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.step-num {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.05em;
+  color: var(--accent); opacity: 0.4; line-height: 1;
+  margin-bottom: 0.75rem;
+}
+.step-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+.step-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+/* FOOTER */
+footer {
+  padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; }
+.footer-note { color: var(--text-faint); font-size: 0.78rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .side-card { position: static; }
+}
+@media (max-width: 560px) {
+  .hero-meta { gap: 1.25rem; }
+  .meta-valor { font-size: 1.4rem; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+  .cta-primary, .download-btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-brand">
+    <span class="nav-mark" aria-hidden="true">BP</span>
+    <span class="nav-name">Bruno Perobelli <small>· IA aplicada</small></span>
+  </div>
+  <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" class="nav-badge">
+    @bperobelli
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+  </a>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · CARREIRA</p>
+          <h1>Deixa o ChatGPT conseguir suas <span class="accent">entrevistas</span> por você</h1>
+          <p class="sub">4 prompts que transformam o ChatGPT num assistente de candidatura automática. Configure uma vez, durma — e acorde com entrevistas na caixa de entrada.</p>
+          <div class="hero-actions">
+            <a href="#prompts" class="cta-primary">Ver os 4 prompts ↓</a>
+            <button class="download-btn" onclick="gerarPDF()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              Baixar PDF
+            </button>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="meta-valor">500</span>
+              <span class="meta-label">vagas candidatadas</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="meta-valor">12</span>
+              <span class="meta-label">entrevistas em 24h</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="meta-valor">4</span>
+              <span class="meta-label">prompts no total</span>
+            </div>
+          </div>
+        </div>
+        <aside class="side-card fade-in" aria-label="O que você vai copiar">
+          <p class="side-card-title">O que você vai copiar</p>
+          <ul>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Prompt do recrutador sênior
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Modelo mestre de currículo com fórmula Google XYZ
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Planilha automática de vagas no LinkedIn
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Candidatura automática em 500 vagas
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Como ativar o modo WORK no ChatGPT
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- PROMPTS -->
+  <section id="prompts">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">OS 4 PROMPTS</p>
+        <h2>Copie, cole e deixa o ChatGPT trabalhar</h2>
+        <p class="lead">Use na mesma conversa, na ordem abaixo. Substitua os campos entre [colchetes] com suas informações antes de enviar.</p>
+      </div>
+      <div class="prompts-grid">
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 1</p>
+          <h3>Mapeamento de cargos e palavras-chave</h3>
+          <div class="prompt-box">"Atue como recrutador sênior. Com base no meu currículo, liste os 20 cargos que eu mais tenho perfil pra ocupar e as palavras-chave exatas que os sistemas de triagem automática procuram em cada um."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 2</p>
+          <h3>Modelo mestre de currículo</h3>
+          <div class="prompt-box">"Reescreva meu currículo num modelo mestre que eu consiga adaptar na hora. Use a fórmula Google XYZ e tira qualquer sinal de alerta que um recrutador identifica em menos de 10 segundos."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 3</p>
+          <h3>Planilha de vagas compatíveis</h3>
+          <div class="tag-work">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+            Ativar modo WORK antes de enviar
+          </div>
+          <div class="prompt-box">"Vai no LinkedIn, encontra todas as vagas que combinam com esses cargos publicadas nos últimos 7 dias. Monta uma planilha com o link, a nota de compatibilidade e uma versão do currículo adaptada pra cada vaga."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 4</p>
+          <h3>Candidatura automática em 500 vagas</h3>
+          <div class="prompt-box">"Agora se candidata nas 500 vagas com maior compatibilidade. Personaliza cada candidatura com base na descrição da vaga."</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="alt">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PASSO A PASSO</p>
+        <h2>Como o processo funciona</h2>
+        <p class="lead">Do upload do currículo até as entrevistas chegando — entenda o fluxo completo antes de começar.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <div class="step-num">01</div>
+          <h3>Suba seu currículo</h3>
+          <p>Cole ou anexe seu currículo atual no ChatGPT. Não precisa estar perfeito — o Prompt 2 já cuida disso.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">02</div>
+          <h3>Mapeie os cargos certos</h3>
+          <p>O Prompt 1 identifica os 20 cargos com maior aderência ao seu perfil e as palavras-chave que os ATS buscam.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">03</div>
+          <h3>Gere o modelo mestre</h3>
+          <p>O Prompt 2 reescreve o currículo com a fórmula Google XYZ, eliminando os alertas que derrubam candidatos na triagem.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">04</div>
+          <h3>Ative o modo WORK</h3>
+          <p>Com o modo WORK ativo, o ChatGPT acessa o LinkedIn, filtra vagas dos últimos 7 dias e monta a planilha completa.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">05</div>
+          <h3>Candidatura automática</h3>
+          <p>O Prompt 4 instrui o ChatGPT a personalizar e enviar as 500 candidaturas com maior compatibilidade.</p>
+        </div>
+        <div class="step-card fade-in">
+          <div class="step-num">06</div>
+          <h3>Acorde com entrevistas</h3>
+          <p>Com o processo rodando enquanto você dorme, as respostas chegam na manhã seguinte — como as 12 entrevistas em 24h.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD RODAPÉ -->
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://bperobelli.com.br" class="footer-brand">
+    <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+    Bruno Perobelli
+  </a>
+  <p class="footer-note">Guia gratuito · Bruno Perobelli · IA aplicada</p>
+</footer>
+
+<script>
+function gerarPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.getWidth();
+  var margin = 20;
+  var maxW = W - margin * 2;
+  var y = 0;
+
+  function checkPage(needed) {
+    if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+
+  doc.setFillColor(9, 0, 35);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(59, 130, 246);
+  doc.text('@bperobelli', margin, 17);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 127, 170);
+  doc.setFont('helvetica', 'normal');
+  doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+  y = 40;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(9, 0, 35);
+  var titulo = 'ChatGPT se candidata a 500 vagas enquanto voce dorme';
+  var tituloLines = doc.splitTextToSize(titulo, maxW);
+  doc.text(tituloLines, margin, y);
+  y += tituloLines.length * 7 + 4;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(80, 70, 100);
+  var sub = 'Use na mesma conversa, na ordem abaixo. Substitua os campos entre [colchetes] com suas informacoes.';
+  var subLines = doc.splitTextToSize(sub, maxW);
+  doc.text(subLines, margin, y);
+  y += subLines.length * 5 + 10;
+
+  doc.setDrawColor(200, 195, 220);
+  doc.line(margin, y, W - margin, y);
+  y += 8;
+
+  var prompts = [
+    { num: 'Prompt 1', titulo: 'Mapeamento de cargos e palavras-chave' },
+    { num: 'Prompt 2', titulo: 'Modelo mestre de curriculo' },
+    { num: 'Prompt 3', titulo: 'Planilha de vagas compativeis (modo WORK)' },
+    { num: 'Prompt 4', titulo: 'Candidatura automatica em 500 vagas' }
+  ];
+
+  document.querySelectorAll('.prompt-box').forEach(function(box, i) {
+    var texto = box.textContent.replace(/^"|"$/g, '').replace('Copiar', '').replace('Copiado!', '').trim();
+    var p = prompts[i] || { num: 'Prompt ' + (i + 1), titulo: '' };
+    checkPage(30);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(59, 130, 246);
+    doc.text(p.num.toUpperCase(), margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(9, 0, 35);
+    doc.text(p.titulo, margin, y);
+    y += 6;
+    var textoLines = doc.splitTextToSize('"' + texto + '"', maxW - 8);
+    var boxH = textoLines.length * 5.2 + 8;
+    checkPage(boxH + 4);
+    doc.setFillColor(245, 243, 252);
+    doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9.5);
+    doc.setTextColor(60, 50, 90);
+    doc.text(textoLines, margin + 4, y + 6);
+    y += boxH + 10;
+  });
+
+  var pages = doc.internal.getNumberOfPages();
+  for (var pg = 1; pg <= pages; pg++) {
+    doc.setPage(pg);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 170, 200);
+    doc.text('@bperobelli  -  bperobelli.com.br', margin, 287);
+    doc.text(pg + ' / ' + pages, W - margin, 287, { align: 'right' });
+  }
+
+  doc.save('chatgpt-500-vagas-bperobelli.pdf');
+}
+
+document.querySelectorAll('.prompt-box').forEach(function(box) {
+  var text = box.textContent.replace(/^"|"$/g, '').trim();
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copiar';
+  btn.addEventListener('click', function() {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.position = 'relative';
+  box.style.paddingRight = '5rem';
+  box.appendChild(btn);
+});
+
+var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (typeof gsap !== 'undefined' && !reducedMotion) {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero h1',      { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+  gsap.from('.hero .sub',    { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+  gsap.from('.hero-actions', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+  gsap.from('.hero-meta',    { opacity:0, duration:0.6, delay:0.55 });
+  gsap.from('.side-card',    { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+  gsap.utils.toArray('.fade-in').forEach(function(el) {
+    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+    });
+  });
+}
+</script>
+</body>
+</html>
