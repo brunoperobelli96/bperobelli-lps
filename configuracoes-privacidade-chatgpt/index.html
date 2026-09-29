@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090023">
+<title>3 configurações do ChatGPT que você precisa mudar agora · Bruno Perobelli</title>
+<meta name="description" content="Tem como desligar o uso das suas conversas para treinar o modelo. Em 30 segundos. 3 configurações que a maioria dos usuários nunca mudou — e deveria.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root {
+  --accent: #06B6D4;
+  --bg: #090023;
+  --bg-elevated: #0e0030;
+  --surface: #110035;
+  --text: #f0eaff;
+  --text-muted: #8b7faa;
+  --text-faint: #3d3560;
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Figtree', sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+
+.skip-link {
+  position: absolute; top: -40px; left: 1rem;
+  background: var(--accent); color: #090023;
+  padding: 0.5rem 1rem; border-radius: 0 0 6px 6px;
+  font-weight: 700; z-index: 200; transition: top 0.2s;
+}
+.skip-link:focus { top: 0; }
+
+/* NAV */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px clamp(1rem,5vw,2rem);
+  background: rgba(9,0,35,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent); color: #090023;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.7rem; letter-spacing: -0.02em; flex-shrink: 0;
+}
+.nav-name { font-size: 0.88rem; font-weight: 600; }
+.nav-name small { color: var(--text-muted); font-weight: 400; }
+.nav-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(6,182,212,0.12);
+  border: 1px solid rgba(6,182,212,0.35);
+  color: var(--accent);
+  font-size: 0.78rem; font-weight: 700;
+  padding: 7px 14px; border-radius: 999px; min-height: 36px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.nav-badge:hover { background: rgba(6,182,212,0.2); border-color: var(--accent); }
+
+/* WRAP */
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem,5vw,2rem); }
+
+/* HERO */
+.hero {
+  padding: clamp(5rem,12vw,8rem) 0 clamp(3rem,7vw,5rem);
+  position: relative; overflow: hidden;
+}
+.hero-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(120px); pointer-events: none;
+}
+.hero-blob.b1 {
+  width: 600px; height: 600px;
+  background: var(--accent);
+  top: -260px; right: -180px; opacity: 0.15;
+}
+.hero-blob.b2 {
+  width: 440px; height: 440px;
+  background: #8A45FB;
+  bottom: -200px; left: -120px; opacity: 0.12;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: clamp(2rem,5vw,3.5rem);
+  align-items: start;
+  position: relative; z-index: 2;
+}
+.eyebrow {
+  font-size: 0.75rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+  font-weight: 700; margin-bottom: 1rem;
+}
+.hero h1 {
+  font-size: clamp(1.9rem,4vw,3rem);
+  font-weight: 800; letter-spacing: -0.04em;
+  line-height: 1.1; margin-bottom: 1rem;
+}
+.accent { color: var(--accent); font-style: italic; }
+.hero .sub {
+  font-size: 1.05rem; color: var(--text-muted);
+  max-width: 520px; line-height: 1.6;
+}
+
+/* HERO ACTIONS */
+.hero-actions {
+  display: flex; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+  margin-top: 1.75rem;
+}
+.cta-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent); color: #090023;
+  font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 0.95rem;
+  padding: 0.875rem 1.5rem; min-height: 44px;
+  border-radius: 8px; text-decoration: none;
+  cursor: pointer; border: none;
+  transition: opacity 0.2s;
+}
+.cta-primary:hover { opacity: 0.88; }
+.cta-primary:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+/* DOWNLOAD BTN */
+.download-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent;
+  border: 1.5px solid var(--accent); border-radius: 8px;
+  color: var(--accent); cursor: pointer;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.875rem; font-weight: 700;
+  padding: 0 1.25rem; min-height: 44px;
+  transition: background 0.2s, color 0.2s;
+  text-decoration: none;
+}
+.download-btn:hover { background: var(--accent); color: #090023; }
+.download-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.download-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* HERO META */
+.hero-meta {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+.hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.meta-valor {
+  font-size: 1.75rem; font-weight: 800;
+  color: var(--accent); letter-spacing: -0.03em; line-height: 1;
+}
+.meta-label { font-size: 0.8rem; color: var(--text-muted); }
+
+/* SIDE CARD */
+.side-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid var(--accent);
+  border-radius: 14px;
+  padding: 1.5rem;
+  position: sticky; top: 80px;
+}
+.side-card-title {
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 1rem;
+}
+.side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.side-card li {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.88rem; color: var(--text-muted); line-height: 1.4;
+}
+.side-card li svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+
+/* SECTIONS */
+section { padding: clamp(3rem,7vw,5rem) 0; }
+section.alt { background: var(--bg-elevated); }
+.section-header { margin-bottom: 2.5rem; }
+.section-header h2 {
+  font-size: clamp(1.4rem,2.8vw,2rem);
+  font-weight: 800; letter-spacing: -0.03em; margin-top: 0.5rem;
+}
+.section-header .lead {
+  color: var(--text-muted); font-size: 0.95rem;
+  margin-top: 0.6rem; max-width: 560px; line-height: 1.6;
+}
+
+/* STEPS */
+.steps-list { display: flex; flex-direction: column; gap: 1rem; }
+.step-item {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 0 1.25rem;
+  align-items: start;
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-left: 3px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.step-badge {
+  width: 40px; height: 40px;
+  background: rgba(6,182,212,0.12);
+  border: 1px solid rgba(6,182,212,0.3);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 800;
+  color: var(--accent); flex-shrink: 0;
+}
+.step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+.step-path {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+.path-item {
+  font-size: 0.73rem; font-weight: 600;
+  background: rgba(6,182,212,0.1);
+  border: 1px solid rgba(6,182,212,0.2);
+  color: var(--accent);
+  padding: 2px 8px; border-radius: 4px;
+}
+.path-arrow { color: var(--text-faint); font-size: 0.8rem; }
+.step-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+
+/* EXTRAS */
+.extras-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 1rem;
+}
+.extra-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.extra-card-icon {
+  width: 36px; height: 36px;
+  background: rgba(6,182,212,0.1);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+}
+.extra-card-icon svg { width: 18px; height: 18px; }
+.extra-card h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.4rem; }
+.extra-path {
+  display: flex; align-items: center; gap: 3px; flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+.extra-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+/* PROMPTS */
+.prompts-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.prompt-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-top: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.prompt-num {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 0.4rem;
+}
+.prompt-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.9rem; }
+.prompt-box {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.88rem; color: var(--text-muted);
+  line-height: 1.65; font-style: italic;
+  position: relative;
+}
+
+/* COPY BTN */
+.copy-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  background: var(--text-faint);
+  border: none; border-radius: 6px;
+  color: var(--text-muted); cursor: pointer;
+  font-family: 'Figtree', sans-serif;
+  font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0 0.6rem; min-height: 44px;
+  display: inline-flex; align-items: center;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: var(--accent); color: #090023; }
+.copy-btn:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
+.copy-btn.copied { background: #10B981; color: #fff; }
+
+/* FOOTER */
+footer {
+  padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.footer-brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; }
+.footer-note { color: var(--text-faint); font-size: 0.78rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .side-card { position: static; }
+}
+@media (max-width: 560px) {
+  .step-item { grid-template-columns: 1fr; gap: 0.75rem; }
+  .hero-meta { gap: 1.25rem; }
+  .meta-valor { font-size: 1.4rem; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+  .cta-primary, .download-btn { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-brand">
+    <span class="nav-mark" aria-hidden="true">BP</span>
+    <span class="nav-name">Bruno Perobelli <small>· IA aplicada</small></span>
+  </div>
+  <a href="https://instagram.com/bperobelli" target="_blank" rel="noopener" class="nav-badge">
+    @bperobelli
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+  </a>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">IA APLICADA · PRIVACIDADE</p>
+          <h1>O ChatGPT está usando suas conversas pra <span class="accent">treinar o modelo</span></h1>
+          <p class="sub">Tem como desligar. Em 30 segundos. 3 configurações que a maioria dos usuários nunca mudou — e deveria.</p>
+          <div class="hero-actions">
+            <a href="#configuracoes" class="cta-primary">Ver as configurações ↓</a>
+            <button class="download-btn" onclick="gerarPDF()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              Baixar PDF
+            </button>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <span class="meta-valor">3</span>
+              <span class="meta-label">configurações essenciais</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="meta-valor">30s</span>
+              <span class="meta-label">para aplicar tudo</span>
+            </div>
+            <div class="hero-meta-item">
+              <span class="meta-valor">+4</span>
+              <span class="meta-label">dicas bônus</span>
+            </div>
+          </div>
+        </div>
+        <aside class="side-card fade-in" aria-label="O que você vai configurar">
+          <p class="side-card-title">O que você vai configurar</p>
+          <ul>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Desligar uso das conversas para treinar o modelo
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Gerenciar o que está salvo na sua memória
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              Ativar o modo incógnito (chat temporário)
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              4 configurações extras de privacidade
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+              3 prompts para auditar o que o ChatGPT sabe de você
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONFIGURAÇÕES PRINCIPAIS -->
+  <section id="configuracoes">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PASSO A PASSO</p>
+        <h2>As 3 configurações para mudar agora</h2>
+        <p class="lead">Siga na ordem. Cada uma leva menos de 10 segundos.</p>
+      </div>
+      <div class="steps-list">
+
+        <div class="step-item fade-in">
+          <div class="step-badge" aria-hidden="true">1</div>
+          <div class="step-content">
+            <h3>Desligar o uso das conversas para treinar o modelo</h3>
+            <div class="step-path" aria-label="Caminho de navegação">
+              <span class="path-item">Configurações</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Controle de dados</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Melhorar o modelo para todos</span>
+            </div>
+            <p class="step-desc">Desliga essa opção. Com ela ativa, suas conversas são usadas pra alimentar o treinamento do ChatGPT. Desligando, elas param de virar dado de treinamento.</p>
+          </div>
+        </div>
+
+        <div class="step-item fade-in">
+          <div class="step-badge" aria-hidden="true">2</div>
+          <div class="step-content">
+            <h3>Gerenciar o que está salvo na sua memória</h3>
+            <div class="step-path" aria-label="Caminho de navegação">
+              <span class="path-item">Configurações</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Personalização</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Resumo de memória</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Gerenciar</span>
+            </div>
+            <p class="step-desc">É ali que fica tudo que o ChatGPT aprendeu sobre você: nome da empresa, projetos, hábitos, rotina. Revise a lista e apague qualquer coisa que não quer que continue salva.</p>
+          </div>
+        </div>
+
+        <div class="step-item fade-in">
+          <div class="step-badge" aria-hidden="true">3</div>
+          <div class="step-content">
+            <h3>Ativar o chat temporário (modo incógnito)</h3>
+            <div class="step-path" aria-label="Caminho de navegação">
+              <span class="path-item">Canto superior direito</span>
+              <span class="path-arrow" aria-hidden="true">→</span>
+              <span class="path-item">Chat temporário</span>
+            </div>
+            <p class="step-desc">Funciona como modo incógnito: nada que você digitar fica salvo no histórico nem nas memórias. Ideal para conversas que você não quer que influenciem o perfil do sistema sobre você.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EXTRAS -->
+  <section class="alt">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">CONFIGURAÇÕES EXTRAS</p>
+        <h2>Mais 4 ajustes que valem a pena</h2>
+        <p class="lead">Não estão no vídeo, mas completam a proteção.</p>
+      </div>
+      <div class="extras-grid">
+
+        <div class="extra-card fade-in">
+          <div class="extra-card-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+          </div>
+          <h3>Exportar seus dados</h3>
+          <div class="extra-path">
+            <span class="path-item">Configurações</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Controle de dados</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Exportar dados</span>
+          </div>
+          <p>Baixa tudo que o ChatGPT tem sobre você. Bom pra saber exatamente o que está armazenado antes de decidir o que apagar.</p>
+        </div>
+
+        <div class="extra-card fade-in">
+          <div class="extra-card-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+          </div>
+          <h3>Apagar todo o histórico</h3>
+          <div class="extra-path">
+            <span class="path-item">Configurações</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Controle de dados</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Excluir todas as conversas</span>
+          </div>
+          <p>Apaga tudo de uma vez. Útil se você usou o ChatGPT por muito tempo sem se preocupar com o que estava salvando.</p>
+        </div>
+
+        <div class="extra-card fade-in">
+          <div class="extra-card-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3>Desativar a memória completamente</h3>
+          <div class="extra-path">
+            <span class="path-item">Configurações</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Personalização</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Memória → desligar</span>
+          </div>
+          <p>Desliga tudo de uma vez, sem precisar apagar item por item. O ChatGPT para de aprender qualquer coisa nova sobre você.</p>
+        </div>
+
+        <div class="extra-card fade-in">
+          <div class="extra-card-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+          </div>
+          <h3>Verificar aplicativos conectados</h3>
+          <div class="extra-path">
+            <span class="path-item">Configurações</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Segurança</span>
+            <span class="path-arrow">→</span>
+            <span class="path-item">Aplicativos conectados</span>
+          </div>
+          <p>Mostra todos os apps com acesso à sua conta. Revogue qualquer um que você não usa mais ou que não reconhece.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTS DE AUDITORIA -->
+  <section id="prompts">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">PROMPTS DE AUDITORIA</p>
+        <h2>Pergunte pro ChatGPT o que ele sabe sobre você</h2>
+        <p class="lead">Cole esses prompts diretamente no chat para auditar suas informações antes de decidir o que apagar.</p>
+      </div>
+      <div class="prompts-list">
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 1</p>
+          <h3>Auditoria completa da memória</h3>
+          <div class="prompt-box">"Faça uma auditoria completa das informações que você tem salvas sobre mim. Liste por categorias: dados pessoais, empresa, projetos, hábitos e qualquer outra coisa que identificar. Seja específico e não omita nada."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 2</p>
+          <h3>Checklist do que remover</h3>
+          <div class="prompt-box">"Com base no que você sabe sobre mim, quais informações são sensíveis ou que eu deveria remover da sua memória? Me dá uma lista para eu revisar agora, com a justificativa de por que cada item é sensível."</div>
+        </div>
+
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 3</p>
+          <h3>Guia de proteção de privacidade</h3>
+          <div class="prompt-box">"Me dá um guia prático: quais tipos de dados eu nunca deveria digitar numa conversa com IA? Quero proteger informações pessoais, financeiras e profissionais. Lista as categorias com exemplos reais de cada uma."</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD RODAPÉ -->
+  <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
+    <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+      Baixar todos os prompts
+    </button>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://bperobelli.com.br" class="footer-brand">
+    <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+    Bruno Perobelli
+  </a>
+  <p class="footer-note">Guia gratuito · Bruno Perobelli · IA aplicada</p>
+</footer>
+
+<script>
+function gerarPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  var W = doc.internal.pageSize.getWidth();
+  var margin = 20;
+  var maxW = W - margin * 2;
+  var y = 0;
+
+  function checkPage(needed) {
+    if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+
+  doc.setFillColor(9, 0, 35);
+  doc.rect(0, 0, W, 28, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(6, 182, 212);
+  doc.text('@bperobelli', margin, 17);
+  doc.setFontSize(9);
+  doc.setTextColor(139, 127, 170);
+  doc.setFont('helvetica', 'normal');
+  doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+  y = 40;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(9, 0, 35);
+  var titulo = '3 configuracoes do ChatGPT que voce precisa mudar agora';
+  var tituloLines = doc.splitTextToSize(titulo, maxW);
+  doc.text(tituloLines, margin, y);
+  y += tituloLines.length * 7 + 4;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(80, 70, 100);
+  var sub = 'Prompts para auditar o que o ChatGPT sabe sobre voce. Cole diretamente no chat.';
+  var subLines = doc.splitTextToSize(sub, maxW);
+  doc.text(subLines, margin, y);
+  y += subLines.length * 5 + 10;
+
+  doc.setDrawColor(200, 195, 220);
+  doc.line(margin, y, W - margin, y);
+  y += 8;
+
+  var prompts = [
+    { num: 'Prompt 1', titulo: 'Auditoria completa da memoria' },
+    { num: 'Prompt 2', titulo: 'Checklist do que remover' },
+    { num: 'Prompt 3', titulo: 'Guia de protecao de privacidade' }
+  ];
+
+  document.querySelectorAll('.prompt-box').forEach(function(box, i) {
+    var texto = box.textContent.replace(/^"|"$/g, '').replace('Copiar', '').replace('Copiado!', '').trim();
+    var p = prompts[i] || { num: 'Prompt ' + (i + 1), titulo: '' };
+    checkPage(30);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(6, 182, 212);
+    doc.text(p.num.toUpperCase(), margin, y);
+    y += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(9, 0, 35);
+    doc.text(p.titulo, margin, y);
+    y += 6;
+    var textoLines = doc.splitTextToSize('"' + texto + '"', maxW - 8);
+    var boxH = textoLines.length * 5.2 + 8;
+    checkPage(boxH + 4);
+    doc.setFillColor(245, 243, 252);
+    doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(9.5);
+    doc.setTextColor(60, 50, 90);
+    doc.text(textoLines, margin + 4, y + 6);
+    y += boxH + 10;
+  });
+
+  var pages = doc.internal.getNumberOfPages();
+  for (var pg = 1; pg <= pages; pg++) {
+    doc.setPage(pg);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(180, 170, 200);
+    doc.text('@bperobelli  -  bperobelli.com.br', margin, 287);
+    doc.text(pg + ' / ' + pages, W - margin, 287, { align: 'right' });
+  }
+
+  doc.save('configuracoes-privacidade-chatgpt-bperobelli.pdf');
+}
+
+document.querySelectorAll('.prompt-box').forEach(function(box) {
+  var text = box.textContent.replace(/^"|"$/g, '').trim();
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = 'Copiar';
+  btn.addEventListener('click', function() {
+    navigator.clipboard.writeText(text).then(function() {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.position = 'relative';
+  box.style.paddingRight = '5rem';
+  box.appendChild(btn);
+});
+
+var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (typeof gsap !== 'undefined' && !reducedMotion) {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.from('.hero h1',      { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+  gsap.from('.hero .sub',    { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+  gsap.from('.hero-actions', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+  gsap.from('.hero-meta',    { opacity:0, duration:0.6, delay:0.55 });
+  gsap.from('.side-card',    { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+  gsap.utils.toArray('.fade-in').forEach(function(el) {
+    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+    });
+  });
+}
+</script>
+</body>
+</html>
