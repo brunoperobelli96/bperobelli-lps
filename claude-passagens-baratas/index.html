@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <meta name="description" content="Passo a passo para ativar o conector SlickTrip no Claude ou no ChatGPT e achar passagens e hotéis mais baratos, com os prompts prontos.">
+  <title>Passagens e Hotéis Baratos com IA · Bruno Perobelli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <style>
+    :root {
+      --accent: #F97316;
+      --accent-rgb: 249,115,22;
+      --accent-dim: rgba(249,115,22,0.08);
+      --accent-border: rgba(249,115,22,0.35);
+      --accent-soft: #FDBA74;
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Figtree', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem;
+      background: var(--accent); color: #090023;
+      padding: 0.5rem 1rem; font-weight: 700;
+      border-radius: 0 0 8px 8px; text-decoration: none; z-index: 9999;
+    }
+    .skip-link:focus { top: 0; }
+
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(9,0,35,0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--hairline);
+      padding: 0.875rem 0;
+    }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.625rem;
+      text-decoration: none; color: var(--text); font-weight: 700; font-size: 0.95rem;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark {
+      width: 32px; height: 32px; background: var(--brand); color: #fff;
+      font-weight: 800; font-size: 0.8rem; border-radius: 8px;
+      display: grid; place-items: center; flex-shrink: 0;
+    }
+    .nav-badge {
+      font-family: inherit; font-size: 0.75rem; font-weight: 700;
+      background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent);
+      padding: 0 0.9rem; min-height: 36px; border-radius: 999px; white-space: nowrap; cursor: pointer;
+      transition: background 0.2s var(--ease);
+    }
+    .nav-badge:hover { background: rgba(var(--accent-rgb),0.18); }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin-bottom: 0.75rem;
+    }
+
+    /* HERO */
+    .hero { position: relative; overflow: hidden; padding: clamp(3.5rem, 9vw, 6.5rem) 0 clamp(3rem, 8vw, 5rem); }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.2; pointer-events: none; }
+    .hero-blob.b1 { width: 560px; height: 560px; background: var(--accent); top: -220px; left: -160px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -140px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; gap: 3.5rem; } }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800;
+      line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 1.25rem;
+    }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-muted); max-width: 540px; margin-bottom: 2rem; line-height: 1.7; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2.25rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      min-height: 48px; padding: 0 1.4rem; border-radius: 10px;
+      font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.2s;
+    }
+    .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .btn-primary { background: var(--accent); color: #090023; border: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(var(--accent-rgb),0.35); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--accent-border); }
+    .btn-ghost:hover { transform: translateY(-2px); background: var(--accent-dim); }
+
+    .hero-meta { display: flex; gap: 1.75rem; flex-wrap: wrap; align-items: center; }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .hero-meta-item .valor { font-size: 1.6rem; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.03em; }
+    .hero-meta-item .label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+    .hero-meta .sep { width: 1px; height: 32px; background: var(--hairline); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card {
+      position: relative; background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 1.6rem; overflow: hidden;
+    }
+    .side-card::before {
+      content: ''; position: absolute; inset: 0 0 auto 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--brand));
+    }
+    .side-card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { display: flex; gap: 0.65rem; font-size: 0.9rem; color: var(--text-muted); line-height: 1.45; }
+    .side-card li::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0; margin-top: 0.45rem;
+    }
+
+    /* SECTIONS */
+    section { padding: clamp(3rem, 7vw, 5.5rem) 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #passo-a-passo, #prompts, #refinar, #dicas { scroll-margin-top: 72px; }
+    .section-header { max-width: 640px; margin-bottom: 2.5rem; }
+    .section-header h2 {
+      font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -0.04em; margin-bottom: 0.85rem;
+    }
+    .section-header .lead { color: var(--text-muted); font-size: 1rem; line-height: 1.7; }
+
+    /* STEPS */
+    .steps { display: grid; grid-template-columns: 1fr; gap: 1rem; counter-reset: step; }
+    @media (min-width: 640px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+    .step {
+      background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.5rem;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .step:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .step-n {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      color: var(--accent); font-weight: 800; margin-bottom: 1rem;
+    }
+    .step h3 { font-size: 1.02rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; }
+    .step p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+    .step p strong { color: var(--text); font-weight: 600; }
+
+    /* PROMPTS */
+    .prompts { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    @media (min-width: 1024px) { .prompts { grid-template-columns: repeat(2, 1fr); } .prompt-card.wide { grid-column: 1 / -1; } }
+    .prompt-card {
+      background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
+      padding: 1.5rem; display: flex; flex-direction: column;
+      transition: border-color 0.3s var(--ease);
+    }
+    .prompt-card:hover { border-color: var(--accent-border); }
+    .prompt-head { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+    .prompt-number { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+    .tag {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #090023; background: var(--accent); padding: 0.15rem 0.55rem; border-radius: 999px;
+    }
+    .prompt-title { font-size: 1.15rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.4rem; }
+    .prompt-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .prompt-box {
+      position: relative; flex: 1;
+      background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent);
+      border-radius: 6px; padding: 2.75rem 1rem 1rem;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.78rem; line-height: 1.65; color: var(--accent-soft);
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .prompt-box.short { padding-top: 1rem; padding-right: 5.5rem; }
+    .copy-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem;
+      background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 6px;
+      color: var(--accent); cursor: pointer; font-family: 'Figtree', sans-serif;
+      font-size: 0.72rem; font-weight: 700; padding: 0.35rem 0.7rem; min-height: 30px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .copy-btn:hover { background: var(--accent); color: #090023; }
+    .copy-btn.copied { background: #10B981; border-color: #10B981; color: #fff; }
+
+    /* FEATURE CARDS */
+    .features { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    @media (min-width: 640px) { .features { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .features { grid-template-columns: repeat(3, 1fr); } }
+    .feature {
+      background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .feature:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .feature-icon { font-size: 1.6rem; line-height: 1; }
+    .feature h3 { font-size: 1rem; font-weight: 700; }
+    .feature p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+    .example {
+      font-size: 0.85rem; color: var(--text); background: rgba(0,0,20,0.5);
+      border: 1px dashed var(--accent-border); border-radius: 8px; padding: 0.6rem 0.8rem; font-style: italic;
+    }
+
+    /* NOTE */
+    .note {
+      display: flex; gap: 0.9rem; align-items: flex-start; margin-top: 2rem;
+      background: var(--accent-dim); border: 1px solid var(--accent-border);
+      border-radius: 12px; padding: 1.1rem 1.25rem;
+    }
+    .note svg { width: 22px; height: 22px; color: var(--accent); flex-shrink: 0; margin-top: 0.1rem; }
+    .note p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
+    .note p strong { color: var(--text); }
+
+    /* DOWNLOAD FINAL */
+    .final { text-align: center; }
+    .final h2 { font-size: clamp(1.7rem, 3.8vw, 2.6rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.8rem; }
+    .final p { color: var(--text-muted); max-width: 520px; margin: 0 auto 1.75rem; }
+
+    /* FOOTER */
+    footer { background: var(--bg-elevated); border-top: 1px solid var(--hairline); padding: 2rem 0; text-align: center; }
+    .footer-logo {
+      display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none;
+      color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem;
+    }
+    .footer-logo .nav-mark { width: 24px; height: 24px; font-size: 0.6rem; border-radius: 6px; }
+    .footer-note { font-size: 0.78rem; color: var(--text-muted); opacity: 0.7; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('prompts')">Pegar os prompts</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">IA aplicada · Viagem</p>
+          <h1>Passagem e hotel mais baratos com o Claude ou o ChatGPT, sem abrir <span class="accent">20 abas</span></h1>
+          <p class="sub">Um conector chamado SlickTrip coloca a busca de voos e hotéis dentro do Claude e do ChatGPT. Aqui está o passo a passo para ativar, os 2 prompts do vídeo e um prompt bônus que escolhe o destino por você.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="scrollToSection('passo-a-passo')">
+              Ver o passo a passo
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <button class="btn btn-ghost" onclick="gerarPDF()">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+              Baixar os prompts em PDF
+            </button>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-item"><span class="valor">3</span><span class="label">prompts prontos</span></div>
+            <span class="sep" aria-hidden="true"></span>
+            <div class="hero-meta-item"><span class="valor">5 min</span><span class="label">para configurar</span></div>
+            <span class="sep" aria-hidden="true"></span>
+            <div class="hero-meta-item"><span class="valor">Grátis</span><span class="label">para começar</span></div>
+          </div>
+        </div>
+        <aside class="side-card">
+          <p class="side-card-title">O que tem nesta página</p>
+          <ul>
+            <li>Como ativar o SlickTrip no Claude e no ChatGPT</li>
+            <li>Prompt 1: voos e hotéis nas suas datas</li>
+            <li>Prompt 2: só os voos abaixo da média do ano</li>
+            <li>Prompt bônus: a IA escolhe o destino por você</li>
+            <li>Perguntas para refinar o resultado</li>
+            <li>Como gastar menos buscas gratuitas</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <!-- PASSO A PASSO -->
+  <section id="passo-a-passo" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">Passo a passo · Configuração</p>
+        <h2>Ative o SlickTrip em 4 passos</h2>
+        <p class="lead">Conector é um jeito de plugar outro aplicativo dentro da IA. Funciona no Claude e no ChatGPT: com o SlickTrip ligado, a IA pesquisa voos e hotéis de verdade em vez de chutar preço.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-n">1</div>
+          <h3>Abra os Conectores</h3>
+          <p>No Claude, vá em <strong>Personalização</strong> e clique em <strong>Conectores</strong>.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-n">2</div>
+          <h3>Adicione o SlickTrip</h3>
+          <p>Pesquise <strong>SlickTrip</strong> (ele aparece em alta) e clique no <strong>+</strong>. Se ainda não tem conta, ele pede para criar na hora.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-n">3</div>
+          <h3>Confira se está ligado</h3>
+          <p>Volte para o chat, clique em <strong>Conectores</strong> de novo e veja se o SlickTrip está ativado.</p>
+        </div>
+        <div class="step fade-in">
+          <div class="step-n">4</div>
+          <h3>Mande o prompt</h3>
+          <p>Copie um dos prompts abaixo e troque os campos entre <strong>[colchetes]</strong> pelas suas datas e destino.</p>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+        <p><strong>Usa ChatGPT?</strong> Também funciona. No passo 1, em vez de Conectores, vá em <strong>Plugins</strong>. Procure o <strong>SlickTrip</strong> e clique no <strong>+</strong>. Daí em diante é igual ao Claude. Os prompts abaixo são os mesmos para as duas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMPTS -->
+  <section id="prompts">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">Os prompts · Copie e cole</p>
+        <h2>Os 3 prompts para achar a viagem mais barata</h2>
+        <p class="lead">Os 2 primeiros são os do vídeo. O terceiro é exclusivo desta página: você dá o orçamento e a IA descobre para onde dá para ir.</p>
+      </div>
+      <div class="prompts">
+
+        <article class="prompt-card fade-in">
+          <div class="prompt-head"><p class="prompt-number">Prompt 1</p></div>
+          <h3 class="prompt-title">Voos e hotéis nas suas datas</h3>
+          <p class="prompt-desc">Para quando você já sabe para onde vai e quando. Traz 5 voos, 5 hotéis e a combinação mais barata.</p>
+          <div class="prompt-box">Use o conector do SlickTrip para planejar minha viagem.
+
+Dados da viagem:
+- Origem: [cidade de saída]
+- Destino: [cidade de destino]
+- Ida: [data de ida]
+- Volta: [data de volta]
+- Passageiros: [número de pessoas]
+
+Passagens:
+- Traga as 5 melhores opções de voo (ida e volta), ordenadas do mais barato para o mais caro.
+- Para cada voo, mostre: companhia, horários, duração, número de escalas e preço total.
+
+Hospedagem:
+- Traga 5 opções de hotel para essas datas.
+- Para cada hotel, mostre: nota dos hóspedes, preço por noite, preço total e localização.
+
+No final, monte uma tabela comparando tudo e me diga qual combinação de voo e hotel tem o melhor custo total.</div>
+        </article>
+
+        <article class="prompt-card fade-in">
+          <div class="prompt-head"><p class="prompt-number">Prompt 2</p></div>
+          <h3 class="prompt-title">Só os voos abaixo da média</h3>
+          <p class="prompt-desc">Para quando as datas são flexíveis. Ele calcula a média do ano e mostra só o que está mais barato que ela.</p>
+          <div class="prompt-box">Use o conector do SlickTrip para encontrar passagens com preço abaixo da média.
+
+Dados da viagem:
+- Origem: [cidade de saída]
+- Destino: [cidade de destino]
+- Período em que posso viajar: de [data inicial] a [data final]
+- Duração da viagem: [número] noites
+
+Passo 1: calcule o valor médio das passagens de ida e volta para essa rota ao longo do ano. Me diga qual foi a média e como você chegou nela.
+
+Passo 2: dentro do meu período, mostre apenas os voos com preço abaixo dessa média. Para cada um, informe: datas, companhia, escalas, preço e quanto está abaixo da média (em reais e em %).
+
+Passo 3: para as 3 melhores datas, traga 5 hotéis com nota alta dos hóspedes e bom custo-benefício. Mostre nota, preço por noite, localização e por que vale a pena.
+
+Se nenhum voo ficar abaixo da média no meu período, me avise e sugira as datas mais próximas que ficam.</div>
+        </article>
+
+        <article class="prompt-card wide fade-in">
+          <div class="prompt-head"><p class="prompt-number">Prompt bônus</p><span class="tag">Só nesta página</span></div>
+          <h3 class="prompt-title">A IA escolhe o destino por você</h3>
+          <p class="prompt-desc">Você diz quanto quer gastar e o seu estilo. Ele busca pelo menos 6 destinos que cabem no bolso, monta um ranking e entrega o roteiro do vencedor.</p>
+          <div class="prompt-box">Use o conector do SlickTrip para me surpreender com um destino.
+
+Meu perfil:
+- Saio de: [cidade de saída]
+- Orçamento máximo para passagem + hotel: R$ [valor]
+- Posso viajar entre: [data inicial] e [data final]
+- Quantas noites: [número]
+- Estilo de viagem: [ex.: relaxar, aventura, gastronomia, cultura, vida noturna]
+- Viajo com: [sozinho, casal, família, amigos]
+
+O que eu quero:
+1. Busque voos e hotéis para pelo menos 6 destinos diferentes que cabem no meu orçamento, incluindo alguns que eu provavelmente não pensaria em visitar.
+2. Monte um ranking dos 3 melhores, considerando preço total, nota dos hotéis e se combina com o meu estilo de viagem.
+3. Para o destino em primeiro lugar, monte um roteiro dia a dia com sugestões do que fazer, e me diga qual é a melhor data dentro do meu período para pagar menos.
+4. Me conte por que você escolheu esse destino em vez dos outros.</div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- REFINAR -->
+  <section id="refinar" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">Depois da primeira resposta · Refino</p>
+        <h2>Vá mais fundo na mesma conversa</h2>
+        <p class="lead">A primeira resposta é o ponto de partida. Mande uma dessas perguntas logo em seguida para afinar a escolha.</p>
+      </div>
+      <div class="prompts">
+        <article class="prompt-card fade-in">
+          <div class="prompt-head"><p class="prompt-number">Pontos de atenção</p></div>
+          <div class="prompt-box short">Quais são os pontos de atenção de cada opção de voo e de hotel? Inclua escalas longas, taxas de bagagem, horários ruins e reclamações frequentes dos hóspedes.</div>
+        </article>
+        <article class="prompt-card fade-in">
+          <div class="prompt-head"><p class="prompt-number">Melhores hotéis</p></div>
+          <div class="prompt-box short">Considerando nota e preço juntos, quais são os 3 melhores hotéis dessa lista? Explique por que cada um vale o que custa.</div>
+        </article>
+        <article class="prompt-card wide fade-in">
+          <div class="prompt-head"><p class="prompt-number">Planilha</p></div>
+          <div class="prompt-box short">Coloque todas as opções de voo e hotel numa planilha, com colunas de preço, nota, localização e custo total da viagem.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DICAS -->
+  <section id="dicas">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">Dica de ouro · Busca afinada</p>
+        <h2>Quanto mais limite, melhor a busca</h2>
+        <p class="lead">Cada limite que você coloca no prompt deixa o resultado mais certeiro. Acrescente qualquer um destes no final do seu pedido.</p>
+      </div>
+      <div class="features">
+        <div class="feature fade-in">
+          <div class="feature-icon" aria-hidden="true">✈️</div>
+          <h3>Teto da passagem</h3>
+          <p>Diga quanto você topa pagar no voo de ida e volta.</p>
+          <p class="example">"Passagem de até R$ 1.500 ida e volta."</p>
+        </div>
+        <div class="feature fade-in">
+          <div class="feature-icon" aria-hidden="true">🏨</div>
+          <h3>Teto por noite</h3>
+          <p>Defina o máximo por noite de hotel para cortar o que não cabe no bolso.</p>
+          <p class="example">"Hotel de até R$ 400 por noite."</p>
+        </div>
+        <div class="feature fade-in">
+          <div class="feature-icon" aria-hidden="true">📍</div>
+          <h3>Distância</h3>
+          <p>Diga perto do que você quer ficar. Economiza tempo e dinheiro com transporte.</p>
+          <p class="example">"Hotel a até 2 km da Avenida Paulista."</p>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+        <p><strong>As buscas gratuitas são limitadas.</strong> Quanto mais específico o seu pedido, melhor o resultado e menos busca você gasta. Mande tudo de uma vez em vez de ir ajustando aos poucos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="elevated final">
+    <div class="wrap fade-in">
+      <h2>Leve os prompts com você</h2>
+      <p>Baixe os 3 prompts e as perguntas de refino num PDF para usar na próxima viagem.</p>
+      <button class="btn btn-primary" onclick="gerarPDF()">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+        Baixar os prompts em PDF
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli
+    </a>
+    <p class="footer-note">Guia gratuito · Bruno Perobelli</p>
+  </div>
+</footer>
+
+<script>
+  const PDF_CONFIG = {
+    titulo: 'Passagens e hotéis mais baratos com Claude ou ChatGPT',
+    subtitulo: 'Funciona no Claude e no ChatGPT. No Claude: Personalização > Conectores > SlickTrip > +. No ChatGPT: Plugins > SlickTrip > +. Ative o conector e confira se ele está ligado no chat. Depois cole os prompts abaixo trocando os campos entre [colchetes].',
+    arquivo: 'prompts-viagem-claude-bperobelli.pdf',
+    rgb: [249, 115, 22]
+  };
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  // Botão Copiar em cada prompt
+  document.querySelectorAll('.prompt-box').forEach(box => {
+    const text = box.textContent.trim();
+    box.dataset.prompt = text;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.type = 'button';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar prompt');
+    btn.addEventListener('click', () => {
+      const done = () => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      };
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(done).catch(() => { fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    });
+    box.appendChild(btn);
+  });
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function gerarPDF() {
+    if (!window.jspdf) { alert('Carregando o gerador de PDF. Tente de novo em alguns segundos.'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = doc.internal.pageSize.getWidth();
+    const margin = 20, maxW = W - margin * 2;
+    const [r, g, b] = PDF_CONFIG.rgb;
+    let y = 0;
+    const checkPage = need => { if (y + need > 275) { doc.addPage(); y = 20; } };
+
+    doc.setFillColor(9, 0, 35); doc.rect(0, 0, W, 28, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(18); doc.setTextColor(r, g, b);
+    doc.text('@bperobelli', margin, 17);
+    doc.setFontSize(9); doc.setTextColor(139, 127, 170); doc.setFont('helvetica', 'normal');
+    doc.text('IA aplicada ao dia a dia', margin + 48, 17);
+    y = 40;
+
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.setTextColor(9, 0, 35);
+    const tl = doc.splitTextToSize(PDF_CONFIG.titulo, maxW);
+    doc.text(tl, margin, y); y += tl.length * 7 + 3;
+
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.setTextColor(80, 70, 100);
+    const sl = doc.splitTextToSize(PDF_CONFIG.subtitulo, maxW);
+    doc.text(sl, margin, y); y += sl.length * 5 + 8;
+    doc.setDrawColor(200, 195, 220); doc.line(margin, y, W - margin, y); y += 8;
+
+    document.querySelectorAll('.prompt-card').forEach(card => {
+      const num = card.querySelector('.prompt-number').textContent.trim();
+      const tituloEl = card.querySelector('.prompt-title');
+      const titulo = tituloEl ? tituloEl.textContent.trim() : '';
+      const texto = card.querySelector('.prompt-box').dataset.prompt;
+
+      checkPage(24);
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(r, g, b);
+      doc.text(num.toUpperCase(), margin, y); y += 5;
+      if (titulo) {
+        doc.setFontSize(11); doc.setTextColor(9, 0, 35);
+        doc.text(titulo, margin, y); y += 6;
+      }
+
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(9.5);
+      const lines = doc.splitTextToSize(texto, maxW - 8);
+      const lh = 4.8;
+      // Quebra a caixa em blocos que cabem na página
+      let i = 0;
+      while (i < lines.length) {
+        checkPage(14);
+        const cabe = Math.max(1, Math.floor((275 - y - 8) / lh));
+        const bloco = lines.slice(i, i + cabe);
+        const boxH = bloco.length * lh + 7;
+        doc.setFillColor(245, 243, 252);
+        doc.roundedRect(margin, y, maxW, boxH, 2, 2, 'F');
+        doc.setTextColor(60, 50, 90);
+        doc.text(bloco, margin + 4, y + 6);
+        y += boxH + 2;
+        i += cabe;
+      }
+      y += 8;
+    });
+
+    const pages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(180, 170, 200);
+      doc.text('@bperobelli  ·  bperobelli.com.br', margin, 287);
+      doc.text(`${p} / ${pages}`, W - margin, 287, { align: 'right' });
+    }
+    doc.save(PDF_CONFIG.arquivo);
+  }
+
+  window.addEventListener('load', () => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reduce) {
+      gsap.registerPlugin(ScrollTrigger);
+      const ease = 'power3.out';
+      gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease, delay: 0.05 });
+      gsap.from('.hero h1',       { opacity: 0, y: 30, duration: 1,   ease, delay: 0.15 });
+      gsap.from('.hero .sub',     { opacity: 0, y: 20, duration: 0.9, ease, delay: 0.35 });
+      gsap.from('.hero-cta',      { opacity: 0, y: 16, duration: 0.8, ease, delay: 0.5 });
+      gsap.from('.hero-meta',     { opacity: 0, y: 14, duration: 0.8, ease, delay: 0.65 });
+      gsap.from('.side-card',     { opacity: 0, x: 30, duration: 0.8, ease, delay: 0.3 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.from(el, { opacity: 0, y: 24, duration: 0.75, ease,
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
