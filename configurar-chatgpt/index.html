@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090023">
+<title>Como configurar o ChatGPT: 8 passos e prompts prontos · Bruno Perobelli</title>
+<meta name="description" content="Oito passos para o ChatGPT responder do seu jeito: instruções personalizadas, memória, modelo certo e diagnóstico, com os prompts prontos para colar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<style>
+:root {
+  --accent: #A3E635;
+  --accent-dim: rgba(163,230,53,0.12);
+  --accent-border: rgba(163,230,53,0.35);
+  --brand: #8A45FB;
+  --bg: #090023;
+  --bg-elevated: #0e0030;
+  --surface: #130040;
+  --text: #f0eaff;
+  --text-muted: #8b7faa;
+  --text-faint: #3d3560;
+  --hairline: rgba(255,255,255,0.07);
+  --ease: cubic-bezier(0.22,1,0.36,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Figtree', sans-serif; line-height: 1.65; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+.skip-link { position: absolute; top: -40px; left: 1rem; background: var(--accent); color: #090023; padding: 0.5rem 1rem; border-radius: 0 0 6px 6px; font-weight: 700; z-index: 200; transition: top 0.2s; }
+.skip-link:focus { top: 0; }
+
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 14px clamp(1rem,5vw,2rem); background: rgba(9,0,35,0.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--hairline); }
+.nav-brand { display: flex; align-items: center; gap: 10px; }
+.nav-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.7rem; letter-spacing: -0.02em; flex-shrink: 0; }
+.nav-name { font-size: 0.88rem; font-weight: 600; }
+.nav-name small { color: var(--text-muted); font-weight: 400; }
+.nav-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font-family: 'Figtree', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 7px 14px; border-radius: 999px; min-height: 44px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.nav-badge:hover { border-color: var(--accent); }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem,5vw,2rem); }
+
+.hero { padding: clamp(5rem,12vw,8rem) 0 clamp(3rem,7vw,5rem); position: relative; overflow: hidden; }
+.hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); pointer-events: none; }
+.hero-blob.b1 { width: 600px; height: 600px; background: var(--accent); top: -260px; right: -180px; opacity: 0.14; }
+.hero-blob.b2 { width: 440px; height: 440px; background: var(--brand); bottom: -200px; left: -120px; opacity: 0.14; }
+.hero-grid { display: grid; grid-template-columns: 1fr 320px; gap: clamp(2rem,5vw,3.5rem); align-items: start; position: relative; z-index: 2; }
+.eyebrow { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 1rem; display: block; }
+.hero h1 { font-size: clamp(2.2rem,5.5vw,4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1rem; }
+.accent { color: var(--accent); font-style: italic; }
+.hero .sub { font-size: 1.05rem; color: var(--text-muted); max-width: 540px; line-height: 1.6; }
+.hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1.75rem; }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 0.95rem; padding: 0.875rem 1.5rem; min-height: 44px; border-radius: 8px; cursor: pointer; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.2s; }
+.btn-primary { background: var(--accent); color: #090023; border: none; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px var(--accent-border); }
+.btn-ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+.btn-ghost:hover { background: var(--accent-dim); }
+.btn:focus-visible, .nav-badge:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.btn svg { width: 16px; height: 16px; }
+
+.hero-meta { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 2rem; padding-top: 1.75rem; border-top: 1px solid var(--hairline); }
+.hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+.meta-valor { font-size: 1.75rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; line-height: 1; }
+.meta-label { font-size: 0.8rem; color: var(--text-muted); }
+
+.side-card { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.5rem; position: sticky; top: 80px; }
+.side-card-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 1rem; }
+.side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+.side-card li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; }
+.side-card li svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+
+section { padding: clamp(3rem,7vw,5rem) 0; scroll-margin-top: 72px; }
+section.alt { background: var(--bg-elevated); }
+.section-header { margin-bottom: 2.5rem; }
+.section-header h2 { font-size: clamp(1.7rem,3.8vw,2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-top: 0.5rem; }
+.section-header .lead { color: var(--text-muted); font-size: 1rem; margin-top: 0.7rem; max-width: 580px; line-height: 1.6; }
+
+.steps-list { display: flex; flex-direction: column; gap: 1rem; }
+.step-item { display: grid; grid-template-columns: 56px 1fr; gap: 0 1.25rem; align-items: start; background: var(--surface); border: 1px solid var(--hairline); border-left: 3px solid var(--accent); border-radius: 12px; padding: 1.5rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+.step-item:hover { transform: translateY(-3px); border-color: var(--accent-border); border-left-color: var(--accent); }
+.step-badge { width: 40px; height: 40px; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+.step-content h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.tag { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #090023; background: var(--accent); padding: 2px 8px; border-radius: 999px; }
+.step-path { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-bottom: 0.7rem; }
+.path-item { font-size: 0.73rem; font-weight: 600; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); padding: 2px 8px; border-radius: 4px; }
+.path-arrow { color: var(--text-faint); font-size: 0.8rem; }
+.step-desc { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
+.step-desc + .step-desc { margin-top: 0.6rem; }
+.step-desc strong { color: var(--text); font-weight: 700; }
+.mini-list { list-style: none; margin-top: 0.8rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 0.5rem; }
+.mini-list li { background: rgba(0,0,20,0.45); border: 1px solid var(--hairline); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+.mini-list li b { display: block; color: var(--text); font-size: 0.84rem; margin-bottom: 1px; }
+
+.note { display: flex; gap: 0.7rem; align-items: flex-start; margin-top: 0.9rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 8px; padding: 0.75rem 0.9rem; font-size: 0.84rem; color: var(--text-muted); line-height: 1.5; }
+.note svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+.note strong { color: var(--text); }
+
+.prompts-list { display: flex; flex-direction: column; gap: 1.25rem; }
+.prompt-card { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 12px; padding: 1.5rem; }
+.prompt-num { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.4rem; }
+.prompt-card h3 { font-size: 0.98rem; font-weight: 700; margin-bottom: 0.9rem; }
+.prompt-box { background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 1rem; font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; font-style: italic; position: relative; }
+.copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: var(--text-faint); border: none; border-radius: 6px; color: var(--text); cursor: pointer; font-family: 'Figtree', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; padding: 0 0.7rem; min-height: 44px; display: inline-flex; align-items: center; transition: background 0.15s, color 0.15s; white-space: nowrap; font-style: normal; }
+.copy-btn:hover { background: var(--accent); color: #090023; }
+.copy-btn:focus-visible { outline: 2px solid var(--accent); }
+.copy-btn.copied { background: #10B981; color: #fff; }
+
+footer { padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem); border-top: 1px solid var(--hairline); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.footer-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; }
+.footer-note { color: var(--text-muted); font-size: 0.78rem; }
+
+.shots { display: grid; gap: 0.9rem; margin-top: 1rem; }
+.shots.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+figure.shot { margin: 0; }
+.shots:not(.two) figure.shot { max-width: 760px; }
+figure.shot img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--hairline); background: #fcfcfc; }
+figure.shot figcaption { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.45rem; line-height: 1.45; }
+figure.shot figcaption b { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px; background: var(--accent); color: #090023; font-size: 0.68rem; font-weight: 800; margin-right: 2px; }
+.fade-in { opacity: 0; transform: translateY(24px); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } html { scroll-behavior: auto; } }
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } .side-card { position: static; } }
+@media (max-width: 639px) { .nav-badge span { display: none; } }
+@media (max-width: 560px) {
+  .step-item { grid-template-columns: 1fr; gap: 0.75rem; }
+  .hero-meta { gap: 1.25rem; }
+  .meta-valor { font-size: 1.4rem; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Navegação principal">
+  <div class="nav-brand">
+    <span class="nav-mark" aria-hidden="true">BP</span>
+    <span class="nav-name">Bruno Perobelli <small>· IA aplicada</small></span>
+  </div>
+  <button type="button" class="nav-badge" onclick="scrollToSection('passos')"><span>Ver os 8 passos</span> ↓</button>
+</nav>
+
+<main id="main">
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">IA aplicada · Configuração</span>
+          <h1>Configure o ChatGPT pra ele responder <span class="accent">do seu jeito</span></h1>
+          <p class="sub">Oito passos, com os prompts prontos para colar. Em poucos minutos o ChatGPT para de responder genérico e passa a seguir as suas regras.</p>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-primary" onclick="scrollToSection('passos')">Ver os 8 passos <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3"/></svg></button>
+            <button type="button" class="btn btn-ghost" onclick="scrollToSection('prompts')">Ir para os prompts</button>
+          </div>
+          <div class="hero-meta"><div class="hero-meta-item"><span class="meta-valor">8</span><span class="meta-label">passos</span></div><div class="hero-meta-item"><span class="meta-valor">6</span><span class="meta-label">prompts prontos</span></div><div class="hero-meta-item"><span class="meta-valor">3</span><span class="meta-label">passos no vídeo</span></div></div>
+        </div>
+        <aside class="side-card fade-in" aria-label="O que você vai configurar">
+          <p class="side-card-title">O que você vai configurar</p>
+          <ul><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Aparência e cor de destaque</li><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Estilo e tom das respostas</li><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Instruções personalizadas</li><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Memória sob controle</li><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>O modelo certo para cada tarefa</li><li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Diagnóstico final da configuração</li></ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+  <section id="passos">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Passo a passo</span>
+        <h2>Os 8 passos, na ordem</h2>
+        <p class="lead">Os três marcados com "No vídeo" são os que mais mudam a resposta. Os outros cinco completam a configuração.</p>
+      </div>
+      <div class="steps-list"><div class="step-item fade-in"><div class="step-badge" aria-hidden="true">1</div><div class="step-content"><h3>Ajuste o visual</h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Seu nome (canto inferior esquerdo)</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Configurações</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Aparência</span></div><p class="step-desc">Em Modo, escolha claro, escuro ou o padrão do seu aparelho. Em Destaque, escolha a cor que você reconhece mais rápido. Tema, Fundo e Primeiro plano deixam a tela ainda mais com a sua cara.</p><p class="step-desc"><strong>A cor muda a interface, não a qualidade da resposta.</strong></p><div class="shots"><figure class="shot"><img src="img/cfg-aparencia.webp" alt="Tela Aparência nas configurações do ChatGPT, com Modo e Destaque marcados" width="2634" height="918" loading="lazy"><figcaption><b>1</b> Aparência no menu lateral · <b>2</b> Modo · <b>3</b> Destaque</figcaption></figure></div></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">2</div><div class="step-content"><h3>Escolha o estilo e o tom</h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Seu nome</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Personalização</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Estilo e tom básicos</span></div><p class="step-desc">Clique no seu nome, no canto inferior esquerdo, e depois em Personalização. Logo abaixo da memória ficam os controles do jeito de escrever: Estilo e tom básicos, Cordialidade, Entusiasmo, Emoji, Respostas visuais e Títulos e listas. Sugestões de ajuste:</p><ul class="mini-list"><li><b>Objetivo e profissional</b>Entusiasmo e Emoji em menos.</li><li><b>Tutorial fácil de escanear</b>Títulos e listas em mais.</li><li><b>Texto editorial</b>Títulos e listas em menos.</li><li><b>Brainstorming</b>Entusiasmo em mais.</li></ul><div class="shots two"><figure class="shot"><img src="img/cfg-menu-conta.webp" alt="Menu da conta do ChatGPT com Personalização marcada" width="634" height="632" loading="lazy"><figcaption>Clique no seu nome, no canto inferior esquerdo, e em <b>Personalização</b></figcaption></figure><figure class="shot"><img src="img/cfg-estilo.webp" alt="Controles de estilo e tom na página Personalização" width="1470" height="682" loading="lazy"><figcaption>Os controles de estilo e tom, na página <b>Personalização</b></figcaption></figure></div><div class="note"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg><p><strong>Evite conflito.</strong> Se esses controles dizem uma coisa e suas Instruções personalizadas dizem o contrário, a resposta fica confusa.</p></div></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">3</div><div class="step-content"><h3>Escreva suas instruções personalizadas<span class="tag">No vídeo</span></h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Seu nome</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Personalização</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Instruções personalizadas</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">ChatGPT</span></div><p class="step-desc">É um recado fixo que o ChatGPT lê antes de toda conversa. Escreva ali o que vale sempre: idioma e tom, nível de detalhe, formato preferido, regras de precisão e o que fazer quando faltar informação.</p><p class="step-desc">Mais abaixo tem um modelo base pronto para colar.</p><div class="shots"><figure class="shot"><img src="img/cfg-instrucoes.webp" alt="Seção Instruções personalizadas com a linha ChatGPT marcada" width="1470" height="358" loading="lazy"><figcaption>Clique na linha <b>ChatGPT</b>, em Instruções personalizadas</figcaption></figure></div></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">4</div><div class="step-content"><h3>Peça pro próprio ChatGPT escrever as instruções com você<span class="tag">No vídeo</span></h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Chat</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Cole um dos prompts abaixo</span></div><p class="step-desc">Em vez de escrever do zero, use o ChatGPT para três coisas: criar as instruções com você, auditar as que você já tem e testar antes de salvar. Se o texto ficar longo, peça uma versão comprimida.</p><p class="step-desc"><strong>Prompts 1, 2 e 3</strong> na seção de prompts.</p></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">5</div><div class="step-content"><h3>Use a memória com critério<span class="tag">No vídeo</span></h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Seu nome</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Personalização</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Memória do ChatGPT</span></div><p class="step-desc">No topo da página Personalização, confira se a memória está ativada. Em Resumo da memória, clique em Gerenciar para ver, corrigir ou apagar o que ele guardou. Ou pergunte no chat: "o que você lembra sobre mim?". Não deixe ele guardar senha nem dado sensível.</p><p class="step-desc">Se quiser que ele esqueça um assunto, apague a memória e também a conversa de onde ela veio. As quatro camadas de contexto funcionam juntas:</p><ul class="mini-list"><li><b>Instruções personalizadas</b>Regras fixas de como responder.</li><li><b>Memória</b>Preferências e contexto que se repetem.</li><li><b>Prompt atual</b>Os detalhes da tarefa de hoje.</li><li><b>Projeto ou arquivo</b>Regras, dados e materiais do trabalho.</li></ul><div class="shots"><figure class="shot"><img src="img/cfg-memoria.webp" alt="Seção Memória do ChatGPT com Ativar memória e Gerenciar marcados" width="1470" height="674" loading="lazy"><figcaption><b>1</b> Ativar memória · <b>2</b> Resumo da memória, botão Gerenciar</figcaption></figure></div></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">6</div><div class="step-content"><h3>Escolha o esforço pelo tamanho da tarefa</h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Caixa de mensagem</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Esforço de raciocínio</span></div><p class="step-desc">Ao lado do microfone, o botão de esforço de raciocínio abre um controle deslizante. Quanto mais para a direita, mais o ChatGPT pensa. Comece pelo mais simples que resolve a tarefa e suba só se precisar.</p><ul class="mini-list"><li><b>Instant</b>Resumir, traduzir, ideias rápidas.</li><li><b>Medium</b>Planejar, comparar e revisar com estrutura.</li><li><b>High</b>Análise mais profunda, com restrições e fontes.</li><li><b>Extra High e Pro</b>Tarefas longas, exigentes e complexas.</li></ul><div class="shots"><figure class="shot"><img src="img/cfg-esforco.webp" alt="Controle deslizante de esforço de raciocínio na caixa de mensagem" width="1408" height="286" loading="lazy"><figcaption><b>1</b> Botão de esforço de raciocínio · <b>2</b> Controle deslizante</figcaption></figure></div><div class="note"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg><p><strong>Os níveis disponíveis dependem do seu plano.</strong> Se algum não aparecer no seu controle, é por isso.</p></div></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">7</div><div class="step-content"><h3>Peça respostas mais confiáveis</h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Dentro do seu prompt</span></div><p class="step-desc">Quatro frases que você pode somar a qualquer pedido, ou deixar fixas nas instruções:</p><ul class="mini-list"><li><b>Só o que é verificável</b>Use somente informações fornecidas, autorizadas ou verificadas.</li><li><b>Informação atual</b>Se for algo recente, pesquise e cite a fonte.</li><li><b>Arquivo como base</b>Use o arquivo anexado como fonte principal.</li><li><b>Autorrevisão</b>Antes de finalizar, revise a própria resposta.</li></ul></div></div>
+<div class="step-item fade-in"><div class="step-badge" aria-hidden="true">8</div><div class="step-content"><h3>Faça o diagnóstico da sua configuração</h3><div class="step-path" aria-label="Caminho de navegação"><span class="path-item">Chat</span><span class="path-arrow" aria-hidden="true">→</span><span class="path-item">Prompt 6</span></div><p class="step-desc">Depois de configurar tudo, peça uma auditoria. O ChatGPT compara suas instruções, o estilo e a memória, aponta repetições e conflitos e devolve uma versão consolidada. Confira o checklist:</p><ul class="mini-list"><li><b>Aparência</b>Ajustada.</li><li><b>Instruções</b>Salvas.</li><li><b>Memória</b>Revisada.</li><li><b>Esforço</b>Escolhido.</li><li><b>Teste</b>Feito.</li></ul></div></div></div>
+    </div>
+  </section>
+  <section id="prompts" class="alt">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Prompts prontos</span>
+        <h2>Cole direto no ChatGPT</h2>
+        <p class="lead">Copie, cole no chat e responda às perguntas. O modelo base vai em Personalização, Instruções personalizadas.</p>
+      </div>
+      <div class="prompts-list"><div class="prompt-card fade-in"><p class="prompt-num">Prompt 1</p><h3>Criar minhas instruções (o do vídeo)</h3><div class="prompt-box">"Faça 10 perguntas objetivas para descobrir meu uso, público, tom, formatos, regras de precisão e preferências. Depois gere uma instrução final pronta para colar."</div></div>
+<div class="prompt-card fade-in"><p class="prompt-num">Prompt 2</p><h3>Auditar as instruções que você já tem</h3><div class="prompt-box">"Analise as minhas instruções personalizadas atuais, encontre repetições, conflitos e ambiguidades. Devolva uma versão final mais curta e clara."</div></div>
+<div class="prompt-card fade-in"><p class="prompt-num">Prompt 3</p><h3>Testar antes de salvar</h3><div class="prompt-box">"Considere estas instruções como se fossem permanentes. Responda a um pedido de teste e depois me diga quais regras funcionaram e quais geram conflito."</div></div>
+<div class="prompt-card fade-in"><p class="prompt-num">Modelo base</p><h3>Instruções prontas para colar em Personalização</h3><div class="prompt-box">"Responda em português do Brasil, de forma clara, direta e natural. Prefira vírgulas a travessões. Não use emojis, a não ser que eu peça. Prefira parágrafos e use listas só quando ajudar. Priorize a verdade e a precisão. Se não souber, diga que não sabe e não invente dados nem fontes. Se faltar uma informação importante, faça uma pergunta objetiva. Analise por etapas antes de responder."</div></div>
+<div class="prompt-card fade-in"><p class="prompt-num">Prompt 5</p><h3>Revisar o que ele sabe sobre você</h3><div class="prompt-box">"O que você lembra sobre mim? Resuma o que você pode usar para personalizar minhas respostas."</div></div>
+<div class="prompt-card fade-in"><p class="prompt-num">Prompt 6</p><h3>Diagnóstico completo</h3><div class="prompt-box">"Considere meu estilo, minhas características, as instruções personalizadas e a memória. Faça uma auditoria em 5 partes: preferências claras, redundâncias, conflitos, o que deveria estar no prompt da tarefa e ajustes para melhorar clareza, precisão e consistência. No final, proponha uma versão consolidada."</div></div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <a href="https://bperobelli.com.br" class="footer-logo">
+    <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">BP</span>
+    Bruno Perobelli
+  </a>
+  <p class="footer-note">Guia gratuito · IA aplicada · Menus e planos conferidos em outubro de 2026</p>
+</footer>
+
+<script>
+function scrollToSection(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var top = el.getBoundingClientRect().top + window.scrollY - 72;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.prompt-box').forEach(function (box) {
+  var text = box.textContent.replace(/^"|"$/g, '').trim();
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.type = 'button';
+  btn.textContent = 'Copiar';
+  btn.setAttribute('aria-label', 'Copiar prompt');
+  btn.addEventListener('click', function () {
+    navigator.clipboard.writeText(text).then(function () {
+      btn.textContent = 'Copiado!';
+      btn.classList.add('copied');
+      setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+    });
+  });
+  box.style.paddingRight = '5.5rem';
+  box.appendChild(btn);
+});
+
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reduced) {
+  gsap.registerPlugin(ScrollTrigger);
+  var E = 'cubic-bezier(0.22,1,0.36,1)';
+  gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease: E, delay: 0.05 });
+  gsap.from('.hero h1',       { opacity: 0, y: 30, duration: 1, ease: E, delay: 0.15 });
+  gsap.from('.hero .sub',     { opacity: 0, y: 20, duration: 0.9, ease: E, delay: 0.35 });
+  gsap.from('.hero-actions',  { opacity: 0, y: 16, duration: 0.8, ease: E, delay: 0.5 });
+  gsap.from('.hero-meta',     { opacity: 0, y: 14, duration: 0.8, ease: E, delay: 0.65 });
+  gsap.utils.toArray('.fade-in').forEach(function (el) {
+    gsap.to(el, { opacity: 1, y: 0, duration: 0.75, ease: E,
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+  });
+} else {
+  document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+}
+</script>
+</body>
+</html>
