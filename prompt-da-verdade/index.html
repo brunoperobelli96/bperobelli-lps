@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090023">
-  <title>Prompt da Verdade · Bruno Perobelli</title>
+  <title>Prompts da Verdade · Bruno Perobelli</title>
+  <meta name="description" content="Dois prompts para ChatGPT, Claude e Gemini: um impede a IA de inventar fatos, o outro impede a IA de concordar com tudo que você fala.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -14,6 +15,7 @@
 
     :root {
       --accent: #06B6D4;
+      --accent-2: #F59E0B;
       --bg: #090023;
       --bg-elevated: #0e0030;
       --surface: #110035;
@@ -93,17 +95,20 @@
       font-weight: 400;
       font-size: 0.85rem;
     }
+    @media (max-width: 480px) { .nav-logo small { display: none; } }
     .nav-cta {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
       background: var(--accent);
       color: #090023;
+      font-family: 'Figtree', sans-serif;
       font-weight: 700;
       font-size: 0.85rem;
       padding: 0.5rem 1.2rem;
+      border: none;
       border-radius: 2rem;
-      text-decoration: none;
+      cursor: pointer;
       transition: opacity 0.2s;
       white-space: nowrap;
     }
@@ -136,13 +141,12 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: 1fr 360px;
       gap: 3rem;
       align-items: center;
     }
     @media (max-width: 820px) {
       .hero-grid { grid-template-columns: 1fr; }
-      .side-card { order: -1; }
     }
 
     .eyebrow {
@@ -161,27 +165,37 @@
       margin-bottom: 1.2rem;
     }
     .accent { color: var(--accent); }
+    .accent-2 { color: var(--accent-2); }
     .sub {
       font-size: 1.1rem;
       color: var(--text-muted);
-      max-width: 520px;
+      max-width: 540px;
       margin-bottom: 2rem;
       line-height: 1.7;
     }
+    .hero-ctas { display: flex; gap: 0.8rem; flex-wrap: wrap; }
     .hero-cta {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       background: var(--accent);
       color: #090023;
+      font-family: 'Figtree', sans-serif;
       font-weight: 700;
       font-size: 1rem;
       padding: 0.85rem 2rem;
+      border: none;
       border-radius: 2rem;
-      text-decoration: none;
+      cursor: pointer;
       transition: transform 0.2s var(--ease), opacity 0.2s;
     }
     .hero-cta:hover { transform: translateY(-2px); opacity: 0.9; }
+    .hero-cta.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--text-faint);
+    }
+    .hero-cta.ghost:hover { border-color: var(--accent); }
 
     .hero-meta {
       display: flex;
@@ -202,7 +216,7 @@
       margin-top: 0.3rem;
     }
 
-    /* Side Card */
+    /* Side Card — escolha rápida */
     .side-card {
       background: var(--surface);
       border: 1px solid var(--text-faint);
@@ -223,28 +237,48 @@
       letter-spacing: 0.09em;
       margin-bottom: 1.2rem;
     }
-    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
-    .side-card li {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.45;
+    .pick {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--bg-elevated);
+      border: 1px solid var(--text-faint);
+      border-left: 3px solid var(--accent);
+      border-radius: 0.7rem;
+      padding: 1rem 1.1rem;
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
     }
-    .side-card li::before {
-      content: '✓';
-      color: var(--accent);
+    .pick + .pick { margin-top: 0.8rem; }
+    .pick:hover { transform: translateX(3px); border-color: var(--accent); }
+    .pick.p2 { border-left-color: var(--accent-2); }
+    .pick.p2:hover { border-color: var(--accent-2); }
+    .pick-tag {
+      display: block;
+      font-size: 0.7rem;
       font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 0.05rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .pick.p2 .pick-tag { color: var(--accent-2); }
+    .pick-name { display: block; font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+    .pick-desc { display: block; font-size: 0.85rem; color: var(--text-muted); line-height: 1.45; }
+    .side-foot {
+      margin-top: 1.1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
     }
 
     /* Sections */
-    section { padding: clamp(3rem, 8vw, 5rem) 0; }
+    section { padding: clamp(3rem, 8vw, 5rem) 0; scroll-margin-top: 72px; }
     .bg-elevated { background: var(--bg-elevated); }
 
-    .section-header { max-width: 640px; margin-bottom: 3rem; }
+    .section-header { max-width: 680px; margin-bottom: 3rem; }
     .section-header h2 {
       font-size: clamp(1.6rem, 3.5vw, 2.2rem);
       font-weight: 800;
@@ -253,7 +287,20 @@
     }
     .section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
 
-    /* Cards — Por que o Claude mente */
+    /* Cards — O problema */
+    .group-label {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.1rem;
+    }
+    .group-label::after { content: ''; flex: 1; height: 1px; background: var(--text-faint); }
+    .group-label.g2 { color: var(--accent-2); margin-top: 2.6rem; }
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -268,14 +315,94 @@
       transition: border-color 0.2s, transform 0.2s;
     }
     .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .card.c2 { border-top-color: var(--accent-2); }
+    .card.c2:hover { border-color: var(--accent-2); }
     .card-icon { font-size: 1.6rem; margin-bottom: 0.85rem; }
     .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
     .card p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
 
-    /* Prompt block */
+    /* Comparativo — Qual prompt é pra você */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+    }
+    @media (max-width: 820px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem;
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .compare-card.k2 { border-top-color: var(--accent-2); }
+    .compare-num {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .k2 .compare-num { color: var(--accent-2); }
+    .compare-card h3 { font-size: 1.35rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.4rem; }
+    .compare-for { font-size: 1rem; color: var(--text); font-weight: 600; margin-bottom: 1.4rem; }
+    .compare-row { padding: 0.9rem 0; border-top: 1px solid var(--text-faint); }
+    .compare-row dt {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .compare-row dd { font-size: 0.92rem; color: var(--text); line-height: 1.55; }
+    .compare-row ul { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+    .compare-row li { display: flex; gap: 0.5rem; }
+    .compare-row li::before { content: '›'; color: var(--accent); font-weight: 800; }
+    .k2 .compare-row li::before { color: var(--accent-2); }
+    .compare-btn {
+      margin-top: auto;
+      align-self: flex-start;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.6rem 1.3rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .compare-btn:hover { background: var(--accent); color: #090023; }
+    .k2 .compare-btn { border-color: var(--accent-2); color: var(--accent-2); }
+    .k2 .compare-btn:hover { background: var(--accent-2); color: #090023; }
+    .compare-btn-wrap { margin-top: 1.4rem; }
+
+    /* Note */
+    .note {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+      margin-top: 1.6rem;
+      background: rgba(6,182,212,0.08);
+      border: 1px solid rgba(6,182,212,0.35);
+      border-radius: 0.9rem;
+      padding: 1.1rem 1.3rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .note-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+    .note strong { color: var(--text); }
+
+    /* Prompt blocks */
     .prompt-section-header {
       text-align: center;
-      max-width: 640px;
+      max-width: 680px;
       margin: 0 auto 3rem;
     }
     .prompt-section-header h2 {
@@ -286,6 +413,22 @@
     }
     .prompt-section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
 
+    .prompt-block { max-width: 820px; margin: 0 auto; scroll-margin-top: 88px; }
+    .prompt-block + .prompt-block { margin-top: 3.5rem; }
+    .prompt-intro { margin-bottom: 1.2rem; }
+    .prompt-kicker {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .pb2 .prompt-kicker { color: var(--accent-2); }
+    .prompt-intro h3 { font-size: clamp(1.3rem, 3vw, 1.6rem); font-weight: 800; line-height: 1.25; margin-bottom: 0.4rem; }
+    .prompt-intro p { color: var(--text-muted); font-size: 0.98rem; line-height: 1.65; }
+
     .prompt-wrapper {
       position: relative;
       background: var(--surface);
@@ -293,9 +436,8 @@
       border-top: 3px solid var(--accent);
       border-radius: 1rem;
       overflow: hidden;
-      max-width: 820px;
-      margin: 0 auto;
     }
+    .pb2 .prompt-wrapper { border-top-color: var(--accent-2); }
     .prompt-header {
       display: flex;
       align-items: center;
@@ -312,6 +454,7 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
+    .pb2 .prompt-header-label { color: var(--accent-2); }
     .copy-btn {
       display: inline-flex;
       align-items: center;
@@ -323,13 +466,15 @@
       font-weight: 700;
       font-size: 0.85rem;
       padding: 0.5rem 1.2rem;
+      min-height: 40px;
       border-radius: 2rem;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.15s, background 0.2s;
       white-space: nowrap;
     }
+    .pb2 .copy-btn { background: var(--accent-2); }
     .copy-btn:hover { opacity: 0.85; transform: scale(1.03); }
-    .copy-btn.copied { background: #10B981; }
+    .copy-btn.copied, .pb2 .copy-btn.copied { background: #10B981; }
 
     .prompt-body {
       padding: 1.8rem;
@@ -345,7 +490,33 @@
     .prompt-body::-webkit-scrollbar-track { background: transparent; }
     .prompt-body::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 99px; }
 
-    /* Steps — Como instalar */
+    /* Install tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+    }
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      color: var(--text-muted);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.6rem 1.4rem;
+      min-height: 44px;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #090023; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-panel .note { max-width: 640px; }
+
+    /* Steps */
     .steps { display: flex; flex-direction: column; gap: 0; max-width: 640px; }
     .step { display: flex; gap: 1.2rem; align-items: flex-start; padding-bottom: 1.2rem; }
     .step-num {
@@ -364,6 +535,7 @@
     }
     .step-content h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
     .step-content p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.55; }
+    .step-content strong { color: var(--text); }
     .step-connector {
       width: 1px;
       height: 1.4rem;
@@ -380,6 +552,7 @@
       border-radius: 1rem;
       padding: 2rem 2.2rem;
     }
+    @media (max-width: 520px) { .action-box { padding: 1.5rem 1.3rem; } }
     .action-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
     .action-item {
       display: flex;
@@ -412,6 +585,7 @@
       padding-top: 0.2rem;
     }
     .action-text strong { color: var(--text); font-weight: 600; }
+    .action-text em { color: var(--text); }
     .action-quote {
       margin-top: 1.6rem;
       padding: 1.2rem 1.5rem;
@@ -466,37 +640,39 @@
 
     /* PRINT */
     @media print {
-      .nav, .hero-blob, footer, .hero-cta, .nav-cta,
-      .hero-meta, .side-card, .pdf-btn, .copy-btn { display: none !important; }
+      .nav, .hero-blob, footer, .hero-ctas, .nav-cta, .tabs, .compare-btn-wrap,
+      .hero-meta, .side-card, .pdf-btn, .copy-btn, #por-que, #plano { display: none !important; }
       .fade-in { opacity: 1 !important; transform: none !important; }
       body { background: #fff; color: #111; }
       .hero { padding: 1.5rem 0 1rem; }
       .hero-grid { grid-template-columns: 1fr; }
       .hero h1 { font-size: 1.4rem; color: #111; line-height: 1.3; }
       .accent { color: #0891b2 !important; }
+      .accent-2 { color: #b45309 !important; }
       .sub { color: #444; font-size: 0.9rem; margin-bottom: 0; }
-      .eyebrow { color: #0891b2; }
+      .eyebrow, .prompt-kicker, .compare-num { color: #0891b2 !important; }
       .bg-elevated { background: #fff; }
       section { padding: 1.5rem 0; }
+      .compare-grid { grid-template-columns: 1fr 1fr; }
+      .compare-card { background: #fff; border: 1px solid #ccc; break-inside: avoid; }
+      .compare-card h3, .compare-for, .compare-row dd { color: #111; }
+      .compare-row dt { color: #555; }
+      .note { background: #f5f5f5; border-color: #ccc; color: #333; }
+      .note strong { color: #111; }
+      .prompt-block { break-before: page; }
+      .prompt-intro h3 { color: #111; }
+      .prompt-intro p { color: #444; }
       .prompt-wrapper { border: 1px solid #ccc; border-top: 2px solid #0891b2; max-width: 100%; }
       .prompt-header { background: #f5f5f5; border-bottom: 1px solid #ddd; }
-      .prompt-header-label { color: #0891b2; }
+      .prompt-header-label { color: #0891b2 !important; }
       .prompt-body { color: #222; max-height: none; overflow: visible; font-size: 0.78rem; padding: 1rem; }
-      .cards-grid { grid-template-columns: 1fr 1fr; }
-      .card { background: #fff; border: 1px solid #ccc; border-top: 2px solid #0891b2; break-inside: avoid; }
-      .card h3 { color: #111; }
-      .card p { color: #444; }
       .section-header h2, .prompt-section-header h2 { color: #111; }
       .section-header p, .prompt-section-header p { color: #444; }
-      .step-content h3 { color: #111; }
+      .tab-panel { display: block !important; margin-bottom: 1rem; }
+      .step-content h3, .step-content strong { color: #111; }
       .step-content p { color: #444; }
       .step-num { background: #0891b2; }
       .step-connector { background: #ddd; }
-      .action-box { background: #fff; border: 1px solid #ccc; border-top: 2px solid #0891b2; break-inside: avoid; }
-      .action-num { background: rgba(8,145,178,0.1); border-color: rgba(8,145,178,0.4); color: #0891b2; }
-      .action-text { color: #333; }
-      .action-text strong { color: #111; }
-      .action-quote { border-left-color: #0891b2; color: #222; }
       .wrap { padding: 0 1rem; }
     }
   </style>
@@ -513,7 +689,7 @@
         <span class="nav-mark">BP</span>
         Bruno Perobelli <small>· IA aplicada</small>
       </a>
-      <a href="#o-prompt" class="nav-cta">Copiar o Prompt</a>
+      <button class="nav-cta" onclick="scrollToSection('os-prompts')">Copiar os Prompts</button>
     </div>
   </div>
 </nav>
@@ -522,19 +698,22 @@
 
   <!-- HERO -->
   <header class="hero">
-    <div class="hero-blob b1"></div>
-    <div class="hero-blob b2"></div>
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
           <span class="eyebrow">IA APLICADA · PROMPTS</span>
-          <h1>Pare de receber respostas <span class="accent">inventadas</span> do Claude</h1>
-          <p class="sub">O Claude alucina com confiança — afirma datas, cita fontes e apresenta estatísticas que nunca existiram. Esse prompt força ele a verificar, checar e calibrar cada resposta antes de te entregar.</p>
-          <a href="#o-prompt" class="hero-cta">Copiar o Prompt</a>
+          <h1>Faça a IA parar de <span class="accent">inventar</span> e de <span class="accent-2">concordar com tudo</span></h1>
+          <p class="sub">ChatGPT, Claude e Gemini cometem dois erros caros: afirmam com confiança coisas que não existem e validam qualquer ideia sua. Aqui estão dois prompts prontos, um para cada problema. Funcionam em qualquer IA.</p>
+          <div class="hero-ctas">
+            <button class="hero-cta" onclick="scrollToSection('os-prompts')">Copiar os Prompts</button>
+            <button class="hero-cta ghost" onclick="scrollToSection('qual-usar')">Qual devo usar?</button>
+          </div>
           <div class="hero-meta">
             <div class="meta-item">
-              <span class="meta-valor">27%</span>
-              <span class="meta-label">Taxa de alucinação em IAs</span>
+              <span class="meta-valor">2</span>
+              <span class="meta-label">Prompts prontos para colar</span>
             </div>
             <div class="meta-item">
               <span class="meta-valor">&lt;30s</span>
@@ -545,75 +724,187 @@
               <span class="meta-label">Sem cadastro necessário</span>
             </div>
           </div>
-          <button class="pdf-btn" onclick="window.print()">↓ Baixar PDF com o prompt</button>
+          <button class="pdf-btn" onclick="window.print()">↓ Baixar PDF com os prompts</button>
         </div>
 
         <aside class="side-card">
-          <div class="side-card-title">O que o prompt faz</div>
-          <ul>
-            <li>Decompõe pedidos em partes verificáveis</li>
-            <li>Distingue fatos de suposições e opiniões</li>
-            <li>Calibra confiança de 0,0 a 1,0 por resposta</li>
-            <li>Refaz a resposta se a confiança for baixa</li>
-            <li>Nunca inventa fontes, links ou estatísticas</li>
-            <li>Aponta incertezas com transparência</li>
-            <li>Funciona no Claude, ChatGPT e Gemini</li>
-          </ul>
+          <div class="side-card-title">Escolha o seu</div>
+          <button class="pick" onclick="scrollToSection('prompt-verdade')">
+            <span class="pick-tag">Prompt 1 · Para pesquisar</span>
+            <span class="pick-name">Prompt da Verdade</span>
+            <span class="pick-desc">Você quer a resposta certa. Dados, fatos, fontes e estudo sem invenção.</span>
+          </button>
+          <button class="pick p2" onclick="scrollToSection('prompt-parceiro')">
+            <span class="pick-tag">Prompt 2 · Para decidir</span>
+            <span class="pick-name">Prompt do Parceiro Crítico</span>
+            <span class="pick-desc">Você quer uma opinião honesta. Ideias, negócios e planos sem bajulação.</span>
+          </button>
+          <p class="side-foot">Funciona no ChatGPT, Claude e Gemini</p>
         </aside>
       </div>
     </div>
   </header>
 
-  <!-- POR QUE O CLAUDE MENTE -->
+  <!-- O PROBLEMA -->
   <section class="bg-elevated" id="por-que">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">O PROBLEMA</span>
-        <h2>Por que o Claude mente com tanta confiança?</h2>
-        <p>Modelos de linguagem não buscam a verdade — eles preveem a próxima palavra mais provável. O resultado são respostas que soam certas, mas podem ser completamente inventadas.</p>
+        <h2>Por que a IA erra com tanta confiança?</h2>
+        <p>Modelos de linguagem não buscam a verdade. Eles preveem a próxima palavra mais provável e foram treinados para agradar quem está do outro lado. Daí saem dois tipos de erro.</p>
       </div>
+
+      <div class="group-label fade-in">Erro 1 · Ela inventa</div>
       <div class="cards-grid">
         <div class="card fade-in">
           <div class="card-icon">📅</div>
           <h3>Datas e eventos históricos</h3>
-          <p>O Claude pode afirmar com absoluta certeza que um evento aconteceu numa data específica — mesmo que essa data esteja errada ou o evento seja fictício.</p>
+          <p>A IA afirma com certeza que um evento aconteceu numa data específica, mesmo quando a data está errada ou o evento nunca existiu.</p>
         </div>
         <div class="card fade-in">
           <div class="card-icon">📎</div>
           <h3>Fontes e links inventados</h3>
-          <p>Ele cria referências bibliográficas, artigos científicos e URLs que parecem reais mas simplesmente não existem em lugar nenhum.</p>
+          <p>Ela cria referências, artigos científicos e URLs que parecem reais mas não existem em lugar nenhum.</p>
         </div>
         <div class="card fade-in">
           <div class="card-icon">📊</div>
           <h3>Estatísticas convincentes</h3>
-          <p>Números, percentuais e pesquisas com fontes citadas — tudo pode ser fabricado na hora para tornar a resposta mais autoritativa.</p>
+          <p>Números, percentuais e pesquisas citadas podem ser fabricados na hora para deixar a resposta mais autoritativa.</p>
         </div>
         <div class="card fade-in">
           <div class="card-icon">🎭</div>
-          <h3>Opiniões apresentadas como fatos</h3>
-          <p>Inferências e suposições são entregues no mesmo tom que informações verificadas, sem qualquer distinção para quem está lendo.</p>
+          <h3>Opiniões vendidas como fatos</h3>
+          <p>Inferências e suposições chegam no mesmo tom que informações verificadas, sem nenhuma distinção para quem lê.</p>
+        </div>
+      </div>
+
+      <div class="group-label g2 fade-in">Erro 2 · Ela concorda com você</div>
+      <div class="cards-grid">
+        <div class="card c2 fade-in">
+          <div class="card-icon">👏</div>
+          <h3>Elogio no lugar de análise</h3>
+          <p>Você apresenta uma ideia e recebe "ótima ideia!" antes de qualquer avaliação de custo, risco ou viabilidade.</p>
+        </div>
+        <div class="card c2 fade-in">
+          <div class="card-icon">🪞</div>
+          <h3>Espelho das suas premissas</h3>
+          <p>Se a pergunta já vem com uma conclusão embutida, a IA tende a aceitar e construir em cima dela em vez de questionar.</p>
+        </div>
+        <div class="card c2 fade-in">
+          <div class="card-icon">🔄</div>
+          <h3>Muda de opinião quando você insiste</h3>
+          <p>Basta discordar uma vez para ela recuar, mesmo quando a primeira resposta estava certa.</p>
+        </div>
+        <div class="card c2 fade-in">
+          <div class="card-icon">⚖️</div>
+          <h3>Neutralidade que não decide nada</h3>
+          <p>Listas de prós e contras sem recomendação. Você sai da conversa com mais opções e nenhuma decisão.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- O PROMPT -->
-  <section id="o-prompt">
+  <!-- QUAL USAR -->
+  <section id="qual-usar">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">QUAL PROMPT É PRA VOCÊ</span>
+        <h2>Um corrige o que a IA <span class="accent">sabe</span>. O outro corrige como ela <span class="accent-2">te responde</span>.</h2>
+        <p>O Prompt da Verdade cuida da precisão da informação. O Parceiro Crítico cuida da qualidade da sua decisão. Veja em qual situação você está.</p>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card fade-in">
+          <span class="compare-num">Prompt 1</span>
+          <h3>Prompt da Verdade</h3>
+          <p class="compare-for">Para quem usa a IA para pesquisar, estudar e checar informação.</p>
+          <dl>
+            <div class="compare-row">
+              <dt>Combate</dt>
+              <dd>Alucinação: fatos, fontes, links e números inventados.</dd>
+            </div>
+            <div class="compare-row">
+              <dt>Use quando</dt>
+              <dd>
+                <ul>
+                  <li>Faz trabalho, TCC ou estuda para prova</li>
+                  <li>Pesquisa dados de mercado, leis ou saúde</li>
+                  <li>Vai repassar a informação para alguém</li>
+                </ul>
+              </dd>
+            </div>
+            <div class="compare-row">
+              <dt>O que muda na resposta</dt>
+              <dd>Toda resposta vem com nota de confiança de 0,0 a 1,0 e uma lista de ressalvas do que ainda precisa ser checado.</dd>
+            </div>
+          </dl>
+          <div class="compare-btn-wrap">
+            <button class="compare-btn" onclick="scrollToSection('prompt-verdade')">Ver Prompt 1</button>
+          </div>
+        </div>
+
+        <div class="compare-card k2 fade-in">
+          <span class="compare-num">Prompt 2</span>
+          <h3>Prompt do Parceiro Crítico</h3>
+          <p class="compare-for">Para quem usa a IA para pensar, planejar e tomar decisões.</p>
+          <dl>
+            <div class="compare-row">
+              <dt>Combate</dt>
+              <dd>Bajulação: a IA que concorda com tudo e não te contraria.</dd>
+            </div>
+            <div class="compare-row">
+              <dt>Use quando</dt>
+              <dd>
+                <ul>
+                  <li>Valida uma ideia de negócio ou produto</li>
+                  <li>Monta um plano, proposta ou estratégia</li>
+                  <li>Está em dúvida entre dois caminhos</li>
+                </ul>
+              </dd>
+            </div>
+            <div class="compare-row">
+              <dt>O que muda na resposta</dt>
+              <dd>A IA aponta premissas frágeis, levanta riscos, dá uma recomendação clara e diz o próximo passo para testar a ideia.</dd>
+            </div>
+          </dl>
+          <div class="compare-btn-wrap">
+            <button class="compare-btn" onclick="scrollToSection('prompt-parceiro')">Ver Prompt 2</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="note fade-in">
+        <span class="note-icon" aria-hidden="true">💡</span>
+        <p><strong>Dá para usar os dois?</strong> Dá, mas não no mesmo lugar. Os dois juntos ficam longos demais para o campo de instruções de algumas IAs e brigam entre si no formato da resposta. O melhor caminho: deixe um nas instruções gerais e crie um Projeto (ChatGPT e Claude) ou um Gem (Gemini) para o outro. O passo a passo está mais abaixo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OS PROMPTS -->
+  <section class="bg-elevated" id="os-prompts">
     <div class="wrap">
       <div class="prompt-section-header fade-in">
-        <span class="eyebrow">A SOLUÇÃO</span>
-        <h2>Prompt da Verdade — Copie e instale agora</h2>
-        <p>Cole no campo de instruções personalizadas do Claude e ele passará a verificar cada resposta antes de te entregar.</p>
+        <span class="eyebrow">OS PROMPTS</span>
+        <h2>Copie o seu e instale agora</h2>
+        <p>Cole nas instruções personalizadas da sua IA e ela passa a seguir as regras em toda conversa nova.</p>
       </div>
-      <div class="prompt-wrapper fade-in">
-        <div class="prompt-header">
-          <span class="prompt-header-label">Prompt da Verdade</span>
-          <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">
-            <span id="copyIcon">📋</span>
-            <span id="copyText">Copiar tudo</span>
-          </button>
+
+      <!-- PROMPT 1 -->
+      <div class="prompt-block pb1" id="prompt-verdade">
+        <div class="prompt-intro fade-in">
+          <span class="prompt-kicker">Prompt 1 · Para pesquisar e checar fatos</span>
+          <h3>Prompt da Verdade: quando você precisa da resposta certa</h3>
+          <p>Obriga a IA a separar fato de suposição, dar nota de confiança e admitir o que não sabe.</p>
         </div>
-        <pre class="prompt-body" id="promptText">PROMPT DA VERDADE (COPIE ELE TODO)
+        <div class="prompt-wrapper fade-in">
+          <div class="prompt-header">
+            <span class="prompt-header-label">Prompt da Verdade</span>
+            <button class="copy-btn" onclick="copyPrompt('promptVerdade', this)" aria-label="Copiar o Prompt da Verdade">
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copiar tudo</span>
+            </button>
+          </div>
+          <pre class="prompt-body" id="promptVerdade">PROMPT DA VERDADE (COPIE ELE TODO)
 
 Assuma o papel de um assistente de raciocínio rigoroso, comprometido em buscar a verdade acima de tudo.
 
@@ -665,48 +956,174 @@ Dê uma nota geral de 0,0 a 1,0 e explique rapidamente o porquê dela.
 
 Principais Ressalvas:
 Liste suposições, incertezas, informações que faltam, evidências contraditórias ou pontos que ainda precisam ser checados.</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 2 -->
+      <div class="prompt-block pb2" id="prompt-parceiro">
+        <div class="prompt-intro fade-in">
+          <span class="prompt-kicker">Prompt 2 · Para decidir e executar</span>
+          <h3>Prompt do Parceiro Crítico: quando você precisa de uma opinião honesta</h3>
+          <p>Transforma a IA num sócio cético que questiona suas premissas, aponta riscos e diz qual caminho seguir.</p>
+        </div>
+        <div class="prompt-wrapper fade-in">
+          <div class="prompt-header">
+            <span class="prompt-header-label">Prompt do Parceiro Crítico</span>
+            <button class="copy-btn" onclick="copyPrompt('promptParceiro', this)" aria-label="Copiar o Prompt do Parceiro Crítico">
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copiar tudo</span>
+            </button>
+          </div>
+          <pre class="prompt-body" id="promptParceiro">PROMPT DO PARCEIRO CRÍTICO (COPIE ELE TODO)
+
+Atue como meu parceiro estratégico, com pensamento crítico, independência intelectual e foco em execução. Seu papel não é concordar comigo ou validar minhas ideias, mas me ajudar a tomar decisões melhores e transformar ideias em resultados concretos.
+
+Princípios de atuação:
+
+1. Não concorde por conveniência. Avalie minhas ideias com objetividade. Quando identificar falhas, inconsistências, premissas frágeis ou conclusões precipitadas, aponte diretamente e explique por quê.
+
+2. Questione minhas premissas. Não aceite automaticamente minhas afirmações como verdadeiras. Identifique o que está sendo assumido, o que é comprovado e o que ainda precisa ser validado.
+
+3. Atue como contraponto inteligente. Apresente perspectivas alternativas, riscos ocultos, objeções relevantes e argumentos que alguém experiente e cético levantaria. Não discorde apenas para parecer crítico.
+
+4. Priorize viabilidade e impacto. Avalie ideias considerando esforço, custo, complexidade, riscos, potencial de retorno e capacidade real de execução. Diferencie o que é interessante do que realmente vale a pena fazer.
+
+5. Transforme crítica em ação. Não se limite a apontar problemas. Proponha melhorias concretas, alternativas viáveis, próximos passos e formas rápidas de testar hipóteses antes de investir recursos significativos.
+
+6. Seja direto e intelectualmente honesto. Evite elogios genéricos, entusiasmo artificial, bajulação e respostas excessivamente diplomáticas. Se uma ideia for ruim, diga claramente e fundamente sua avaliação. Se for boa, explique objetivamente por quê.
+
+7. Diferencie fatos, hipóteses e opiniões. Explicite incertezas, reconheça limitações e nunca apresente suposições como certezas. Quando faltarem informações relevantes, sinalize o que precisa ser validado.
+
+8. Pense como alguém comprometido com o resultado. Considere consequências de segunda ordem, trade-offs, custo de oportunidade, gargalos operacionais e efeitos de longo prazo. Não otimize apenas a ideia; otimize a decisão.
+
+9. Evite paralisia por análise. Seja rigoroso, mas pragmático. Não transforme toda conversa em uma auditoria extensa. Ajuste a profundidade da análise à importância da decisão e, quando houver informação suficiente, recomende um caminho.
+
+10. Tenha posicionamento. Quando houver evidências suficientes, apresente sua recomendação, explique os motivos e indique em quais condições você mudaria de opinião. Não se esconda atrás de neutralidade artificial ou listas intermináveis de possibilidades.
+
+Regra central: prefiro uma verdade desconfortável que melhore minha decisão a uma resposta agradável que reforce meus vieses. Seu compromisso deve ser com a qualidade do meu raciocínio, das minhas decisões e dos resultados, não com a minha aprovação.</pre>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- COMO INSTALAR -->
-  <section class="bg-elevated" id="como-instalar">
+  <section id="como-instalar">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">INSTALAÇÃO</span>
-        <h2>Como instalar em 3 passos</h2>
-        <p>Leva menos de 30 segundos. Depois de salvar, todo novo chat já vai usar o prompt automaticamente.</p>
+        <h2>Como instalar na sua IA</h2>
+        <p>Escolha onde você usa. Leva menos de 30 segundos e vale para os dois prompts.</p>
       </div>
-      <div class="steps">
-        <div class="step fade-in">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h3>Abra o Claude e vá em Configurações</h3>
-            <p>Acesse claude.ai e clique no seu nome no canto inferior esquerdo da tela. No menu que aparecer, clique em <strong>Configurações</strong>.</p>
+
+      <div class="tabs fade-in" role="tablist" aria-label="Escolha a sua IA">
+        <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-chatgpt" id="t-chatgpt" onclick="showTab('chatgpt', this)">ChatGPT</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-claude" id="t-claude" onclick="showTab('claude', this)">Claude</button>
+        <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-gemini" id="t-gemini" onclick="showTab('gemini', this)">Gemini</button>
+      </div>
+
+      <!-- ChatGPT -->
+      <div class="tab-panel active" id="tab-chatgpt" role="tabpanel" aria-labelledby="t-chatgpt">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>Abra a Personalização</h3>
+              <p>No chatgpt.com, clique na sua foto de perfil e vá em <strong>Personalização</strong>.</p>
+            </div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>Encontre as Instruções personalizadas</h3>
+              <p>Procure o campo onde você diz <strong>quais características o ChatGPT deve ter</strong>. É ali que o prompt entra.</p>
+            </div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>Cole, salve e abra um chat novo</h3>
+              <p>Cole o prompt escolhido, clique em <strong>Salvar</strong> e comece uma conversa nova.</p>
+            </div>
           </div>
         </div>
-        <div class="step-connector"></div>
-        <div class="step fade-in">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h3>Encontre "Instruções para o Claude"</h3>
-            <p>Dentro de Configurações, procure o campo chamado <strong>Instruções para o Claude</strong>. É o espaço onde ele vai carregar o prompt em todo novo chat.</p>
+        <div class="note">
+          <span class="note-icon" aria-hidden="true">📁</span>
+          <p><strong>Campo cortou o texto?</strong> As instruções gerais do ChatGPT têm limite de caracteres. Crie um <strong>Projeto</strong> na barra lateral, abra as <strong>Instruções</strong> do projeto e cole lá. É também o jeito de ter um projeto para cada prompt.</p>
+        </div>
+      </div>
+
+      <!-- Claude -->
+      <div class="tab-panel" id="tab-claude" role="tabpanel" aria-labelledby="t-claude">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>Abra as Configurações</h3>
+              <p>No claude.ai, clique no seu nome no canto inferior esquerdo e vá em <strong>Configurações</strong>.</p>
+            </div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>Encontre as preferências pessoais</h3>
+              <p>Na aba Geral, procure o campo de <strong>preferências que o Claude deve considerar nas respostas</strong>.</p>
+            </div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>Cole, salve e abra um chat novo</h3>
+              <p>Cole o prompt escolhido, clique em <strong>Salvar</strong> e comece uma conversa nova.</p>
+            </div>
           </div>
         </div>
-        <div class="step-connector"></div>
-        <div class="step fade-in">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h3>Cole o prompt e clique em Salvar</h3>
-            <p>Copie o Prompt da Verdade acima, cole no campo e clique em <strong>Salvar</strong>. Abra uma nova conversa — está pronto.</p>
+        <div class="note">
+          <span class="note-icon" aria-hidden="true">📁</span>
+          <p><strong>Quer usar os dois?</strong> Crie um <strong>Projeto</strong> no menu lateral e cole o segundo prompt nas <strong>instruções do projeto</strong>. Conversas dentro dele seguem esse prompt.</p>
+        </div>
+      </div>
+
+      <!-- Gemini -->
+      <div class="tab-panel" id="tab-gemini" role="tabpanel" aria-labelledby="t-gemini">
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h3>Abra o gerenciador de Gems</h3>
+              <p>No gemini.google.com, abra o menu lateral e clique em <strong>Gems</strong> (ou Explorar Gems).</p>
+            </div>
           </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h3>Crie um Gem novo</h3>
+              <p>Clique em <strong>Novo Gem</strong>, dê um nome como "Verdade" ou "Parceiro Crítico" e cole o prompt no campo de <strong>Instruções</strong>.</p>
+            </div>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h3>Salve e converse pelo Gem</h3>
+              <p>Clique em <strong>Salvar</strong>. Sempre que precisar, abra o Gem pelo menu lateral e converse por ele.</p>
+            </div>
+          </div>
+        </div>
+        <div class="note">
+          <span class="note-icon" aria-hidden="true">⚙️</span>
+          <p><strong>Quer que valha para todo chat?</strong> Em <strong>Configurações</strong>, procure as instruções pessoais para o Gemini e cole o prompt lá. Assim ele vale fora dos Gems também.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- PLANO DE AÇÃO -->
-  <section id="plano">
+  <section class="bg-elevated" id="plano">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">PRÓXIMOS PASSOS</span>
@@ -717,34 +1134,38 @@ Liste suposições, incertezas, informações que faltam, evidências contradit�
         <ol class="action-list">
           <li class="action-item">
             <span class="action-num">1</span>
-            <p class="action-text">Cole o prompt completo nas <strong>Instruções para o Claude</strong> e salve.</p>
+            <p class="action-text">Decida o uso principal: <strong>pesquisar</strong> (Prompt da Verdade) ou <strong>decidir</strong> (Parceiro Crítico).</p>
           </li>
           <li class="action-item">
             <span class="action-num">2</span>
-            <p class="action-text">Abra uma conversa <strong>NOVA</strong> — o prompt só ativa em chats novos.</p>
+            <p class="action-text">Cole o principal nas <strong>instruções personalizadas</strong> da sua IA. O outro vai num Projeto ou Gem.</p>
           </li>
           <li class="action-item">
             <span class="action-num">3</span>
-            <p class="action-text">Faça uma pergunta com <strong>dado inventado</strong> e veja ele recusar em vez de confirmar.</p>
+            <p class="action-text">Abra uma conversa <strong>NOVA</strong>. O prompt só ativa em chats novos.</p>
           </li>
           <li class="action-item">
             <span class="action-num">4</span>
-            <p class="action-text">Salve o prompt num lugar fácil de acessar — ele também funciona no <strong>ChatGPT e no Gemini</strong>.</p>
+            <p class="action-text">Teste o Prompt da Verdade com uma pergunta com <strong>dado inventado</strong> e veja a IA recusar em vez de confirmar.</p>
           </li>
           <li class="action-item">
             <span class="action-num">5</span>
-            <p class="action-text">A partir de agora, leia sempre as <strong>Principais Ressalvas</strong> antes de agir em cima de qualquer resposta.</p>
+            <p class="action-text">Teste o Parceiro Crítico com <strong>uma ideia sua que você sabe que tem furo</strong> e veja se ele aponta.</p>
+          </li>
+          <li class="action-item">
+            <span class="action-num">6</span>
+            <p class="action-text">Daqui pra frente, leia sempre as <strong>Principais Ressalvas</strong> e os <strong>riscos apontados</strong> antes de agir em cima de qualquer resposta.</p>
           </li>
         </ol>
         <blockquote class="action-quote">
-          "Uma IA que diz 'não sei' vale mais do que dez que parecem certas."
+          "Uma IA que diz 'não sei' vale mais do que dez que parecem certas. E uma que diz 'isso não vai dar certo' vale mais do que dez que te aplaudem."
         </blockquote>
       </div>
     </div>
   </section>
 
   <div class="wrap" style="text-align:center;padding:2rem 0 3rem;">
-    <button class="pdf-btn" onclick="window.print()">↓ Baixar PDF com o prompt</button>
+    <button class="pdf-btn" onclick="window.print()">↓ Baixar PDF com os prompts</button>
   </div>
 
 </main>
@@ -761,12 +1182,28 @@ Liste suposições, incertezas, informações que faltam, evidências contradit�
 </footer>
 
 <script>
-  function copyPrompt() {
-    var promptEl = document.getElementById('promptText');
-    var text = promptEl.innerText;
-    var btn = document.getElementById('copyBtn');
-    var btnText = document.getElementById('copyText');
-    var btnIcon = document.getElementById('copyIcon');
+  function scrollToSection(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  function copyPrompt(id, btn) {
+    var text = document.getElementById(id).innerText;
+    var btnText = btn.querySelector('.copy-text');
+    var btnIcon = btn.querySelector('.copy-icon');
 
     function onCopied() {
       btn.classList.add('copied');
@@ -800,11 +1237,11 @@ Liste suposições, incertezas, informações que faltam, evidências contradit�
   }
 
   window.addEventListener('load', function() {
-    if (typeof gsap !== 'undefined') {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
       gsap.registerPlugin(ScrollTrigger);
       gsap.from('.hero h1', { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
       gsap.from('.hero .sub', { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
-      gsap.from('.hero-cta', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+      gsap.from('.hero-ctas', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
       gsap.from('.hero-meta', { opacity:0, duration:0.6, delay:0.55 });
       gsap.from('.side-card', { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
       gsap.utils.toArray('.fade-in').forEach(function(el) {
