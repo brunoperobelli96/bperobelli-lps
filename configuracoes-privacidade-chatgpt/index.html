@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#090023">
-<title>3 configurações do ChatGPT que você precisa mudar agora · Bruno Perobelli</title>
-<meta name="description" content="Tem como desligar o uso das suas conversas para treinar o modelo. Em 30 segundos. 3 configurações que a maioria dos usuários nunca mudou — e deveria.">
+<title>Checklist de privacidade da IA · Bruno Perobelli</title>
+<meta name="description" content="ChatGPT, Claude e Gemini montam um perfil seu com coisas que você nunca contou. Veja o que a IA sabe sobre você, apague a memória e desligue o uso das suas conversas no treinamento.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -115,7 +115,7 @@ a { color: inherit; text-decoration: none; }
 .accent { color: var(--accent); font-style: italic; }
 .hero .sub {
   font-size: 1.05rem; color: var(--text-muted);
-  max-width: 520px; line-height: 1.6;
+  max-width: 540px; line-height: 1.6;
 }
 
 /* HERO ACTIONS */
@@ -181,15 +181,34 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--accent); margin-bottom: 1rem;
 }
-.side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-.side-card li {
-  display: flex; align-items: flex-start; gap: 0.6rem;
-  font-size: 0.88rem; color: var(--text-muted); line-height: 1.4;
+.side-steps { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.side-steps a {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.6rem 0.7rem; margin: 0 -0.7rem;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
-.side-card li svg { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); margin-top: 2px; }
+.side-steps a:hover { background: rgba(6,182,212,0.08); }
+.side-num {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border-radius: 6px;
+  background: rgba(6,182,212,0.12);
+  border: 1px solid rgba(6,182,212,0.3);
+  color: var(--accent);
+  font-size: 0.75rem; font-weight: 800;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.side-steps strong { display: block; font-size: 0.9rem; color: var(--text); line-height: 1.35; }
+.side-steps span.side-desc { display: block; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-top: 2px; }
+.side-foot {
+  margin-top: 1rem; padding-top: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 0.78rem; color: var(--text-muted); text-align: center;
+}
 
 /* SECTIONS */
-section { padding: clamp(3rem,7vw,5rem) 0; }
+section { padding: clamp(3rem,7vw,5rem) 0; scroll-margin-top: 72px; }
 section.alt { background: var(--bg-elevated); }
 .section-header { margin-bottom: 2.5rem; }
 .section-header h2 {
@@ -198,8 +217,53 @@ section.alt { background: var(--bg-elevated); }
 }
 .section-header .lead {
   color: var(--text-muted); font-size: 0.95rem;
-  margin-top: 0.6rem; max-width: 560px; line-height: 1.6;
+  margin-top: 0.6rem; max-width: 600px; line-height: 1.6;
 }
+.step-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); font-weight: 700;
+}
+.step-tag b {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: var(--accent); color: #090023;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; letter-spacing: 0;
+}
+
+/* AI PICKER */
+.ai-scope { position: relative; }
+.ai-picker-bar {
+  position: sticky; top: 58px; z-index: 50;
+  background: rgba(9,0,35,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 0.75rem 0;
+}
+.ai-picker-inner { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.ai-picker-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+.ai-picker { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.ai-btn {
+  background: var(--surface);
+  border: 1px solid var(--text-faint);
+  color: var(--text-muted);
+  font-family: 'Figtree', sans-serif;
+  font-weight: 700; font-size: 0.88rem;
+  padding: 0 1.1rem; min-height: 40px;
+  border-radius: 999px; cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.ai-btn:hover { border-color: var(--accent); color: var(--text); }
+.ai-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #090023; }
+.ai-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+body[data-ai="chatgpt"] [data-only]:not([data-only~="chatgpt"]),
+body[data-ai="claude"]  [data-only]:not([data-only~="claude"]),
+body[data-ai="gemini"]  [data-only]:not([data-only~="gemini"]) { display: none !important; }
+.ai-name::before { content: 'ChatGPT'; }
+body[data-ai="claude"] .ai-name::before { content: 'Claude'; }
+body[data-ai="gemini"] .ai-name::before { content: 'Gemini'; }
 
 /* STEPS */
 .steps-list { display: flex; flex-direction: column; gap: 1rem; }
@@ -237,6 +301,7 @@ section.alt { background: var(--bg-elevated); }
 }
 .path-arrow { color: var(--text-faint); font-size: 0.8rem; }
 .step-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+.step-desc strong { color: var(--text); }
 
 /* EXTRAS */
 .extras-grid {
@@ -281,7 +346,8 @@ section.alt { background: var(--bg-elevated); }
   text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--accent); margin-bottom: 0.4rem;
 }
-.prompt-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.9rem; }
+.prompt-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+.prompt-why { font-size: 0.86rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.9rem; }
 .prompt-box {
   background: rgba(0,0,0,0.35);
   border: 1px solid rgba(255,255,255,0.07);
@@ -291,6 +357,25 @@ section.alt { background: var(--bg-elevated); }
   line-height: 1.65; font-style: italic;
   position: relative;
 }
+.prompt-variant {
+  margin-top: 1rem;
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted); margin-bottom: 0.5rem;
+}
+
+/* NOTE */
+.note {
+  display: flex; gap: 0.8rem; align-items: flex-start;
+  margin-top: 1.5rem;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.3);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;
+}
+.note svg { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+.note strong { color: var(--text); }
 
 /* COPY BTN */
 .copy-btn {
@@ -305,6 +390,7 @@ section.alt { background: var(--bg-elevated); }
   display: inline-flex; align-items: center;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
+  font-style: normal;
 }
 .copy-btn:hover { background: var(--accent); color: #090023; }
 .copy-btn:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
@@ -333,10 +419,14 @@ footer {
   .meta-valor { font-size: 1.4rem; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .cta-primary, .download-btn { width: 100%; justify-content: center; }
+  .nav-name small { display: none; }
+  .ai-picker-label { display: none; }
+  .ai-picker { width: 100%; }
+  .ai-btn { flex: 1; padding: 0 0.6rem; }
 }
 </style>
 </head>
-<body>
+<body data-ai="chatgpt">
 
 <a href="#main" class="skip-link">Pular para o conteúdo</a>
 
@@ -360,10 +450,10 @@ footer {
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">IA APLICADA · PRIVACIDADE</p>
-          <h1>O ChatGPT está usando suas conversas pra <span class="accent">treinar o modelo</span></h1>
-          <p class="sub">Tem como desligar. Em 30 segundos. 3 configurações que a maioria dos usuários nunca mudou — e deveria.</p>
+          <h1>A IA está montando um perfil seu com coisas que <span class="accent">você nunca contou</span></h1>
+          <p class="sub">ChatGPT, Claude e Gemini guardam o que você conta e deduzem o que você não conta: hábitos, renda, pontos cegos. Este checklist mostra como ver tudo, apagar o que não quer e impedir que suas conversas treinem o modelo.</p>
           <div class="hero-actions">
-            <a href="#configuracoes" class="cta-primary">Ver as configurações ↓</a>
+            <a href="#ver" class="cta-primary">Começar o checklist ↓</a>
             <button class="download-btn" onclick="gerarPDF()">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
               Baixar PDF
@@ -372,208 +462,348 @@ footer {
           <div class="hero-meta">
             <div class="hero-meta-item">
               <span class="meta-valor">3</span>
-              <span class="meta-label">configurações essenciais</span>
+              <span class="meta-label">passos: ver, apagar, desligar</span>
             </div>
             <div class="hero-meta-item">
-              <span class="meta-valor">30s</span>
-              <span class="meta-label">para aplicar tudo</span>
+              <span class="meta-valor">4</span>
+              <span class="meta-label">prompts de auditoria</span>
             </div>
             <div class="hero-meta-item">
-              <span class="meta-valor">+4</span>
-              <span class="meta-label">dicas bônus</span>
+              <span class="meta-valor">3 IAs</span>
+              <span class="meta-label">ChatGPT, Claude e Gemini</span>
             </div>
           </div>
         </div>
-        <aside class="side-card fade-in" aria-label="O que você vai configurar">
-          <p class="side-card-title">O que você vai configurar</p>
-          <ul>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-              Desligar uso das conversas para treinar o modelo
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-              Gerenciar o que está salvo na sua memória
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-              Ativar o modo incógnito (chat temporário)
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-              4 configurações extras de privacidade
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-              3 prompts para auditar o que o ChatGPT sabe de você
-            </li>
-          </ul>
+        <aside class="side-card fade-in" aria-label="O checklist">
+          <p class="side-card-title">O checklist</p>
+          <ol class="side-steps">
+            <li><a href="#ver"><span class="side-num">1</span><span><strong>Veja o que a IA sabe</strong><span class="side-desc">2 prompts que revelam o perfil que ela montou</span></span></a></li>
+            <li><a href="#apagar"><span class="side-num">2</span><span><strong>Apague a memória</strong><span class="side-desc">Item por item ou tudo de uma vez</span></span></a></li>
+            <li><a href="#desligar"><span class="side-num">3</span><span><strong>Desligue o treinamento</strong><span class="side-desc">Suas conversas param de virar dado</span></span></a></li>
+            <li><a href="#extras"><span class="side-num">+</span><span><strong>4 proteções extras</strong><span class="side-desc">Chat temporário, histórico, exportação e apps</span></span></a></li>
+          </ol>
+          <p class="side-foot">Caminhos para ChatGPT, Claude e Gemini</p>
         </aside>
       </div>
     </div>
   </header>
 
-  <!-- CONFIGURAÇÕES PRINCIPAIS -->
-  <section id="configuracoes">
+  <!-- PASSO 1: VER -->
+  <section id="ver" class="alt">
     <div class="wrap">
       <div class="section-header fade-in">
-        <p class="eyebrow">PASSO A PASSO</p>
-        <h2>As 3 configurações para mudar agora</h2>
-        <p class="lead">Siga na ordem. Cada uma leva menos de 10 segundos.</p>
-      </div>
-      <div class="steps-list">
-
-        <div class="step-item fade-in">
-          <div class="step-badge" aria-hidden="true">1</div>
-          <div class="step-content">
-            <h3>Desligar o uso das conversas para treinar o modelo</h3>
-            <div class="step-path" aria-label="Caminho de navegação">
-              <span class="path-item">Configurações</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Controle de dados</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Melhorar o modelo para todos</span>
-            </div>
-            <p class="step-desc">Desliga essa opção. Com ela ativa, suas conversas são usadas pra alimentar o treinamento do ChatGPT. Desligando, elas param de virar dado de treinamento.</p>
-          </div>
-        </div>
-
-        <div class="step-item fade-in">
-          <div class="step-badge" aria-hidden="true">2</div>
-          <div class="step-content">
-            <h3>Gerenciar o que está salvo na sua memória</h3>
-            <div class="step-path" aria-label="Caminho de navegação">
-              <span class="path-item">Configurações</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Personalização</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Resumo de memória</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Gerenciar</span>
-            </div>
-            <p class="step-desc">É ali que fica tudo que o ChatGPT aprendeu sobre você: nome da empresa, projetos, hábitos, rotina. Revise a lista e apague qualquer coisa que não quer que continue salva.</p>
-          </div>
-        </div>
-
-        <div class="step-item fade-in">
-          <div class="step-badge" aria-hidden="true">3</div>
-          <div class="step-content">
-            <h3>Ativar o chat temporário (modo incógnito)</h3>
-            <div class="step-path" aria-label="Caminho de navegação">
-              <span class="path-item">Canto superior direito</span>
-              <span class="path-arrow" aria-hidden="true">→</span>
-              <span class="path-item">Chat temporário</span>
-            </div>
-            <p class="step-desc">Funciona como modo incógnito: nada que você digitar fica salvo no histórico nem nas memórias. Ideal para conversas que você não quer que influenciem o perfil do sistema sobre você.</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- EXTRAS -->
-  <section class="alt">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <p class="eyebrow">CONFIGURAÇÕES EXTRAS</p>
-        <h2>Mais 4 ajustes que valem a pena</h2>
-        <p class="lead">Não estão no vídeo, mas completam a proteção.</p>
-      </div>
-      <div class="extras-grid">
-
-        <div class="extra-card fade-in">
-          <div class="extra-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-          </div>
-          <h3>Exportar seus dados</h3>
-          <div class="extra-path">
-            <span class="path-item">Configurações</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Controle de dados</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Exportar dados</span>
-          </div>
-          <p>Baixa tudo que o ChatGPT tem sobre você. Bom pra saber exatamente o que está armazenado antes de decidir o que apagar.</p>
-        </div>
-
-        <div class="extra-card fade-in">
-          <div class="extra-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-          </div>
-          <h3>Apagar todo o histórico</h3>
-          <div class="extra-path">
-            <span class="path-item">Configurações</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Controle de dados</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Excluir todas as conversas</span>
-          </div>
-          <p>Apaga tudo de uma vez. Útil se você usou o ChatGPT por muito tempo sem se preocupar com o que estava salvando.</p>
-        </div>
-
-        <div class="extra-card fade-in">
-          <div class="extra-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <h3>Desativar a memória completamente</h3>
-          <div class="extra-path">
-            <span class="path-item">Configurações</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Personalização</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Memória → desligar</span>
-          </div>
-          <p>Desliga tudo de uma vez, sem precisar apagar item por item. O ChatGPT para de aprender qualquer coisa nova sobre você.</p>
-        </div>
-
-        <div class="extra-card fade-in">
-          <div class="extra-card-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-          </div>
-          <h3>Verificar aplicativos conectados</h3>
-          <div class="extra-path">
-            <span class="path-item">Configurações</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Segurança</span>
-            <span class="path-arrow">→</span>
-            <span class="path-item">Aplicativos conectados</span>
-          </div>
-          <p>Mostra todos os apps com acesso à sua conta. Revogue qualquer um que você não usa mais ou que não reconhece.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- PROMPTS DE AUDITORIA -->
-  <section id="prompts">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <p class="eyebrow">PROMPTS DE AUDITORIA</p>
-        <h2>Pergunte pro ChatGPT o que ele sabe sobre você</h2>
-        <p class="lead">Cole esses prompts diretamente no chat para auditar suas informações antes de decidir o que apagar.</p>
+        <p class="step-tag"><b>1</b> Veja o que a IA sabe</p>
+        <h2>Pergunte o que ela guardou e o que ela deduziu</h2>
+        <p class="lead">Antes de apagar, veja o tamanho do perfil. Cole os prompts em ordem, na mesma conversa. Funcionam no ChatGPT, Claude e Gemini.</p>
       </div>
       <div class="prompts-list">
 
         <div class="prompt-card fade-in">
           <p class="prompt-num">Prompt 1</p>
-          <h3>Auditoria completa da memória</h3>
-          <div class="prompt-box">"Faça uma auditoria completa das informações que você tem salvas sobre mim. Liste por categorias: dados pessoais, empresa, projetos, hábitos e qualquer outra coisa que identificar. Seja específico e não omita nada."</div>
+          <h3>A lista completa do que ela guardou</h3>
+          <p class="prompt-why">Traz tudo o que está salvo na memória, sem resumo.</p>
+          <div class="prompt-box" data-title="A lista completa do que ela guardou">"Liste tudo o que você guardou sobre mim em uma lista completa e não resuma nada."</div>
+          <p class="prompt-variant">Variação: organizado por categoria</p>
+          <div class="prompt-box" data-title="Variação: organizado por categoria">"Faça uma auditoria completa das informações que você tem salvas sobre mim. Liste por categorias: dados pessoais, empresa, projetos, hábitos e qualquer outra coisa que identificar. Seja específico e não omita nada."</div>
         </div>
 
         <div class="prompt-card fade-in">
           <p class="prompt-num">Prompt 2</p>
-          <h3>Checklist do que remover</h3>
-          <div class="prompt-box">"Com base no que você sabe sobre mim, quais informações são sensíveis ou que eu deveria remover da sua memória? Me dá uma lista para eu revisar agora, com a justificativa de por que cada item é sensível."</div>
+          <h3>O que ela descobriu sem você contar</h3>
+          <p class="prompt-why">Aqui aparecem as deduções: renda, hábitos, pontos cegos. E de onde ela tirou cada uma.</p>
+          <div class="prompt-box" data-title="O que ela descobriu sem você contar">"Agora me conte tudo o que você descobriu sobre mim que eu nunca te contei e o que te deu essa pista."</div>
         </div>
 
         <div class="prompt-card fade-in">
           <p class="prompt-num">Prompt 3</p>
-          <h3>Guia de proteção de privacidade</h3>
-          <div class="prompt-box">"Me dá um guia prático: quais tipos de dados eu nunca deveria digitar numa conversa com IA? Quero proteger informações pessoais, financeiras e profissionais. Lista as categorias com exemplos reais de cada uma."</div>
+          <h3>Checklist do que remover</h3>
+          <p class="prompt-why">Transforma o que apareceu nos prompts anteriores numa lista do que vale apagar no passo 2.</p>
+          <div class="prompt-box" data-title="Checklist do que remover">"Com base no que você sabe sobre mim, quais informações são sensíveis ou que eu deveria remover da sua memória? Me dá uma lista para eu revisar agora, com a justificativa de por que cada item é sensível."</div>
         </div>
 
+      </div>
+      <div class="note fade-in">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+        <p><strong>A IA disse que não sabe nada sobre você?</strong> Ótimo sinal: a memória provavelmente está desligada ou vazia. Mesmo assim, faça o passo 3, porque o treinamento com suas conversas é outra configuração.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ai-scope">
+    <div class="ai-picker-bar">
+      <div class="wrap ai-picker-inner">
+        <span class="ai-picker-label" id="ai-picker-label">Qual IA você usa?</span>
+        <div class="ai-picker" role="group" aria-labelledby="ai-picker-label">
+          <button class="ai-btn" data-pick="chatgpt" aria-pressed="true">ChatGPT</button>
+          <button class="ai-btn" data-pick="claude" aria-pressed="false">Claude</button>
+          <button class="ai-btn" data-pick="gemini" aria-pressed="false">Gemini</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSO 2: APAGAR -->
+    <section id="apagar">
+      <div class="wrap">
+        <div class="section-header fade-in">
+          <p class="step-tag"><b>2</b> Apague a memória</p>
+          <h2>Tire do <span class="ai-name"></span> o que você não quer que ele lembre</h2>
+          <p class="lead">Use a lista do Prompt 3 como guia. Você pode apagar item por item ou desligar a memória inteira.</p>
+        </div>
+        <div class="steps-list">
+
+          <!-- ChatGPT -->
+          <div class="step-item fade-in" data-only="chatgpt">
+            <div class="step-badge" aria-hidden="true">A</div>
+            <div class="step-content">
+              <h3>Abrir o resumo da memória</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Engrenagem (canto inferior esquerdo)</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Memória</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Resumo da memória</span>
+              </div>
+              <p class="step-desc">É ali que fica tudo o que o ChatGPT aprendeu sobre você: empresa, projetos, hábitos, rotina. Revise a lista e apague item por item o que não quer que continue salvo.</p>
+            </div>
+          </div>
+          <div class="step-item fade-in" data-only="chatgpt">
+            <div class="step-badge" aria-hidden="true">B</div>
+            <div class="step-content">
+              <h3>Excluir ou desativar tudo de uma vez</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Resumo da memória</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Três pontinhos (canto superior direito)</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Excluir ou desativar a memória</span>
+              </div>
+              <p class="step-desc"><strong>Excluir</strong> zera o que já foi salvo. <strong>Desativar</strong> faz o ChatGPT parar de aprender qualquer coisa nova sobre você.</p>
+            </div>
+          </div>
+
+          <!-- Claude -->
+          <div class="step-item fade-in" data-only="claude">
+            <div class="step-badge" aria-hidden="true">A</div>
+            <div class="step-content">
+              <h3>Ver e editar a memória</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Seu nome (canto inferior esquerdo)</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Configurações</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Capacidades</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Memória</span>
+              </div>
+              <p class="step-desc">Abra a visualização da memória para ver o resumo que o Claude montou a partir das suas conversas. Peça para ele esquecer o que for sensível ou edite direto ali.</p>
+            </div>
+          </div>
+          <div class="step-item fade-in" data-only="claude">
+            <div class="step-badge" aria-hidden="true">B</div>
+            <div class="step-content">
+              <h3>Desligar a memória e a busca em conversas antigas</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Configurações</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Capacidades</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Memória → desligar</span>
+              </div>
+              <p class="step-desc">Desligue a geração de memória a partir do histórico e a opção de pesquisar conversas anteriores. Assim o Claude para de cruzar informação de um chat com outro.</p>
+            </div>
+          </div>
+
+          <!-- Gemini -->
+          <div class="step-item fade-in" data-only="gemini">
+            <div class="step-badge" aria-hidden="true">A</div>
+            <div class="step-content">
+              <h3>Revisar o contexto pessoal</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Configurações e ajuda</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Contexto pessoal</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Suas instruções / Informações salvas</span>
+              </div>
+              <p class="step-desc">É a lista do que o Gemini guarda sobre você. Apague item por item o que não quer que continue salvo.</p>
+            </div>
+          </div>
+          <div class="step-item fade-in" data-only="gemini">
+            <div class="step-badge" aria-hidden="true">B</div>
+            <div class="step-content">
+              <h3>Desligar o uso de conversas anteriores</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Configurações e ajuda</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Contexto pessoal</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Conversas anteriores → desligar</span>
+              </div>
+              <p class="step-desc">Com essa opção ligada, o Gemini usa o que você falou em outros chats para personalizar as respostas. Desligando, cada conversa começa do zero.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PASSO 3: DESLIGAR TREINAMENTO -->
+    <section id="desligar" class="alt">
+      <div class="wrap">
+        <div class="section-header fade-in">
+          <p class="step-tag"><b>3</b> Desligue o treinamento</p>
+          <h2>Impeça que suas conversas treinem o <span class="ai-name"></span></h2>
+          <p class="lead">Por padrão, o que você digita pode ser usado para melhorar o modelo. Uma chave resolve.</p>
+        </div>
+        <div class="steps-list">
+
+          <div class="step-item fade-in" data-only="chatgpt">
+            <div class="step-badge" aria-hidden="true">✓</div>
+            <div class="step-content">
+              <h3>Desligar "Melhorar o modelo para todos"</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Engrenagem</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Controle de dados</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Melhorar o modelo para todos</span>
+              </div>
+              <p class="step-desc">Desliga essa opção. Com ela ativa, suas conversas podem alimentar o treinamento do ChatGPT. Desligando, elas param de virar dado de treinamento.</p>
+            </div>
+          </div>
+
+          <div class="step-item fade-in" data-only="claude">
+            <div class="step-badge" aria-hidden="true">✓</div>
+            <div class="step-content">
+              <h3>Desligar "Ajude a melhorar o Claude"</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Configurações</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Privacidade</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Ajude a melhorar o Claude</span>
+              </div>
+              <p class="step-desc">Com essa opção ligada, suas conversas podem ser usadas para treinar os próximos modelos. Desligue e elas ficam fora do treinamento.</p>
+            </div>
+          </div>
+
+          <div class="step-item fade-in" data-only="gemini">
+            <div class="step-badge" aria-hidden="true">✓</div>
+            <div class="step-content">
+              <h3>Desativar a atividade nos apps Gemini</h3>
+              <div class="step-path" aria-label="Caminho de navegação">
+                <span class="path-item">Configurações e ajuda</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Atividade</span>
+                <span class="path-arrow" aria-hidden="true">→</span>
+                <span class="path-item">Desativar</span>
+              </div>
+              <p class="step-desc">No Gemini, a mesma chave controla o histórico e o uso das conversas para melhorar os modelos do Google. Desativando, as conversas novas deixam de ser usadas para isso.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- EXTRAS -->
+    <section id="extras">
+      <div class="wrap">
+        <div class="section-header fade-in">
+          <p class="eyebrow">PROTEÇÕES EXTRAS</p>
+          <h2>Mais 4 ajustes que valem a pena</h2>
+          <p class="lead">Não estão no vídeo, mas completam a proteção no <span class="ai-name"></span>.</p>
+        </div>
+        <div class="extras-grid">
+
+          <div class="extra-card fade-in">
+            <div class="extra-card-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
+            </div>
+            <h3>Usar o chat temporário</h3>
+            <div class="extra-path" data-only="chatgpt">
+              <span class="path-item">Canto superior direito</span><span class="path-arrow">→</span><span class="path-item">Chat temporário</span>
+            </div>
+            <div class="extra-path" data-only="claude">
+              <span class="path-item">Novo chat</span><span class="path-arrow">→</span><span class="path-item">Ícone de chat anônimo (canto superior)</span>
+            </div>
+            <div class="extra-path" data-only="gemini">
+              <span class="path-item">Menu lateral</span><span class="path-arrow">→</span><span class="path-item">Chat temporário</span>
+            </div>
+            <p>Funciona como modo anônimo: a conversa não entra no histórico nem na memória. Use para assuntos que você não quer no seu perfil.</p>
+          </div>
+
+          <div class="extra-card fade-in">
+            <div class="extra-card-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </div>
+            <h3>Apagar o histórico de conversas</h3>
+            <div class="extra-path" data-only="chatgpt">
+              <span class="path-item">Engrenagem</span><span class="path-arrow">→</span><span class="path-item">Controle de dados</span><span class="path-arrow">→</span><span class="path-item">Excluir todas as conversas</span>
+            </div>
+            <div class="extra-path" data-only="claude">
+              <span class="path-item">Chats</span><span class="path-arrow">→</span><span class="path-item">Selecionar</span><span class="path-arrow">→</span><span class="path-item">Excluir</span>
+            </div>
+            <div class="extra-path" data-only="gemini">
+              <span class="path-item">Atividade</span><span class="path-arrow">→</span><span class="path-item">Excluir</span><span class="path-arrow">→</span><span class="path-item">Todo o período</span>
+            </div>
+            <p>Útil se você usou a IA por muito tempo sem se preocupar com o que estava salvando.</p>
+          </div>
+
+          <div class="extra-card fade-in">
+            <div class="extra-card-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            </div>
+            <h3>Exportar seus dados</h3>
+            <div class="extra-path" data-only="chatgpt">
+              <span class="path-item">Engrenagem</span><span class="path-arrow">→</span><span class="path-item">Controle de dados</span><span class="path-arrow">→</span><span class="path-item">Exportar dados</span>
+            </div>
+            <div class="extra-path" data-only="claude">
+              <span class="path-item">Configurações</span><span class="path-arrow">→</span><span class="path-item">Privacidade</span><span class="path-arrow">→</span><span class="path-item">Exportar dados</span>
+            </div>
+            <div class="extra-path" data-only="gemini">
+              <span class="path-item">takeout.google.com</span><span class="path-arrow">→</span><span class="path-item">Gemini</span>
+            </div>
+            <p>Baixa tudo o que a plataforma tem sobre você. Bom para saber exatamente o que está armazenado antes de apagar.</p>
+          </div>
+
+          <div class="extra-card fade-in">
+            <div class="extra-card-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+            </div>
+            <h3>Verificar apps conectados</h3>
+            <div class="extra-path" data-only="chatgpt">
+              <span class="path-item">Engrenagem</span><span class="path-arrow">→</span><span class="path-item">Aplicativos conectados</span>
+            </div>
+            <div class="extra-path" data-only="claude">
+              <span class="path-item">Configurações</span><span class="path-arrow">→</span><span class="path-item">Conectores</span>
+            </div>
+            <div class="extra-path" data-only="gemini">
+              <span class="path-item">Configurações e ajuda</span><span class="path-arrow">→</span><span class="path-item">Apps</span>
+            </div>
+            <p>Mostra os serviços com acesso à sua conta (e-mail, Drive, agenda). Desconecte o que você não usa mais ou não reconhece.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PREVENÇÃO -->
+  <section id="prevencao" class="alt">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <p class="eyebrow">DAQUI PRA FRENTE</p>
+        <h2>Evite que o perfil volte a crescer</h2>
+        <p class="lead">Apagar resolve o passado. Este prompt mostra o que não entrar em nenhuma conversa com IA.</p>
+      </div>
+      <div class="prompts-list">
+        <div class="prompt-card fade-in">
+          <p class="prompt-num">Prompt 4</p>
+          <h3>Guia do que nunca digitar</h3>
+          <p class="prompt-why">Uma lista por categoria, com exemplos reais, para deixar salva.</p>
+          <div class="prompt-box" data-title="Guia do que nunca digitar">"Me dá um guia prático: quais tipos de dados eu nunca deveria digitar numa conversa com IA? Quero proteger informações pessoais, financeiras e profissionais. Lista as categorias com exemplos reais de cada uma."</div>
+        </div>
       </div>
     </div>
   </section>
@@ -582,7 +812,7 @@ footer {
   <div style="text-align:center; padding: clamp(2rem,5vw,3rem) 0 clamp(2.5rem,6vw,4rem);">
     <button class="download-btn" onclick="gerarPDF()" style="margin-top:0;">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-      Baixar todos os prompts
+      Baixar o checklist em PDF
     </button>
   </div>
 
@@ -597,6 +827,31 @@ footer {
 </footer>
 
 <script>
+var AI_NAMES = { chatgpt: 'ChatGPT', claude: 'Claude', gemini: 'Gemini' };
+
+function setAI(ai) {
+  document.body.setAttribute('data-ai', ai);
+  document.querySelectorAll('.ai-btn').forEach(function(b) {
+    b.setAttribute('aria-pressed', b.dataset.pick === ai ? 'true' : 'false');
+  });
+  // elementos que estavam ocultos não passaram pelo GSAP: garante que apareçam
+  document.querySelectorAll('[data-only~="' + ai + '"]').forEach(function(el) {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+  });
+  // a troca muda a altura das seções: recalcula onde cada animação dispara
+  if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+  try { localStorage.setItem('bp-ai', ai); } catch (e) {}
+}
+
+document.querySelectorAll('.ai-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() { setAI(btn.dataset.pick); });
+});
+try {
+  var saved = localStorage.getItem('bp-ai');
+  if (saved && AI_NAMES[saved]) setAI(saved);
+} catch (e) {}
+
 function gerarPDF() {
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -604,9 +859,18 @@ function gerarPDF() {
   var margin = 20;
   var maxW = W - margin * 2;
   var y = 0;
+  var ai = document.body.getAttribute('data-ai');
 
   function checkPage(needed) {
     if (y + needed > 270) { doc.addPage(); y = 20; }
+  }
+  function sectionTitle(t) {
+    checkPage(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(6, 182, 212);
+    doc.text(t, margin, y);
+    y += 8;
   }
 
   doc.setFillColor(9, 0, 35);
@@ -624,42 +888,31 @@ function gerarPDF() {
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16);
   doc.setTextColor(9, 0, 35);
-  var titulo = '3 configuracoes do ChatGPT que voce precisa mudar agora';
-  var tituloLines = doc.splitTextToSize(titulo, maxW);
+  var tituloLines = doc.splitTextToSize('Checklist de privacidade da IA (' + AI_NAMES[ai] + ')', maxW);
   doc.text(tituloLines, margin, y);
   y += tituloLines.length * 7 + 4;
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(80, 70, 100);
-  var sub = 'Prompts para auditar o que o ChatGPT sabe sobre voce. Cole diretamente no chat.';
-  var subLines = doc.splitTextToSize(sub, maxW);
+  var subLines = doc.splitTextToSize('1. Veja o que a IA sabe  2. Apague a memoria  3. Desligue o treinamento', maxW);
   doc.text(subLines, margin, y);
-  y += subLines.length * 5 + 10;
-
+  y += subLines.length * 5 + 6;
   doc.setDrawColor(200, 195, 220);
   doc.line(margin, y, W - margin, y);
-  y += 8;
+  y += 10;
 
-  var prompts = [
-    { num: 'Prompt 1', titulo: 'Auditoria completa da memoria' },
-    { num: 'Prompt 2', titulo: 'Checklist do que remover' },
-    { num: 'Prompt 3', titulo: 'Guia de protecao de privacidade' }
-  ];
-
-  document.querySelectorAll('.prompt-box').forEach(function(box, i) {
-    var texto = box.textContent.replace(/^"|"$/g, '').replace('Copiar', '').replace('Copiado!', '').trim();
-    var p = prompts[i] || { num: 'Prompt ' + (i + 1), titulo: '' };
+  function addPrompt(box, label) {
+    var texto = box.firstChild.textContent.replace(/^"|"$/g, '').trim();
     checkPage(30);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(7.5);
     doc.setTextColor(6, 182, 212);
-    doc.text(p.num.toUpperCase(), margin, y);
+    doc.text(label.toUpperCase(), margin, y);
     y += 5;
-    doc.setFont('helvetica', 'bold');
     doc.setFontSize(11);
     doc.setTextColor(9, 0, 35);
-    doc.text(p.titulo, margin, y);
+    doc.text(box.dataset.title, margin, y);
     y += 6;
     var textoLines = doc.splitTextToSize('"' + texto + '"', maxW - 8);
     var boxH = textoLines.length * 5.2 + 8;
@@ -670,8 +923,51 @@ function gerarPDF() {
     doc.setFontSize(9.5);
     doc.setTextColor(60, 50, 90);
     doc.text(textoLines, margin + 4, y + 6);
-    y += boxH + 10;
+    y += boxH + 8;
+  }
+
+  function addPath(title, pathEl) {
+    var path = Array.prototype.map.call(pathEl.querySelectorAll('.path-item'), function(p) { return p.textContent.trim(); }).join('  >  ').replace(/→/g, '>');
+    checkPage(16);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10.5);
+    doc.setTextColor(9, 0, 35);
+    doc.text('[  ]  ' + title, margin, y);
+    y += 5.5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(80, 70, 100);
+    var lines = doc.splitTextToSize(path, maxW - 8);
+    doc.text(lines, margin + 8, y);
+    y += lines.length * 4.6 + 5;
+  }
+
+  sectionTitle('Passo 1 - Veja o que a IA sabe');
+  document.querySelectorAll('#ver .prompt-card').forEach(function(card) {
+    var num = card.querySelector('.prompt-num').textContent;
+    card.querySelectorAll('.prompt-box').forEach(function(box, i) { addPrompt(box, i ? num + ' (variacao)' : num); });
   });
+
+  sectionTitle('Passo 2 - Apague a memoria (' + AI_NAMES[ai] + ')');
+  document.querySelectorAll('#apagar .step-item[data-only~="' + ai + '"]').forEach(function(s) {
+    addPath(s.querySelector('h3').textContent, s.querySelector('.step-path'));
+  });
+  y += 4;
+
+  sectionTitle('Passo 3 - Desligue o treinamento (' + AI_NAMES[ai] + ')');
+  document.querySelectorAll('#desligar .step-item[data-only~="' + ai + '"]').forEach(function(s) {
+    addPath(s.querySelector('h3').textContent, s.querySelector('.step-path'));
+  });
+  y += 4;
+
+  sectionTitle('Protecoes extras (' + AI_NAMES[ai] + ')');
+  document.querySelectorAll('#extras .extra-card').forEach(function(c) {
+    addPath(c.querySelector('h3').textContent, c.querySelector('.extra-path[data-only~="' + ai + '"]'));
+  });
+  y += 4;
+
+  sectionTitle('Daqui pra frente');
+  document.querySelectorAll('#prevencao .prompt-box').forEach(function(box) { addPrompt(box, 'Prompt 4'); });
 
   var pages = doc.internal.getNumberOfPages();
   for (var pg = 1; pg <= pages; pg++) {
@@ -683,7 +979,7 @@ function gerarPDF() {
     doc.text(pg + ' / ' + pages, W - margin, 287, { align: 'right' });
   }
 
-  doc.save('configuracoes-privacidade-chatgpt-bperobelli.pdf');
+  doc.save('checklist-privacidade-ia-' + ai + '-bperobelli.pdf');
 }
 
 document.querySelectorAll('.prompt-box').forEach(function(box) {
@@ -703,20 +999,23 @@ document.querySelectorAll('.prompt-box').forEach(function(box) {
   box.appendChild(btn);
 });
 
-var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-if (typeof gsap !== 'undefined' && !reducedMotion) {
-  gsap.registerPlugin(ScrollTrigger);
-  gsap.from('.hero h1',      { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
-  gsap.from('.hero .sub',    { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
-  gsap.from('.hero-actions', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
-  gsap.from('.hero-meta',    { opacity:0, duration:0.6, delay:0.55 });
-  gsap.from('.side-card',    { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
-  gsap.utils.toArray('.fade-in').forEach(function(el) {
-    gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
-      scrollTrigger: { trigger:el, start:'top 88%', once:true }
+window.addEventListener('load', function() {
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !reducedMotion) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from('.hero h1',      { opacity:0, y:30, duration:0.8, ease:'power3.out', delay:0.1 });
+    gsap.from('.hero .sub',    { opacity:0, y:20, duration:0.7, ease:'power3.out', delay:0.25 });
+    gsap.from('.hero-actions', { opacity:0, y:15, duration:0.6, ease:'power3.out', delay:0.4 });
+    gsap.from('.hero-meta',    { opacity:0, duration:0.6, delay:0.55 });
+    gsap.from('.side-card',    { opacity:0, x:30, duration:0.8, ease:'power3.out', delay:0.3 });
+    gsap.utils.toArray('.fade-in').forEach(function(el) {
+      if (el.offsetParent === null) return; // oculto pelo seletor de IA
+      gsap.from(el, { opacity:0, y:20, duration:0.7, ease:'power3.out',
+        scrollTrigger: { trigger:el, start:'top 88%', once:true }
+      });
     });
-  });
-}
+  }
+});
 </script>
 </body>
 </html>
