@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <meta name="color-scheme" content="dark">
+  <title>Tire a Marca d’Água do Texto do ChatGPT (ou do Claude) · Bruno Perobelli</title>
+  <meta name="description" content="O que é o textGrain, a marca d’água invisível que a OpenAI está colocando nos textos do ChatGPT, e como usar a skill Watermarks Remover para limpar o seu texto no ChatGPT ou no Claude.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --accent: #EAB308;
+      --accent-dim: rgba(234,179,8,0.1);
+      --accent-border: rgba(234,179,8,0.4);
+      --warn: #F97316;
+      --warn-dim: rgba(249,115,22,0.1);
+      --warn-border: rgba(249,115,22,0.42);
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #110035;
+      --text: #f0eaff;
+      --text-muted: #a99dc4;
+      --text-faint: #3d3560;
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Figtree', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button, a { touch-action: manipulation; }
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 2rem);
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--accent);
+      color: #1c1500;
+      padding: 0.6rem 1rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9,0,35,0.9);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--text-faint);
+      padding: 0.7rem 0;
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.6rem;
+      text-decoration: none; color: var(--text);
+      font-weight: 700; font-size: 0.95rem;
+    }
+    .nav-mark {
+      background: #8A45FB; color: #fff;
+      font-weight: 800; font-size: 0.78rem;
+      padding: 0.22rem 0.52rem; border-radius: 0.3rem; letter-spacing: 0.05em;
+    }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; font-size: 0.85rem; }
+    @media (max-width: 480px) { .nav-logo small { display: none; } }
+    .nav-cta {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px;
+      background: var(--accent); color: #1c1500;
+      font-family: inherit; font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.2rem; border: none; border-radius: 2rem; cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s var(--ease);
+      white-space: nowrap;
+    }
+    .nav-cta:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Hero */
+    .hero { position: relative; overflow: hidden; padding: clamp(3.5rem, 9vw, 6.5rem) 0 clamp(3rem, 8vw, 5rem); }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.16; pointer-events: none; }
+    .hero-blob.b1 { width: 650px; height: 650px; background: var(--accent); top: -220px; left: -160px; }
+    .hero-blob.b2 { width: 500px; height: 500px; background: #8A45FB; bottom: -220px; right: -120px; }
+    .hero-grid {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 360px; gap: 3rem; align-items: center;
+    }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem; font-weight: 700;
+    }
+    .hero h1 { font-size: clamp(2.1rem, 5.2vw, 3.4rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.03em; margin-bottom: 1.2rem; }
+    .accent { color: var(--accent); font-style: italic; }
+    .sub { font-size: 1.1rem; color: var(--text-muted); max-width: 540px; margin-bottom: 2rem; line-height: 1.7; }
+    .hero-ctas { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+    .hero-cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      min-height: 48px;
+      background: var(--accent); color: #1c1500;
+      font-family: inherit; font-weight: 700; font-size: 1rem;
+      padding: 0.8rem 1.9rem; border: 1.5px solid var(--accent); border-radius: 2rem; cursor: pointer;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(234,179,8,0.3); }
+    .hero-cta.ghost { background: transparent; color: var(--text); border-color: var(--text-faint); }
+    .hero-cta.ghost:hover { border-color: var(--accent); box-shadow: none; }
+
+    .hero-meta { display: flex; gap: 2.5rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-valor { font-size: 1.7rem; font-weight: 800; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+    .meta-label { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+    /* Side card */
+    .side-card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem;
+      padding: 1.6rem;
+    }
+    .side-card-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 1.1rem; }
+    .src-list { list-style: none; display: flex; flex-direction: column; }
+    .src-item {
+      display: flex; gap: 0.9rem; align-items: flex-start;
+      padding: 0.85rem 0; border-top: 1px solid var(--text-faint);
+    }
+    .src-item:first-child { border-top: none; padding-top: 0; }
+    .src-item:last-child { padding-bottom: 0; }
+    .src-dot {
+      width: 1.9rem; height: 1.9rem; min-width: 1.9rem;
+      border-radius: 50%; background: var(--accent-dim); border: 1px solid var(--accent-border);
+      color: var(--accent); font-weight: 800; font-size: 0.78rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .src-name { display: block; font-weight: 700; font-size: 0.95rem; line-height: 1.3; }
+    .src-desc { display: block; font-size: 0.83rem; color: var(--text-muted); line-height: 1.45; margin-top: 0.15rem; }
+
+    /* Sections */
+    section { padding: clamp(3rem, 8vw, 5rem) 0; scroll-margin-top: 72px; }
+    .bg-elevated { background: var(--bg-elevated); }
+    .section-header { max-width: 680px; margin-bottom: 2.6rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 0.9rem; }
+    .section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+
+    /* Cards */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--accent);
+      border-radius: 0.9rem;
+      padding: 1.5rem;
+      transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .card-icon { font-size: 1.6rem; margin-bottom: 0.85rem; }
+    .card h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+    .card-where {
+      margin-top: 0.9rem; padding-top: 0.8rem; border-top: 1px solid var(--text-faint);
+      font-size: 0.82rem; color: var(--text-muted);
+    }
+    .card-where strong { color: var(--text); font-weight: 600; }
+
+    /* Note */
+    .note {
+      display: flex; gap: 0.9rem; align-items: flex-start;
+      margin-top: 1.6rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      border-radius: 0.9rem;
+      padding: 1.1rem 1.3rem;
+      font-size: 0.93rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .note.warn { background: var(--warn-dim); border-color: var(--warn-border); }
+    .note-icon { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+    .note strong { color: var(--text); }
+
+    /* Steps (como fazer) */
+    .steps { display: flex; flex-direction: column; max-width: 680px; list-style: none; }
+    .step { display: flex; gap: 1.2rem; align-items: flex-start; padding-bottom: 1.4rem; position: relative; }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; left: 1.19rem; top: 2.6rem; bottom: 0.2rem;
+      width: 1px; background: var(--text-faint);
+    }
+    .step-num {
+      width: 2.4rem; height: 2.4rem; min-width: 2.4rem;
+      background: var(--accent); color: #1c1500; font-weight: 800; font-size: 0.95rem;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .step-content h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.25rem; padding-top: 0.35rem; }
+    .step-content p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.55; }
+    .step-content strong { color: var(--text); }
+
+    /* Prompts */
+    .prompt-block { max-width: 820px; margin: 0 auto; scroll-margin-top: 88px; }
+    .prompt-block + .prompt-block { margin-top: 2.6rem; }
+    .prompt-section-header { text-align: center; max-width: 680px; margin: 0 auto 2.6rem; }
+    .prompt-section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 0.9rem; }
+    .prompt-section-header p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; }
+    .prompt-intro { margin-bottom: 1rem; }
+    .prompt-kicker { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+    .prompt-intro h3 { font-size: clamp(1.25rem, 3vw, 1.55rem); font-weight: 800; line-height: 1.25; margin-bottom: 0.4rem; }
+    .prompt-intro p { color: var(--text-muted); font-size: 0.98rem; line-height: 1.65; }
+    .prompt-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--text-faint);
+      border-top: 3px solid var(--accent);
+      border-radius: 1rem; overflow: hidden;
+    }
+    .prompt-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.8rem 1.4rem; border-bottom: 1px solid var(--text-faint); background: var(--bg-elevated);
+    }
+    .prompt-header-label { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; }
+    .copy-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+      min-height: 44px;
+      background: var(--accent); color: #1c1500; border: none;
+      font-family: inherit; font-weight: 700; font-size: 0.85rem;
+      padding: 0.5rem 1.2rem; border-radius: 2rem; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, background-color 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { opacity: 0.88; transform: scale(1.03); }
+    .copy-btn.copied { background: #fde68a; }
+    .prompt-body {
+      padding: 1.5rem 1.6rem;
+      font-family: 'Figtree', sans-serif; font-size: 1rem; color: var(--text);
+      white-space: pre-wrap; word-break: break-word; line-height: 1.75;
+    }
+    .copy-all-wrap { max-width: 820px; margin: 2.6rem auto 0; text-align: center; }
+    .copy-all {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      min-height: 48px;
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent); border-radius: 2rem;
+      font-family: inherit; font-weight: 700; font-size: 0.95rem;
+      padding: 0.7rem 1.6rem; cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    .copy-all:hover { background: var(--accent); color: #1c1500; }
+    .copy-all.copied { background: var(--accent); color: #1c1500; }
+
+    /* Cuidados */
+    .care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+    .care {
+      background: var(--surface); border: 1px solid var(--text-faint);
+      border-top: 2px solid var(--warn); border-radius: 0.9rem; padding: 1.5rem;
+    }
+    .care h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .care p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+    .care strong { color: var(--text); }
+
+    /* Plano */
+    .action-box {
+      max-width: 720px; background: var(--surface);
+      border: 1px solid var(--text-faint); border-top: 3px solid var(--accent);
+      border-radius: 1rem; padding: 2rem 2.2rem;
+    }
+    @media (max-width: 520px) { .action-box { padding: 1.5rem 1.2rem; } }
+    .action-list { list-style: none; }
+    .action-item { display: flex; align-items: flex-start; gap: 1rem; padding: 1.05rem 0; border-bottom: 1px solid var(--text-faint); }
+    .action-item:first-child { padding-top: 0; }
+    .action-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .action-num {
+      width: 2rem; height: 2rem; min-width: 2rem;
+      background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent);
+      font-weight: 800; font-size: 0.8rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .action-text { font-size: 0.95rem; color: var(--text-muted); line-height: 1.55; padding-top: 0.2rem; }
+    .action-text strong { color: var(--text); font-weight: 600; }
+    .action-quote {
+      margin-top: 1.6rem; padding: 1.1rem 1.4rem; border-left: 3px solid var(--accent);
+      color: var(--text); font-size: 1rem; font-style: italic; font-weight: 600; line-height: 1.6;
+    }
+
+    /* Footer */
+    footer { background: var(--bg-elevated); border-top: 1px solid var(--text-faint); padding: 2.5rem 0; text-align: center; }
+    .footer-logo { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.75rem; font-weight: 600; min-height: 44px; }
+    .footer-note { font-size: 0.85rem; color: var(--text-muted); }
+    .footer-note a { color: var(--text); }
+
+    .fade-in { opacity: 0; transform: translateY(20px); }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { opacity: 1; transform: none; }
+      * { transition-duration: 0.01ms !important; }
+    }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  
+    .seal { display:inline-flex; align-items:center; gap:.4rem; font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:.28rem .7rem; border-radius:2rem; margin-bottom:.8rem; }
+    .seal.ok { background: var(--accent-dim); border:1px solid var(--accent-border); color: var(--accent); }
+    .seal.part { background: var(--warn-dim); border:1px solid var(--warn-border); color: var(--warn); }
+    .src-links { list-style:none; display:flex; flex-direction:column; gap:.5rem; max-width:680px; }
+    .src-links a { color: var(--text); }
+    .src-links li { font-size:.92rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <div class="nav-inner">
+      <a href="https://bperobelli.com.br" class="nav-logo">
+        <span class="nav-mark">BP</span>
+        Bruno Perobelli <small>· IA aplicada</small>
+      </a>
+      <button class="nav-cta" onclick="scrollToSection('os-comandos')">Copiar os comandos</button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">IA aplicada · Textos</span>
+          <h1>O ChatGPT agora marca seus textos. Veja como <span class="accent">tirar a marca d’água</span></h1>
+          <p class="sub">A OpenAI criou o textGrain, uma marca invisível que fica nas palavras que a IA escolhe. Aqui você entende como ela funciona e usa a skill Watermarks Remover, no ChatGPT ou no Claude, para limpar o seu texto.</p>
+          <div class="hero-ctas">
+            <button class="hero-cta" onclick="scrollToSection('os-comandos')">Copiar os comandos</button>
+            <button class="hero-cta ghost" onclick="scrollToSection('verdade')">O que é verdade</button>
+          </div>
+          <div class="hero-meta">
+            <div class="meta-item"><span class="meta-valor">3</span><span class="meta-label">Comandos prontos</span></div>
+            <div class="meta-item"><span class="meta-valor">2</span><span class="meta-label">Camadas de limpeza</span></div>
+            <div class="meta-item"><span class="meta-valor">Grátis</span><span class="meta-label">Skill aberta no GitHub</span></div>
+          </div>
+        </div>
+        <aside class="side-card" aria-label="Resumo">
+          <div class="side-card-title">Em 30 segundos</div>
+          <ul class="src-list">
+            <li class="src-item"><span class="src-dot" aria-hidden="true">1</span><span><span class="src-name">A marca existe</span><span class="src-desc">textGrain muda a escolha de palavras, não esconde caracteres.</span></span></li>
+            <li class="src-item"><span class="src-dot" aria-hidden="true">2</span><span><span class="src-name">Vai junto no copiar e colar</span><span class="src-desc">Está no estilo do texto, não no arquivo.</span></span></li>
+            <li class="src-item"><span class="src-dot" aria-hidden="true">3</span><span><span class="src-name">A skill reescreve o padrão</span><span class="src-desc">É a camada que reduz o sinal estatístico.</span></span></li>
+            <li class="src-item"><span class="src-dot" aria-hidden="true">4</span><span><span class="src-name">Nada é garantido</span><span class="src-desc">Nem a skill promete texto indetectável.</span></span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section class="bg-elevated" id="verdade">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Checamos o vídeo</span>
+        <h2>O que é confirmado e o que ainda precisa de teste</h2>
+        <p>Antes de te mandar usar qualquer coisa, conferi as fontes. Dois selos: <strong>Confirmado</strong> e <strong>Confirmado em partes, teremos que testar</strong>.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card fade-in">
+          <span class="seal ok">Confirmado</span>
+          <h3>O textGrain existe</h3>
+          <p>A OpenAI anunciou uma marca d’água para textos. Ela altera sutilmente como o modelo escolhe palavras, para atender a lei de IA da União Europeia.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="seal ok">Confirmado</span>
+          <h3>Ela não é um caractere escondido</h3>
+          <p>Por isso as ferramentas que só apagam caracteres invisíveis não resolvem. A marca está nas palavras escolhidas.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="seal part">Em partes, teremos que testar</span>
+          <h3>“Todo texto do ChatGPT”</h3>
+          <p>No lançamento, o foco é a Europa, e não é padrão mundial. Quem usa a API da OpenAI pode ativar. Se a sua conta no Brasil recebe a marca, ainda não dá para afirmar.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="seal part">Em partes, teremos que testar</span>
+          <h3>“A skill deixa o texto limpo”</h3>
+          <p>Ela reescreve o texto para reduzir a marca, mas o próprio projeto avisa que não há prova de que fica indetectável sem os detectores dos fabricantes.</p>
+        </div>
+      </div>
+      <div class="note warn fade-in">
+        <span class="note-icon" aria-hidden="true">⚠️</span>
+        <p><strong>Sobre “passa em detector de IA”:</strong> não prometo isso. A OpenAI diz que a detecção não prova quem escreveu, e a skill avisa que o resultado não deve ser apresentado como prova de autoria humana.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="como-fazer">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Passo a passo</span>
+        <h2>Como usar em 4 passos</h2>
+        <p>A skill se chama <strong>remove-ai-marks</strong> (Watermarks Remover). Ela é de código aberto e funciona com agentes como o Claude e o ChatGPT.</p>
+      </div>
+      <ol class="steps">
+        <li class="step fade-in">
+          <div class="step-num" aria-hidden="true">1</div>
+          <div class="step-content">
+            <h3>Copie o link da skill</h3>
+            <p>Está no <strong>Comando 1</strong> logo abaixo. É a página da skill no GitHub.</p>
+          </div>
+        </li>
+        <li class="step fade-in">
+          <div class="step-num" aria-hidden="true">2</div>
+          <div class="step-content">
+            <h3>Cole no ChatGPT ou no Claude e peça para instalar</h3>
+            <p>No ChatGPT, as skills ficam em <strong>Plugins</strong> (barra lateral), aba <strong>Habilidades</strong>. Se preferir o caminho do vídeo, cole o link no chat e peça: instala essa skill.</p>
+          </div>
+        </li>
+        <li class="step fade-in">
+          <div class="step-num" aria-hidden="true">3</div>
+          <div class="step-content">
+            <h3>Ligue o serviço de limpeza</h3>
+            <p>A skill é só a ponte: a limpeza roda em um serviço que você sobe no seu computador, com <strong>docker compose up -d</strong>. Se isso soar complicado, pule para o Comando 3, que reescreve sem instalar nada.</p>
+          </div>
+        </li>
+        <li class="step fade-in">
+          <div class="step-num" aria-hidden="true">4</div>
+          <div class="step-content">
+            <h3>Cole o seu texto e peça a limpeza</h3>
+            <p>Use o <strong>Comando 2</strong>. A skill inspeciona, limpa e mostra o que removeu.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="note fade-in">
+        <span class="note-icon" aria-hidden="true">💡</span>
+        <p><strong>O que ela faz de verdade:</strong> a Camada A apaga caracteres invisíveis e metadados. A Camada B reescreve o texto para reduzir marcas estatísticas como o textGrain. É a Camada B que importa aqui.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-elevated" id="os-comandos">
+    <div class="wrap">
+      <div class="prompt-section-header fade-in">
+        <span class="eyebrow">Os comandos</span>
+        <h2>Copie e cole na sua IA</h2>
+        <p>Funcionam no ChatGPT e no Claude. O Comando 3 é a saída rápida, sem instalar nada.</p>
+      </div>
+      <div class="prompt-block" id="comando-1">
+        <div class="prompt-intro fade-in">
+          <span class="prompt-kicker">Comando 1 · Instalar</span>
+          <h3>Instale a skill</h3>
+          <p>Cole no chat junto com o link da skill.</p>
+        </div>
+        <div class="prompt-wrapper fade-in">
+          <div class="prompt-header">
+            <span class="prompt-header-label">Comando 1</span>
+            <button class="copy-btn" onclick="copyPrompt('cmd1', this)" aria-label="Copiar o comando 1">
+              <span class="copy-icon" aria-hidden="true">📋</span>
+              <span class="copy-text">Copiar</span>
+            </button>
+          </div>
+          <pre class="prompt-body" id="cmd1">Instala essa skill: https://github.com/guillaumemeyer/watermarks-remover/blob/main/skills/remove-ai-marks/SKILL.md</pre>
+        </div>
+      </div>
+
+      <div class="prompt-block" id="comando-2">
+        <div class="prompt-intro fade-in">
+          <span class="prompt-kicker">Comando 2 · Limpar</span>
+          <h3>Use a skill no seu texto</h3>
+          <p>Troque o trecho entre colchetes pelo texto que você quer limpar.</p>
+        </div>
+        <div class="prompt-wrapper fade-in">
+          <div class="prompt-header">
+            <span class="prompt-header-label">Comando 2</span>
+            <button class="copy-btn" onclick="copyPrompt('cmd2', this)" aria-label="Copiar o comando 2">
+              <span class="copy-icon" aria-hidden="true">📋</span>
+              <span class="copy-text">Copiar</span>
+            </button>
+          </div>
+          <pre class="prompt-body" id="cmd2">Use a skill remove-ai-marks no texto abaixo. Inspecione primeiro, depois limpe as duas camadas (caracteres invisíveis e reescrita do padrão de escrita). Me mostre o que foi removido e entregue o texto limpo.
+
+[COLE AQUI O SEU TEXTO]</pre>
+        </div>
+      </div>
+
+      <div class="prompt-block" id="comando-3">
+        <div class="prompt-intro fade-in">
+          <span class="prompt-kicker">Comando 3 · Sem instalar</span>
+          <h3>Reescreva com a sua voz</h3>
+          <p>Não remove marca nenhuma de forma garantida, mas reescreve o padrão de escrita sem a skill.</p>
+        </div>
+        <div class="prompt-wrapper fade-in">
+          <div class="prompt-header">
+            <span class="prompt-header-label">Comando 3</span>
+            <button class="copy-btn" onclick="copyPrompt('cmd3', this)" aria-label="Copiar o comando 3">
+              <span class="copy-icon" aria-hidden="true">📋</span>
+              <span class="copy-text">Copiar</span>
+            </button>
+          </div>
+          <pre class="prompt-body" id="cmd3">Reescreva o texto abaixo do meu jeito: frases mais curtas, palavras que eu falaria no dia a dia e estrutura diferente da original. Mantenha o sentido e todos os fatos. Não use sinônimos aleatórios, refaça as frases.
+
+[COLE AQUI O SEU TEXTO]</pre>
+        </div>
+      </div>
+
+      <div class="copy-all-wrap fade-in">
+        <button class="copy-all" onclick="copyAll(this)" aria-label="Copiar todos os comandos de uma vez">
+          <span class="copy-icon" aria-hidden="true">📋</span>
+          <span class="copy-text">Copiar todos os comandos de uma vez</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="cuidados">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de usar</span>
+        <h2>Três cuidados</h2>
+      </div>
+      <div class="care-grid">
+        <div class="care fade-in"><h3>Só no seu conteúdo</h3><p>Use em texto <strong>seu</strong>, escrito com ajuda da IA. A própria skill recomenda isso.</p></div>
+        <div class="care fade-in"><h3>Regra da escola ou do trabalho vale</h3><p>Limpar a marca <strong>não muda</strong> a regra de quem exige que você avise o uso de IA. Se tem que declarar, declare.</p></div>
+        <div class="care fade-in"><h3>Revise antes de publicar</h3><p>A reescrita pode mudar nuances. <strong>Leia o texto final</strong> e confira se os fatos continuam certos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-elevated" id="fontes">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Fontes</span>
+        <h2>De onde saiu cada informação</h2>
+      </div>
+      <ul class="src-links fade-in">
+        <li><a href="https://github.com/guillaumemeyer/watermarks-remover" rel="noopener" target="_blank">Watermarks Remover (GitHub)</a>: a skill, o que remove e as limitações.</li>
+        <li><a href="https://mixed-news.com/en/?p=35777" rel="noopener" target="_blank">Mixed</a>: textGrain na União Europeia e o efeito de trocas de sinônimos.</li>
+        <li><a href="https://yourstory.com/ai-story/chatgpt-watermarking-openai-ai-text" rel="noopener" target="_blank">YourStory</a>: como a marca funciona.</li>
+        <li><a href="https://www.dexerto.com/entertainment/chatgpt-text-is-about-to-become-detectable-with-invisible-watermark-to-comply-with-eu-ai-law-3416147/" rel="noopener" target="_blank">Dexerto</a>: ligação com a lei de IA da União Europeia.</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <p class="footer-note">Guia gratuito · Bruno Perobelli · IA aplicada</p>
+  </div>
+</footer>
+
+<div class="sr-only" role="status" aria-live="polite" id="live"></div>
+
+<script>
+  function scrollToSection(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var top = el.getBoundingClientRect().top + window.scrollY - 72;
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+  }
+
+  function fallbackCopy(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); cb(); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function doCopy(text, cb) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(cb).catch(function () { fallbackCopy(text, cb); });
+    } else {
+      fallbackCopy(text, cb);
+    }
+  }
+
+  function flash(btn, original, msg) {
+    var t = btn.querySelector('.copy-text');
+    var i = btn.querySelector('.copy-icon');
+    btn.classList.add('copied');
+    t.textContent = 'Copiado!';
+    i.textContent = '✓';
+    document.getElementById('live').textContent = msg;
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      t.textContent = original;
+      i.textContent = '📋';
+      document.getElementById('live').textContent = '';
+    }, 2000);
+  }
+
+  function copyPrompt(id, btn) {
+    var text = document.getElementById(id).innerText;
+    doCopy(text, function () { flash(btn, 'Copiar', 'Comando copiado'); });
+  }
+
+  function copyAll(btn) {
+    var text = ['cmd1', 'cmd2', 'cmd3'].map(function (id) {
+      return document.getElementById(id).innerText;
+    }).join('\n\n');
+    doCopy(text, function () { flash(btn, 'Copiar todos os comandos de uma vez', 'Todos os comandos foram copiados'); });
+  }
+
+  window.addEventListener('load', function () {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      var ease = 'cubic-bezier(0.22,1,0.36,1)';
+      gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease: ease, delay: 0.05 });
+      gsap.from('.hero h1', { opacity: 0, y: 30, duration: 1, ease: ease, delay: 0.15 });
+      gsap.from('.hero .sub', { opacity: 0, y: 20, duration: 0.9, ease: ease, delay: 0.35 });
+      gsap.from('.hero-ctas', { opacity: 0, y: 16, duration: 0.8, ease: ease, delay: 0.5 });
+      gsap.from('.hero-meta', { opacity: 0, y: 14, duration: 0.8, ease: ease, delay: 0.65 });
+      gsap.from('.side-card', { opacity: 0, x: 30, duration: 0.9, ease: ease, delay: 0.3 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, {
+          opacity: 1, y: 0, duration: 0.75, ease: ease,
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
