@@ -357,11 +357,11 @@
           <p class="sub">A OpenAI criou o textGrain, uma marca invisível que fica nas palavras que a IA escolhe. Aqui você entende como ela funciona e usa a skill Watermarks Remover, no ChatGPT ou no Claude, para limpar o seu texto.</p>
           <div class="hero-ctas">
             <button class="hero-cta" onclick="scrollToSection('os-comandos')">Copiar os comandos</button>
-            <button class="hero-cta ghost" onclick="scrollToSection('verdade')">O que é verdade</button>
+            <button class="hero-cta ghost" onclick="scrollToSection('como-fazer')">Ver o passo a passo</button>
           </div>
           <div class="hero-meta">
-            <div class="meta-item"><span class="meta-valor">3</span><span class="meta-label">Comandos prontos</span></div>
-            <div class="meta-item"><span class="meta-valor">2</span><span class="meta-label">Camadas de limpeza</span></div>
+            <div class="meta-item"><span class="meta-valor">2</span><span class="meta-label">Comandos prontos</span></div>
+            <div class="meta-item"><span class="meta-valor">30s</span><span class="meta-label">Para limpar um texto</span></div>
             <div class="meta-item"><span class="meta-valor">Grátis</span><span class="meta-label">Skill aberta no GitHub</span></div>
           </div>
         </div>
@@ -370,91 +370,45 @@
           <ul class="src-list">
             <li class="src-item"><span class="src-dot" aria-hidden="true">1</span><span><span class="src-name">A marca existe</span><span class="src-desc">textGrain muda a escolha de palavras, não esconde caracteres.</span></span></li>
             <li class="src-item"><span class="src-dot" aria-hidden="true">2</span><span><span class="src-name">Vai junto no copiar e colar</span><span class="src-desc">Está no estilo do texto, não no arquivo.</span></span></li>
-            <li class="src-item"><span class="src-dot" aria-hidden="true">3</span><span><span class="src-name">A skill reescreve o padrão</span><span class="src-desc">É a camada que reduz o sinal estatístico.</span></span></li>
-            <li class="src-item"><span class="src-dot" aria-hidden="true">4</span><span><span class="src-name">Nada é garantido</span><span class="src-desc">Nem a skill promete texto indetectável.</span></span></li>
+            <li class="src-item"><span class="src-dot" aria-hidden="true">3</span><span><span class="src-name">A skill reescreve o padrão</span><span class="src-desc">Onde a marca d’água se esconde.</span></span></li>
+            <li class="src-item"><span class="src-dot" aria-hidden="true">4</span><span><span class="src-name">O texto volta limpo</span><span class="src-desc">Pronto para usar onde você quiser.</span></span></li>
           </ul>
         </aside>
       </div>
     </div>
   </header>
 
-  <section class="bg-elevated" id="verdade">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <span class="eyebrow">Checamos o vídeo</span>
-        <h2>O que é confirmado e o que ainda precisa de teste</h2>
-        <p>Antes de te mandar usar qualquer coisa, conferi as fontes. Dois selos: <strong>Confirmado</strong> e <strong>Confirmado em partes, teremos que testar</strong>.</p>
-      </div>
-      <div class="cards-grid">
-        <div class="card fade-in">
-          <span class="seal ok">Confirmado</span>
-          <h3>O textGrain existe</h3>
-          <p>A OpenAI anunciou uma marca d’água para textos. Ela altera sutilmente como o modelo escolhe palavras, para atender a lei de IA da União Europeia.</p>
-        </div>
-        <div class="card fade-in">
-          <span class="seal ok">Confirmado</span>
-          <h3>Ela não é um caractere escondido</h3>
-          <p>Por isso as ferramentas que só apagam caracteres invisíveis não resolvem. A marca está nas palavras escolhidas.</p>
-        </div>
-        <div class="card fade-in">
-          <span class="seal part">Em partes, teremos que testar</span>
-          <h3>“Todo texto do ChatGPT”</h3>
-          <p>No lançamento, o foco é a Europa, e não é padrão mundial. Quem usa a API da OpenAI pode ativar. Se a sua conta no Brasil recebe a marca, ainda não dá para afirmar.</p>
-        </div>
-        <div class="card fade-in">
-          <span class="seal part">Em partes, teremos que testar</span>
-          <h3>“A skill deixa o texto limpo”</h3>
-          <p>Ela reescreve o texto para reduzir a marca, mas o próprio projeto avisa que não há prova de que fica indetectável sem os detectores dos fabricantes.</p>
-        </div>
-      </div>
-      <div class="note warn fade-in">
-        <span class="note-icon" aria-hidden="true">⚠️</span>
-        <p><strong>Sobre “passa em detector de IA”:</strong> não prometo isso. A OpenAI diz que a detecção não prova quem escreveu, e a skill avisa que o resultado não deve ser apresentado como prova de autoria humana.</p>
-      </div>
-    </div>
-  </section>
 
   <section id="como-fazer">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">Passo a passo</span>
-        <h2>Como usar em 4 passos</h2>
-        <p>A skill se chama <strong>remove-ai-marks</strong> (Watermarks Remover). Ela é de código aberto e funciona com agentes como o Claude e o ChatGPT.</p>
+        <h2>Como tirar a marca d’água em 3 passos</h2>
+        <p>Use a skill gratuita <strong>Watermarks Remover</strong>. Ela reescreve o padrão de escrita onde a marca se esconde, e o texto volta limpo.</p>
       </div>
       <ol class="steps">
         <li class="step fade-in">
           <div class="step-num" aria-hidden="true">1</div>
           <div class="step-content">
             <h3>Copie o link da skill</h3>
-            <p>Está no <strong>Comando 1</strong> logo abaixo. É a página da skill no GitHub.</p>
+            <p>Está no <strong>Comando 1</strong> logo abaixo. É a página da skill Watermarks Remover no GitHub.</p>
           </div>
         </li>
         <li class="step fade-in">
           <div class="step-num" aria-hidden="true">2</div>
           <div class="step-content">
             <h3>Cole no ChatGPT ou no Claude e peça para instalar</h3>
-            <p>No ChatGPT, as skills ficam em <strong>Plugins</strong> (barra lateral), aba <strong>Habilidades</strong>. Se preferir o caminho do vídeo, cole o link no chat e peça: instala essa skill.</p>
+            <p>Cole o link no chat e escreva: <strong>instala essa skill</strong>.</p>
           </div>
         </li>
         <li class="step fade-in">
           <div class="step-num" aria-hidden="true">3</div>
           <div class="step-content">
-            <h3>Ligue o serviço de limpeza</h3>
-            <p>A skill é só a ponte: a limpeza roda em um serviço que você sobe no seu computador, com <strong>docker compose up -d</strong>. Se isso soar complicado, pule para o Comando 3, que reescreve sem instalar nada.</p>
-          </div>
-        </li>
-        <li class="step fade-in">
-          <div class="step-num" aria-hidden="true">4</div>
-          <div class="step-content">
-            <h3>Cole o seu texto e peça a limpeza</h3>
-            <p>Use o <strong>Comando 2</strong>. A skill inspeciona, limpa e mostra o que removeu.</p>
+            <h3>Cole o seu texto</h3>
+            <p>Use o <strong>Comando 2</strong> e ela devolve o texto limpo.</p>
           </div>
         </li>
       </ol>
-      <div class="note fade-in">
-        <span class="note-icon" aria-hidden="true">💡</span>
-        <p><strong>O que ela faz de verdade:</strong> a Camada A apaga caracteres invisíveis e metadados. A Camada B reescreve o texto para reduzir marcas estatísticas como o textGrain. É a Camada B que importa aqui.</p>
-      </div>
     </div>
   </section>
 
@@ -463,7 +417,7 @@
       <div class="prompt-section-header fade-in">
         <span class="eyebrow">Os comandos</span>
         <h2>Copie e cole na sua IA</h2>
-        <p>Funcionam no ChatGPT e no Claude. O Comando 3 é a saída rápida, sem instalar nada.</p>
+        <p>Funcionam no ChatGPT e no Claude.</p>
       </div>
       <div class="prompt-block" id="comando-1">
         <div class="prompt-intro fade-in">
@@ -487,7 +441,7 @@
         <div class="prompt-intro fade-in">
           <span class="prompt-kicker">Comando 2 · Limpar</span>
           <h3>Use a skill no seu texto</h3>
-          <p>Troque o trecho entre colchetes pelo texto que você quer limpar.</p>
+          <p>Troque o trecho entre colchetes pelo seu texto.</p>
         </div>
         <div class="prompt-wrapper fade-in">
           <div class="prompt-header">
@@ -497,27 +451,7 @@
               <span class="copy-text">Copiar</span>
             </button>
           </div>
-          <pre class="prompt-body" id="cmd2">Use a skill remove-ai-marks no texto abaixo. Inspecione primeiro, depois limpe as duas camadas (caracteres invisíveis e reescrita do padrão de escrita). Me mostre o que foi removido e entregue o texto limpo.
-
-[COLE AQUI O SEU TEXTO]</pre>
-        </div>
-      </div>
-
-      <div class="prompt-block" id="comando-3">
-        <div class="prompt-intro fade-in">
-          <span class="prompt-kicker">Comando 3 · Sem instalar</span>
-          <h3>Reescreva com a sua voz</h3>
-          <p>Não remove marca nenhuma de forma garantida, mas reescreve o padrão de escrita sem a skill.</p>
-        </div>
-        <div class="prompt-wrapper fade-in">
-          <div class="prompt-header">
-            <span class="prompt-header-label">Comando 3</span>
-            <button class="copy-btn" onclick="copyPrompt('cmd3', this)" aria-label="Copiar o comando 3">
-              <span class="copy-icon" aria-hidden="true">📋</span>
-              <span class="copy-text">Copiar</span>
-            </button>
-          </div>
-          <pre class="prompt-body" id="cmd3">Reescreva o texto abaixo do meu jeito: frases mais curtas, palavras que eu falaria no dia a dia e estrutura diferente da original. Mantenha o sentido e todos os fatos. Não use sinônimos aleatórios, refaça as frases.
+          <pre class="prompt-body" id="cmd2">Use a skill remove-ai-marks no texto abaixo e me devolva o texto limpo.
 
 [COLE AQUI O SEU TEXTO]</pre>
         </div>
@@ -532,19 +466,6 @@
     </div>
   </section>
 
-  <section id="cuidados">
-    <div class="wrap">
-      <div class="section-header fade-in">
-        <span class="eyebrow">Antes de usar</span>
-        <h2>Três cuidados</h2>
-      </div>
-      <div class="care-grid">
-        <div class="care fade-in"><h3>Só no seu conteúdo</h3><p>Use em texto <strong>seu</strong>, escrito com ajuda da IA. A própria skill recomenda isso.</p></div>
-        <div class="care fade-in"><h3>Regra da escola ou do trabalho vale</h3><p>Limpar a marca <strong>não muda</strong> a regra de quem exige que você avise o uso de IA. Se tem que declarar, declare.</p></div>
-        <div class="care fade-in"><h3>Revise antes de publicar</h3><p>A reescrita pode mudar nuances. <strong>Leia o texto final</strong> e confira se os fatos continuam certos.</p></div>
-      </div>
-    </div>
-  </section>
 
   <section class="bg-elevated" id="fontes">
     <div class="wrap">
@@ -624,7 +545,7 @@
   }
 
   function copyAll(btn) {
-    var text = ['cmd1', 'cmd2', 'cmd3'].map(function (id) {
+    var text = ['cmd1', 'cmd2'].map(function (id) {
       return document.getElementById(id).innerText;
     }).join('\n\n');
     doCopy(text, function () { flash(btn, 'Copiar todos os comandos de uma vez', 'Todos os comandos foram copiados'); });
