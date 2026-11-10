@@ -390,15 +390,15 @@
         <li class="step fade-in">
           <div class="step-num" aria-hidden="true">1</div>
           <div class="step-content">
-            <h3>Copie o link da skill</h3>
-            <p>Está no <strong>Comando 1</strong> logo abaixo. É a página da skill Watermarks Remover no GitHub.</p>
+            <h3>Ative o modo Work</h3>
+            <p>No ChatGPT, use o alternador <strong>Chat | Work</strong> no topo da tela e deixe em <strong>Work</strong>.</p>
           </div>
         </li>
         <li class="step fade-in">
           <div class="step-num" aria-hidden="true">2</div>
           <div class="step-content">
-            <h3>Cole no ChatGPT ou no Claude e peça para instalar</h3>
-            <p>Cole o link no chat e escreva: <strong>instala essa skill</strong>.</p>
+            <h3>Cole o Comando 1</h3>
+            <p>Ele já traz o link da skill. O ChatGPT lê a skill, confere se funciona e te guia na ativação.</p>
           </div>
         </li>
         <li class="step fade-in">
@@ -409,6 +409,9 @@
           </div>
         </li>
       </ol>
+      <div class="note fade-in" style="max-width:820px;margin:2rem auto 0;">
+        <p><strong>Se não instalar:</strong> se o seu computador ou o perfil do seu ChatGPT não permitir instalar a skill, o próprio Comando 1 manda a IA explicar a limitação e te dar um passo a passo claro para chegar no mesmo resultado.</p>
+      </div>
     </div>
   </section>
 
@@ -417,13 +420,13 @@
       <div class="prompt-section-header fade-in">
         <span class="eyebrow">Os comandos</span>
         <h2>Copie e cole na sua IA</h2>
-        <p>Funcionam no ChatGPT e no Claude.</p>
+        <p>Feitos para o ChatGPT com o modo Work ligado.</p>
       </div>
       <div class="prompt-block" id="comando-1">
         <div class="prompt-intro fade-in">
           <span class="prompt-kicker">Comando 1 · Instalar</span>
           <h3>Instale a skill</h3>
-          <p>Cole no chat junto com o link da skill.</p>
+          <p>Cole no chat com o modo Work ligado. O link da skill já está dentro.</p>
         </div>
         <div class="prompt-wrapper fade-in">
           <div class="prompt-header">
@@ -433,7 +436,19 @@
               <span class="copy-text">Copiar</span>
             </button>
           </div>
-          <pre class="prompt-body" id="cmd1">Instala essa skill: https://github.com/guillaumemeyer/watermarks-remover/blob/main/skills/remove-ai-marks/SKILL.md</pre>
+          <pre class="prompt-body" id="cmd1">Quero adicionar ao meu ChatGPT a skill disponível neste repositório:
+
+https://github.com/guillaumemeyer/watermarks-remover/blob/main/skills/remove-ai-marks/SKILL.md
+
+Leia o arquivo SKILL.md, a documentação e as dependências do projeto.
+
+Se minha conta permitir a criação de skills, prepare a skill remove-ai-marks para instalação e me oriente a ativá-la.
+
+Verifique se o serviço HTTP necessário está disponível. Não considere a instalação concluída sem confirmar que as dependências funcionam.
+
+Se minha conta não permitir instalar skills, explique a limitação e ofereça uma alternativa compatível com os recursos disponíveis.
+
+Não execute código externo sem minha autorização.</pre>
         </div>
       </div>
 
