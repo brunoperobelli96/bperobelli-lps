@@ -351,7 +351,7 @@ footer{
         placeholder="Buscar comando..."
         autocomplete="off"
         spellcheck="false"
-        aria-label="Buscar entre os 184 comandos"
+        aria-label="Buscar entre os 193 comandos"
       >
       <button class="search-clear" id="searchClear" aria-label="Limpar busca">✕</button>
       <svg class="search-icon" id="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -359,7 +359,7 @@ footer{
       </svg>
     </div>
     <div class="hero-meta">
-      <span><strong>+184</strong> comandos</span>
+      <span><strong>+193</strong> comandos</span>
       <span class="sep" aria-hidden="true"></span>
       <span><strong>4</strong> categorias</span>
       <span class="sep" aria-hidden="true"></span>
@@ -370,11 +370,11 @@ footer{
 
 <div class="tabs-wrap" id="comandos">
   <div class="tabs" role="tablist" aria-label="Filtrar por categoria">
-    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">184</span></button>
+    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">193</span></button>
     <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">129</span></button>
-    <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">18</span></button>
-    <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">25</span></button>
-    <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">12</span></button>
+    <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">22</span></button>
+    <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">26</span></button>
+    <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">16</span></button>
   </div>
 </div>
 
@@ -638,6 +638,17 @@ const DATA = [
   /* ── NOVOS ESTUDO ── */
   { num:183, cmd:"/sletchnote",        pt:"Resume ideias em anotações ilustradas com desenhos explicativos",                     en:"Summarize ideas into illustrated sketchnotes with explanatory drawings",           cat:"estudo"  },
   { num:184, cmd:"/keyideas",          pt:"Destaca as principais ideias de qualquer material ou conteúdo",                       en:"Highlight the key ideas from any material or content",                             cat:"estudo"  },
+
+  /* ── NOVOS (vídeos 61 e 64: estudo e códigos de prompt) ── */
+  { num:185, cmd:"/storymode", pt:"Transforma o assunto mais chato em uma história que você realmente lembra", en:"Turn the most boring topic into a story you will actually remember", cat:"estudo" },
+  { num:186, cmd:"/quizme", pt:"Vira um professor particular: faz uma pergunta por vez até você dominar a matéria", en:"Acts like a private tutor and quizzes you one question at a time until you know the subject", cat:"estudo" },
+  { num:187, cmd:"/questionpredictor", pt:"Prevê as perguntas com mais chance de cair na prova a partir do seu material", en:"Predicts the questions most likely to show up on the test from your material", cat:"estudo" },
+  { num:188, cmd:"/studyguide", pt:"Monta um guia de estudos completo da prova inteira, organizado para imprimir", en:"Builds a complete, organized study guide for the whole exam, ready to print", cat:"estudo" },
+  { num:189, cmd:"/ghost", pt:"Tira o jeito de texto de robô e faz a resposta parecer escrita por uma pessoa", en:"Strips the AI-sounding style so the answer reads like a person wrote it", cat:"pesquisa" },
+  { num:190, cmd:"L99", pt:"Para de enrolar e entrega uma resposta firme, em vez do eterno \"depende\"", en:"Stops hedging and gives a committed answer instead of \"it depends\"", cat:"pesquisa" },
+  { num:191, cmd:"UDA", pt:"Analisa a sua situação com um método militar de decisão: o que observar, onde focar, o que decidir e que ação tomar", en:"Analyzes your situation with a military decision framework: what to observe, focus on, decide and do", cat:"negocios" },
+  { num:192, cmd:"scaffold", pt:"Quebra qualquer projeto em um plano de ação com todos os passos mapeados", en:"Breaks any project into a full action plan with every step mapped out", cat:"pesquisa" },
+  { num:193, cmd:"ultrathink", pt:"Liga o raciocínio máximo: o ChatGPT pensa muito mais fundo antes de responder", en:"Maximum reasoning mode: thinks much deeper before answering", cat:"pesquisa" },
 ];
 
 /* ── State ── */
