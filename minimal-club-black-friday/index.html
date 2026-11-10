@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A0A0A">
+  <title>ChatGPT achou o desconto · Black Friday Minimal Club · Bruno Perobelli</title>
+  <meta name="description" content="Os 2 prompts que eu usei no ChatGPT pra achar o melhor desconto de camiseta preta na Black Friday, e o meu link com cupom da Minimal Club.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Minimal Club: monocromático, preto + off-white + cru */
+    :root {
+      --bg: #0A0A0A;
+      --bg-elevated: #111111;
+      --surface: #161616;
+      --surface-2: #1D1D1D;
+      --text: #F5F3EE;
+      --text-muted: #A19D94;
+      --text-faint: #5C5953;
+      --accent: #F5F3EE;          /* off-white */
+      --cru: #D8CCB6;             /* cru / bege */
+      --accent-dim: rgba(245,243,238,0.06);
+      --accent-border: rgba(245,243,238,0.28);
+      --hairline: rgba(255,255,255,0.08);
+      --brand: #8A45FB;           /* nav-mark BP */
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter Tight', system-ui, sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+    a { color: inherit; }
+
+    .skip-link {
+      position: absolute; top: -100%; left: 1rem; z-index: 9999;
+      background: var(--accent); color: #0A0A0A; font-weight: 700;
+      padding: 0.5rem 1rem; border-radius: 0 0 6px 6px; text-decoration: none;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* Faixa topo */
+    .topbar {
+      background: var(--accent); color: #0A0A0A;
+      text-align: center; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase; padding: 0.55rem 1rem;
+    }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,0.86); backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 64px; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    .nav-mark {
+      display: inline-grid; place-items: center; width: 30px; height: 30px;
+      background: var(--brand); color: #fff; border-radius: 7px;
+      font-weight: 800; font-size: 0.72rem; letter-spacing: 0.02em;
+    }
+    .nav-x { color: var(--text-faint); font-weight: 400; }
+    .nav-partner { letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.78rem; font-weight: 800; }
+    .nav-badge {
+      display: inline-flex; align-items: center; gap: 0.45rem; min-height: 40px;
+      background: transparent; color: var(--text); border: 1px solid var(--accent-border);
+      font: 700 0.8rem 'Inter Tight', sans-serif; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0 1rem; border-radius: 999px; cursor: pointer;
+      transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    }
+    .nav-badge:hover { background: var(--accent); color: #0A0A0A; }
+    @media (max-width: 639px) {
+      .nav-name, .nav-badge .txt-long { display: none; }
+    }
+
+    /* Hero */
+    .hero { position: relative; overflow: hidden; padding: clamp(3.5rem, 9vw, 6.5rem) 0 clamp(3rem, 7vw, 5rem); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(110px); pointer-events: none; }
+    .blob-1 { width: 520px; height: 520px; background: var(--cru); opacity: 0.09; top: -180px; right: -120px; }
+    .blob-2 { width: 420px; height: 420px; background: #ffffff; opacity: 0.05; bottom: -200px; left: -160px; }
+    .hero-grid { position: relative; display: grid; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 340px; gap: 4rem; } }
+
+    .eyebrow {
+      display: inline-block; color: var(--cru); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1.02; margin-bottom: 1.4rem;
+    }
+    .accent { font-style: italic; color: var(--cru); }
+    .hero .sub { color: var(--text-muted); font-size: clamp(1.02rem, 1.6vw, 1.15rem); max-width: 560px; margin-bottom: 2rem; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem;
+      min-height: 50px; padding: 0 1.6rem; border-radius: 999px; cursor: pointer;
+      font: 700 0.92rem 'Inter Tight', sans-serif; letter-spacing: 0.02em; text-decoration: none;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease), color 0.25s var(--ease);
+    }
+    .btn-primary { background: var(--accent); color: #0A0A0A; border: 1px solid var(--accent); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 34px rgba(245,243,238,0.18); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--accent-border); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .btn .arr { width: 16px; height: 16px; }
+
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 700; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } .hero-meta { flex-direction: column; align-items: flex-start; gap: 0.3rem; } }
+
+    /* Cartão do cupom */
+    .coupon-card {
+      position: relative; background: var(--surface); border: 1px solid var(--hairline);
+      border-radius: 14px; padding: 1.75rem; overflow: hidden;
+    }
+    .coupon-card::before {
+      content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--cru));
+    }
+    .coupon-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.9rem; }
+    .coupon-code {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+      border: 1.5px dashed var(--accent-border); border-radius: 10px; padding: 0.85rem 0.85rem 0.85rem 1.1rem;
+      margin-bottom: 1.2rem;
+    }
+    .coupon-code span { font-size: 1.35rem; font-weight: 800; letter-spacing: 0.08em; }
+    .copy-btn {
+      min-height: 40px; padding: 0 0.95rem; border-radius: 8px; cursor: pointer;
+      background: var(--surface-2); color: var(--text); border: 1px solid var(--hairline);
+      font: 700 0.75rem 'Inter Tight', sans-serif; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: background 0.2s, color 0.2s, border-color 0.2s; white-space: nowrap;
+    }
+    .copy-btn:hover { border-color: var(--accent-border); }
+    .copy-btn.copied { background: var(--accent); color: #0A0A0A; border-color: var(--accent); }
+    .coupon-list { list-style: none; display: grid; gap: 0.7rem; margin-bottom: 1.4rem; }
+    .coupon-list li { display: flex; gap: 0.7rem; align-items: baseline; font-size: 0.93rem; color: var(--text-muted); }
+    .coupon-list b { color: var(--text); font-weight: 800; min-width: 4.6rem; flex: none; white-space: nowrap; display: inline-block; }
+    .coupon-card .btn { width: 100%; }
+    .coupon-foot { font-size: 0.75rem; color: var(--text-faint); margin-top: 0.9rem; text-align: center; }
+
+    /* Seções */
+    section { padding: clamp(4rem, 9vw, 6.5rem) 0; }
+    section.alt { background: var(--bg-elevated); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+    #prompts, #oferta, #mercedes, #cupom { scroll-margin-top: 72px; }
+    .sec-head { max-width: 680px; margin-bottom: 2.75rem; }
+    h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.08; margin-bottom: 1rem; }
+    .sec-head p { color: var(--text-muted); font-size: 1.05rem; }
+
+    /* Passos / prompts */
+    .steps { display: grid; gap: 1.25rem; }
+    .step {
+      background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .step:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .step-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .step-tag { display: flex; align-items: center; gap: 0.8rem; }
+    .step-num {
+      display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid var(--accent-border); font-weight: 800; font-size: 0.9rem;
+    }
+    .step h3 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
+    .step .hint { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 1rem; }
+    .code {
+      background: rgba(0,0,0,0.55); border: 1px solid var(--hairline); border-left: 2px solid var(--cru);
+      border-radius: 6px; padding: 1.1rem 1.2rem;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.82rem; line-height: 1.75;
+      color: #EAE2D2; white-space: pre-wrap; word-break: break-word;
+    }
+    .note {
+      display: flex; gap: 0.85rem; align-items: flex-start; margin-top: 1.5rem;
+      background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1.1rem 1.25rem;
+    }
+    .note svg { flex: none; width: 20px; height: 20px; margin-top: 2px; color: var(--cru); }
+    .note p { font-size: 0.93rem; color: var(--text-muted); }
+    .note strong { color: var(--text); }
+
+    /* Resultado */
+    .result {
+      margin-top: 1.25rem; display: grid; gap: 1.5rem; align-items: center;
+      background: var(--accent); color: #0A0A0A; border-radius: 14px; padding: clamp(1.5rem, 4vw, 2.5rem);
+    }
+    @media (min-width: 768px) { .result { grid-template-columns: 1fr auto; } }
+    .result small { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin-bottom: 0.4rem; }
+    .result .big { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; text-transform: uppercase; }
+    .result p { margin-top: 0.7rem; font-size: 0.95rem; opacity: 0.75; max-width: 520px; }
+    .btn-dark { background: #0A0A0A; color: var(--text); border: 1px solid #0A0A0A; }
+    .btn-dark:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+    /* Por que */
+    .grid-4 { display: grid; gap: 1rem; }
+    @media (min-width: 640px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .grid-4 { grid-template-columns: repeat(4, 1fr); } }
+    .card {
+      background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.5rem;
+      transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+    }
+    .card:hover { border-color: var(--accent-border); transform: translateY(-4px); }
+    .card .k { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cru); margin-bottom: 0.7rem; }
+    .card h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; line-height: 1.25; }
+    .card p { font-size: 0.92rem; color: var(--text-muted); }
+
+    .quote {
+      margin-top: 2.5rem; border-left: 2px solid var(--cru); padding-left: 1.25rem; max-width: 720px;
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.4;
+    }
+    .quote span { display: block; margin-top: 0.6rem; font-size: 0.85rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+
+    /* Oferta */
+    .offer { display: grid; gap: 1rem; }
+    @media (min-width: 768px) { .offer { grid-template-columns: repeat(3, 1fr); } }
+    .offer-item { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.75rem; }
+    .offer-item .num { font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1; margin-bottom: 0.6rem; }
+    .offer-item .num small { font-size: 0.4em; font-weight: 700; letter-spacing: 0; color: var(--text-muted); margin-right: 0.3rem; vertical-align: 0.6em; }
+    .offer-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .offer-item p { font-size: 0.9rem; color: var(--text-muted); }
+    .offer-item.hl { background: var(--accent); color: #0A0A0A; border-color: var(--accent); }
+    .offer-item.hl p, .offer-item.hl .num small { color: rgba(10,10,10,0.65); }
+    .offer-cta { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .offer-cta .small { color: var(--text-muted); font-size: 0.88rem; }
+
+    /* Mercedes */
+    .mb-grid { display: grid; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .mb-grid { grid-template-columns: 1.05fr 1fr; gap: 4rem; } }
+    .mb-visual {
+      position: relative; border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden;
+      background: radial-gradient(120% 80% at 50% 0%, #2a2824 0%, #121212 55%, #0A0A0A 100%);
+      padding: clamp(1.75rem, 4vw, 2.75rem); min-height: 300px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .mb-visual .k { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--cru); }
+    .mb-visual .car { font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 0.98; margin: 1rem 0; }
+    .mb-visual .val { font-size: 0.95rem; color: var(--text-muted); }
+    .mb-visual .val strong { color: var(--text); }
+    .rule {
+      display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem;
+      border-top: 1px solid var(--hairline); padding-top: 1.25rem; font-weight: 700;
+    }
+    .rule .eq { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; }
+    .rule .arrow { color: var(--text-faint); }
+    .checks { list-style: none; display: grid; gap: 0.9rem; margin: 1.5rem 0 1.75rem; }
+    .checks li { display: flex; gap: 0.75rem; align-items: flex-start; color: var(--text-muted); font-size: 0.97rem; }
+    .checks svg { flex: none; width: 20px; height: 20px; color: var(--cru); margin-top: 3px; }
+    .checks strong { color: var(--text); }
+    .legal { font-size: 0.75rem; line-height: 1.6; color: var(--text-faint); margin-top: 1.5rem; }
+    .legal a { color: var(--text-muted); }
+
+    /* CTA final */
+    .final { text-align: center; }
+    .final h2 { max-width: 760px; margin-left: auto; margin-right: auto; }
+    .final .sub { color: var(--text-muted); max-width: 560px; margin: 0 auto 2rem; }
+    .final .coupon-code { max-width: 380px; margin: 0 auto 1.25rem; }
+    .final .btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--hairline); padding: 2.5rem 0 3rem; }
+    .footer-inner { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; justify-content: space-between; }
+    .footer-logo { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+    .footer-note a { color: var(--text); }
+    .footer-legal { margin-top: 1.5rem; font-size: 0.72rem; color: var(--text-faint); line-height: 1.6; }
+
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) {
+      .fade-in { opacity: 1; transform: none; }
+      * { transition: none !important; }
+    }
+    :focus-visible { outline: 2px solid var(--cru); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+  <div class="topbar">Black Friday Minimal Club · O maior desconto do ano</div>
+
+  <nav class="nav" aria-label="Principal">
+    <div class="wrap nav-inner">
+      <a href="https://bperobelli.com.br" class="nav-logo">
+        <span class="nav-mark">BP</span>
+        <span class="nav-name">Bruno Perobelli</span>
+        <span class="nav-x" aria-hidden="true">×</span>
+        <span class="nav-partner">Minimal Club</span>
+      </a>
+      <button class="nav-badge" onclick="scrollToSection('cupom')">
+        <span class="txt-long">Meu cupom</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <header class="hero" id="main">
+    <div class="blob blob-1" aria-hidden="true"></div>
+    <div class="blob blob-2" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">ChatGPT · Black Friday</span>
+        <h1>Pedi pro ChatGPT achar o melhor desconto de camiseta preta. <span class="accent">Olha o que ele trouxe.</span></h1>
+        <p class="sub">Aqui estão os 2 prompts que eu usei no vídeo, prontos pra copiar. Servem pra qualquer oferta da Black. E logo abaixo, o meu link com cupom da Minimal Club.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="scrollToSection('prompts')">
+            Ver os 2 prompts
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </button>
+          <button class="btn btn-ghost" onclick="scrollToSection('cupom')">Ir direto pro cupom</button>
+        </div>
+        <div class="hero-meta">
+          <span><strong>2</strong> prompts prontos</span>
+          <span class="sep" aria-hidden="true"></span>
+          <span><strong>15%</strong> no site todo</span>
+          <span class="sep" aria-hidden="true"></span>
+          <span><strong>Até 40%</strong> nos kits</span>
+        </div>
+      </div>
+
+      <aside class="coupon-card" aria-label="Cupom de desconto">
+        <div class="coupon-label">Meu cupom na Minimal Club</div>
+        <div class="coupon-code">
+          <span>BPEROBELLI</span>
+          <button class="copy-btn" data-copy="BPEROBELLI" aria-label="Copiar cupom BPEROBELLI">Copiar</button>
+        </div>
+        <ul class="coupon-list">
+          <li><b>15%</b> de desconto no site todo</li>
+          <li><b>Até 40%</b> nos kits</li>
+          <li><b>+ cupom</b> ainda mais desconto, tudo acumulado</li>
+          <li><b>R$ 800</b> em compras = 1 número da sorte pra Mercedes</li>
+        </ul>
+        <a class="btn btn-primary js-link" href="https://minimalclub.com.br/discount/BPEROBELLI?redirect=%2Fpages%2Fcompre-3-leve-4-mais-carteira-obrigado%3Futm_source%3Dinstagram%26utm_medium%3Dinfluencer" target="_blank" rel="noopener">
+          Comprar com o cupom
+          <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+        </a>
+        <p class="coupon-foot">O link já abre com o cupom aplicado</p>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <!-- PROMPTS -->
+    <section id="prompts" class="alt">
+      <div class="wrap">
+        <div class="sec-head fade-in">
+          <span class="eyebrow">Passo a passo · 2 prompts</span>
+          <h2>Faz o ChatGPT pesquisar por você</h2>
+          <p>Abre o ChatGPT, cola o primeiro prompt e espera a tabela. Depois, no mesmo chat, cola o segundo. Ele vai olhar loja por loja, cupom por cupom, e te dizer onde compraria.</p>
+        </div>
+
+        <div class="steps">
+          <article class="step fade-in">
+            <div class="step-top">
+              <div class="step-tag"><span class="step-num">1</span><h3>Monta a comparação</h3></div>
+              <button class="copy-btn" data-copy-target="p1" aria-label="Copiar prompt 1">Copiar prompt</button>
+            </div>
+            <p class="hint">Cola num chat novo. Ele traz as marcas confiáveis em Black Friday numa tabela.</p>
+            <div class="code" id="p1">Quero comprar uma camiseta preta básica que não desbote, não encolha e não dê bolinha. Encontre as marcas confiáveis no Brasil que estão em Black Friday neste mês de novembro e monte uma tabela comparando preço, tecido, garantia e o link de cada uma.</div>
+          </article>
+
+          <article class="step fade-in">
+            <div class="step-top">
+              <div class="step-tag"><span class="step-num">2</span><h3>Aplica os cupons e pede o veredito</h3></div>
+              <button class="copy-btn" data-copy-target="p2" aria-label="Copiar prompt 2">Copiar prompt</button>
+            </div>
+            <p class="hint">Continua no mesmo chat. É aqui que ele recalcula o preço final e escolhe.</p>
+            <div class="code" id="p2">Agora encontre as promoções de Black Friday e todos os cupons de cada uma dessas marcas, recalcule o preço final e compare a reputação de cada loja. No final, diga onde você compraria com o seu próprio dinheiro e por quê.</div>
+          </article>
+        </div>
+
+        <div class="note fade-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <p><strong>Troca o produto:</strong> os prompts funcionam pra tênis, eletrônico, colchão, o que você for comprar na Black. Muda a primeira frase e mantém o resto.</p>
+        </div>
+
+        <div class="result fade-in">
+          <div>
+            <small>O que ele me trouxe</small>
+            <div class="big">Minimal Club</div>
+            <p>Comparando custo, benefício e reputação das lojas, no meu caso o resultado não podia ser diferente.</p>
+          </div>
+          <button class="btn btn-dark" onclick="scrollToSection('oferta')">
+            Ver a oferta
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- POR QUE -->
+    <section>
+      <div class="wrap">
+        <div class="sec-head fade-in">
+          <span class="eyebrow">Por que eu uso · Há mais de 2 anos</span>
+          <h2>A camiseta de todos os meus vídeos</h2>
+          <p>Desde que comecei a gravar pra internet, só uso Minimal Club. E já era cliente antes disso.</p>
+        </div>
+        <div class="grid-4">
+          <div class="card fade-in">
+            <div class="k">Tecido</div>
+            <h3>Algodão egípcio</h3>
+            <p>Fibra mais longa, toque macio e dura até 4 vezes mais que uma camiseta comum.</p>
+          </div>
+          <div class="card fade-in">
+            <div class="k">Durabilidade</div>
+            <h3>Não desbota, não encolhe, não dá bolinha</h3>
+            <p>Lava, seca, usa de novo. A peça continua igual.</p>
+          </div>
+          <div class="card fade-in">
+            <div class="k">Prova</div>
+            <h3>Nova x 2 anos de uso</h3>
+            <p>Coloquei uma do lado da outra no vídeo. A cor é a mesma.</p>
+          </div>
+          <div class="card fade-in">
+            <div class="k">Garantia</div>
+            <h3>30 dias pra devolver</h3>
+            <p>Não gostou, devolve. Não tem como se arrepender.</p>
+          </div>
+        </div>
+        <blockquote class="quote fade-in">
+          “Uma decisão a menos por dia. Camiseta preta básica pra home office, gravação, tudo.”
+          <span>Bruno Perobelli</span>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- OFERTA -->
+    <section id="oferta" class="alt">
+      <div class="wrap">
+        <div class="sec-head fade-in">
+          <span class="eyebrow">Black Friday · Os números</span>
+          <h2>O maior desconto do ano, <span class="accent">tudo acumulado</span></h2>
+          <p>Os descontos somam. Primeiro a Black, depois o cupom por cima.</p>
+        </div>
+        <div class="offer">
+          <div class="offer-item fade-in">
+            <div class="num">15%</div>
+            <h3>No site todo</h3>
+            <p>Desconto da Black em todas as peças.</p>
+          </div>
+          <div class="offer-item fade-in">
+            <div class="num"><small>até</small>40%</div>
+            <h3>Nos kits</h3>
+            <p>Quanto maior o kit, maior o desconto.</p>
+          </div>
+          <div class="offer-item hl fade-in">
+            <div class="num">+ cupom</div>
+            <h3>BPEROBELLI</h3>
+            <p>Ainda mais desconto em cima de tudo.</p>
+          </div>
+        </div>
+        <div class="offer-cta fade-in">
+          <a class="btn btn-primary js-link" href="https://minimalclub.com.br/discount/BPEROBELLI?redirect=%2Fpages%2Fcompre-3-leve-4-mais-carteira-obrigado%3Futm_source%3Dinstagram%26utm_medium%3Dinfluencer" target="_blank" rel="noopener">
+            Comprar com o cupom
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+          <span class="small">Não é só camiseta preta: tem branca, outras cores e todo tipo de peça.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MERCEDES -->
+    <section id="mercedes">
+      <div class="wrap mb-grid">
+        <div class="mb-visual fade-in">
+          <div>
+            <div class="k">Sorteio Black Friday</div>
+            <div class="car">Mercedes C200 0km</div>
+            <div class="val">Avaliada em <strong>mais de R$ 350 mil</strong></div>
+          </div>
+          <div class="rule">
+            <span class="eq">R$ 800</span>
+            <span class="arrow" aria-hidden="true">→</span>
+            <span>1 número da sorte</span>
+          </div>
+        </div>
+        <div class="fade-in">
+          <span class="eyebrow">Como concorrer</span>
+          <h2>Compra agora e <span class="accent">já garante o seu número</span></h2>
+          <ul class="checks">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>A cada <strong>R$ 800 em compras</strong>, você ganha <strong>1 número da sorte</strong>.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Pode <strong>somar várias compras</strong>. Quanto mais você compra, mais chances.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>O número chega <strong>no seu e-mail</strong>.</span></li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Vale para compras no <strong>site da Minimal Club</strong> e nas lojas do BH Shopping e Barra Shopping.</span></li>
+          </ul>
+          <a class="btn btn-primary js-link" href="https://minimalclub.com.br/discount/BPEROBELLI?redirect=%2Fpages%2Fcompre-3-leve-4-mais-carteira-obrigado%3Futm_source%3Dinstagram%26utm_medium%3Dinfluencer" target="_blank" rel="noopener">
+            Garantir meu número
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+          <p class="legal">Promoção “A BlackFriday da Minimal te dá um carro zero km”. Certificado de Autorização SPA/ME Nº 04.053297/2026. Regulamento completo em <a href="https://www.minimalclub.com.br" target="_blank" rel="noopener">minimalclub.com.br</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section id="cupom" class="alt final">
+      <div class="wrap">
+        <span class="eyebrow fade-in">Link com cupom · Minimal Club</span>
+        <h2 class="fade-in">Pega o cupom e aproveita a Black</h2>
+        <p class="sub fade-in">15% no site, até 40% nos kits e ainda mais desconto com o meu cupom. 30 dias de garantia.</p>
+        <div class="coupon-code fade-in">
+          <span>BPEROBELLI</span>
+          <button class="copy-btn" data-copy="BPEROBELLI" aria-label="Copiar cupom BPEROBELLI">Copiar</button>
+        </div>
+        <div class="btns fade-in">
+          <a class="btn btn-primary js-link" href="https://minimalclub.com.br/discount/BPEROBELLI?redirect=%2Fpages%2Fcompre-3-leve-4-mais-carteira-obrigado%3Futm_source%3Dinstagram%26utm_medium%3Dinfluencer" target="_blank" rel="noopener">
+            Comprar com o cupom
+            <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+          <button class="btn btn-ghost" onclick="scrollToSection('prompts')">Rever os prompts</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="footer-inner">
+        <a href="https://bperobelli.com.br" class="footer-logo">
+          <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+          Bruno Perobelli
+        </a>
+        <div class="footer-note">
+          Parceria com <a href="https://www.instagram.com/minimalclub.br/" target="_blank" rel="noopener">@minimalclub.br</a> · Prompts gratuitos
+        </div>
+      </div>
+      <p class="footer-legal">Promoção “A BlackFriday da Minimal te dá um carro zero km”. Certificado de Autorização SPA/ME Nº 04.053297/2026. Regulamento completo em minimalclub.com.br.</p>
+    </div>
+  </footer>
+
+  <script>
+    // >>> Cole aqui o link com cupom (seção 03 do briefing da Minimal) <<<
+    const LINK_CUPOM = 'https://minimalclub.com.br/discount/BPEROBELLI?redirect=%2Fpages%2Fcompre-3-leve-4-mais-carteira-obrigado%3Futm_source%3Dinstagram%26utm_medium%3Dinfluencer';
+
+    document.querySelectorAll('.js-link').forEach(a => { a.href = LINK_CUPOM; });
+
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function copyText(text, btn) {
+      const done = () => {
+        const original = btn.dataset.label || btn.textContent;
+        btn.dataset.label = original;
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        clearTimeout(btn._t);
+        btn._t = setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+      } else {
+        fallbackCopy(text, done);
+      }
+    }
+    function fallbackCopy(text, cb) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      ta.remove(); cb();
+    }
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.copy || document.getElementById(btn.dataset.copyTarget).innerText.trim();
+        copyText(text, btn);
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        const ease = 'power3.out';
+        gsap.from('.hero .eyebrow', { opacity: 0, x: -16, duration: 0.7, ease, delay: 0.05 });
+        gsap.from('.hero h1',       { opacity: 0, y: 30,  duration: 1,   ease, delay: 0.15 });
+        gsap.from('.hero .sub',     { opacity: 0, y: 20,  duration: 0.9, ease, delay: 0.35 });
+        gsap.from('.hero-cta',      { opacity: 0, y: 16,  duration: 0.8, ease, delay: 0.5 });
+        gsap.from('.hero-meta',     { opacity: 0, y: 14,  duration: 0.8, ease, delay: 0.65 });
+        gsap.from('.coupon-card',   { opacity: 0, y: 24,  duration: 0.9, ease, delay: 0.45 });
+        gsap.utils.toArray('.fade-in').forEach(el => {
+          gsap.to(el, { opacity: 1, y: 0, duration: 0.75, ease, scrollTrigger: { trigger: el, start: 'top 90%', once: true } });
+        });
+      } else {
+        document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+      }
+    });
+  </script>
+</body>
+</html>
