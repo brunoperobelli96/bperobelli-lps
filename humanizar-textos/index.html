@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090023">
-  <title>Humanize Todos os Seus Textos do ChatGPT · Bruno Perobelli</title>
+  <title>Humanize Todos os Seus Textos no ChatGPT e no Claude · Bruno Perobelli</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -67,6 +67,11 @@
     .step-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
     .wiki-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; color: var(--accent); text-decoration: none; font-weight: 600; margin-bottom: 0.75rem; }
     .wiki-link:hover { text-decoration: underline; }
+    .ai-switch { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .ai-switch button { min-height: 44px; padding: 0.6rem 1.25rem; border-radius: 999px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); font: inherit; font-weight: 700; cursor: pointer; transition: background 0.2s, color 0.2s; }
+    .ai-switch button:hover { background: var(--accent); color: #000; }
+    .ai-title { font-size: 1.35rem; font-weight: 800; margin: 2.5rem 0 1.25rem; color: var(--text); }
+    #no-chatgpt, #no-claude { scroll-margin-top: 72px; }
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
     .feature-card { background: var(--surface); border: 1px solid var(--text-faint); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s var(--ease), transform 0.2s var(--ease); }
     .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
@@ -124,12 +129,12 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">IA APLICADA · ESCRITA</p>
-          <h1>3 prompts para o <span class="accent">ChatGPT</span> humanizar qualquer texto e passar em qualquer detector de IA</h1>
-          <p class="sub">Configure o ChatGPT para humanizar seus textos baseado na referência da Wikipedia sobre sinais de escrita de IA, crie uma skill reutilizável e nunca mais entregue um texto com cara de robô.</p>
+          <h1>Prompts para o <span class="accent">ChatGPT</span> e o <span class="accent">Claude</span> humanizarem qualquer texto e passarem em qualquer detector de IA</h1>
+          <p class="sub">Configure o ChatGPT ou o Claude para humanizar seus textos baseado na referência da Wikipedia sobre sinais de escrita de IA, crie uma skill reutilizável e nunca mais entregue um texto com cara de robô.</p>
           <div class="hero-meta">
             <div class="hero-meta-item">
-              <span class="valor">3</span>
-              <span class="label">Prompts no total</span>
+              <span class="valor">2</span>
+              <span class="label">IAs: ChatGPT e Claude</span>
             </div>
             <div class="hero-meta-item">
               <span class="valor">Grátis</span>
@@ -145,6 +150,7 @@
         <div class="side-card">
           <p class="side-card-title">O que você vai receber</p>
           <ul>
+            <li>Passo a passo para ChatGPT e para Claude</li>
             <li>Texto com 0% de IA nos detectores</li>
             <li>Base na referência oficial da Wikipedia</li>
             <li>Skill reutilizável para qualquer conversa</li>
@@ -160,9 +166,14 @@
     <div class="wrap">
       <div class="section-header fade-in">
         <p class="eyebrow">PASSO A PASSO</p>
-        <h2>Os 3 prompts para nunca mais entregar um texto com cara de robô</h2>
-        <p class="lead">Abra o ChatGPT e use os três prompts na mesma conversa. Após o terceiro, você terá uma skill pronta para humanizar qualquer texto futuro.</p>
+        <h2>Os prompts para nunca mais entregar um texto com cara de robô</h2>
+        <p class="lead">Escolha a IA que você usa. Nas duas, os prompts vão na mesma conversa e no final você tem uma skill pronta para humanizar qualquer texto futuro.</p>
+        <div class="ai-switch">
+          <button type="button" onclick="scrollToSection('no-chatgpt')">No ChatGPT</button>
+          <button type="button" onclick="scrollToSection('no-claude')">No Claude</button>
+        </div>
       </div>
+      <h3 id="no-chatgpt" class="ai-title fade-in">No ChatGPT</h3>
       <div class="steps-grid">
         <div class="step-card fade-in">
           <p class="step-num">Prompt 1</p>
@@ -184,6 +195,28 @@
           <p class="step-desc">O ChatGPT cria uma skill que você ativa em qualquer conversa futura. Configuração de uma vez, uso para sempre em qualquer texto.</p>
         </div>
       </div>
+      <h3 id="no-claude" class="ai-title fade-in">No Claude</h3>
+      <div class="steps-grid">
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 1</p>
+          <h3>Mapear os sinais de texto de IA</h3>
+          <div class="prompt-box">Vá até a Wikipédia e encontre a página sobre sinais de escrita por IA. Liste todos os padrões que encontrar.</div>
+          <a href="https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:Sinais_de_texto_gerado_por_intelig%C3%AAncia_artificial" target="_blank" rel="noopener" class="wiki-link">↗ Abrir página da Wikipédia</a>
+          <p class="step-desc">O Claude lê a página e lista tudo que entrega um texto de IA: travessão demais, palavras que ninguém usa no dia a dia e frases como "não é sobre X, é sobre Y". Deixe a busca na web ligada para ele conseguir abrir a página.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt 2</p>
+          <h3>Transformar em skill com /skill-creator</h3>
+          <div class="prompt-box">/skill-creator Crie uma skill com base em tudo que acabamos de encontrar.</div>
+          <p class="step-desc">No mesmo chat, digite /skill-creator antes do texto. O Claude monta uma skill com todas as regras e passa a usar sozinho sempre que for escrever. Se o comando não aparecer, ative Skills nas configurações do Claude.</p>
+        </div>
+        <div class="step-card fade-in">
+          <p class="step-num">Prompt Bônus</p>
+          <h3>Usar a skill no dia a dia</h3>
+          <div class="prompt-box">Use essa skill pra reescrever o texto abaixo do jeito que eu falo: [cole seu texto]</div>
+          <p class="step-desc">Legenda, post ou e-mail: cole o texto e ele volta sem aquela cara de IA, parecendo que foi você mesmo que escreveu.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -198,7 +231,7 @@
         <div class="feature-card fade-in">
           <div class="feature-icon">🕵️</div>
           <h3>0% em detectores de IA</h3>
-          <p>O ChatGPT passa a cobrir cada padrão de escrita artificial listado na Wikipedia, tornando o texto indistinguível de humano nos detectores.</p>
+          <p>A IA passa a cobrir cada padrão de escrita artificial listado na Wikipedia, tornando o texto indistinguível de humano nos detectores.</p>
         </div>
         <div class="feature-card fade-in">
           <div class="feature-icon">♻️</div>
@@ -208,7 +241,7 @@
         <div class="feature-card fade-in">
           <div class="feature-icon">📚</div>
           <h3>Referência real, não achismo</h3>
-          <p>A base é a página da Wikipedia sobre sinais de escrita de IA — uma lista consolidada dos padrões que os detectores usam para identificar textos artificiais.</p>
+          <p>A base é a página da Wikipedia sobre sinais de escrita de IA, uma lista consolidada dos padrões que os detectores usam para identificar textos artificiais.</p>
         </div>
       </div>
     </div>
@@ -231,6 +264,13 @@
 </footer>
 
 <script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
   document.querySelectorAll('.prompt-box').forEach(box => {
     const text = box.textContent.replace(/^"|"$/g, '').trim();
     const btn = document.createElement('button');
