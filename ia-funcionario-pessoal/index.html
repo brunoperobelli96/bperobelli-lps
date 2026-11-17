@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>IA Como Funcionário Pessoal · Bruno Perobelli</title>
+  <meta name="description" content="5 jeitos de usar o ChatGPT Work ou o Claude Cowork como seu funcionário pessoal, com o prompt pronto de cada um.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+      --accent: #22D3EE;
+      --accent-dim: rgba(34,211,238,0.10);
+      --accent-border: rgba(34,211,238,0.35);
+      --code: #a5f3fc;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; line-height: 1.65; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--accent); color: #000; padding: 0.5rem 1rem; z-index: 100; }
+    .skip-link:focus { left: 1rem; top: 1rem; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,0,35,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+    .nav-badge { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer; min-height: 36px; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .hero { position: relative; padding: 8.5rem 0 4.5rem; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.3; pointer-events: none; }
+    .hero-blob.b1 { width: 520px; height: 520px; background: var(--accent); top: -200px; left: -180px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -160px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; } }
+    .eyebrow { display: inline-block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.68rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { color: var(--text-muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 2rem; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 46px; padding: 0.7rem 1.3rem; border-radius: 10px; font: inherit; font-weight: 800; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s; }
+    .btn-primary { background: var(--accent); color: #00222a; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 800; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; }
+    .side-card ol { list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { counter-increment: s; display: flex; gap: 0.6rem; font-size: 0.92rem; }
+    .side-card li::before { content: counter(s); flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font-size: 0.72rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+
+    section { padding: 5rem 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #comecar, #usos { scroll-margin-top: 72px; }
+    .section-header { max-width: 700px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+    .section-header h2 .accent { color: var(--accent); font-style: italic; }
+    .section-header p { color: var(--text-muted); }
+
+    .tools { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 768px) { .tools { grid-template-columns: 1fr 1fr; } }
+    .tool { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.5rem; }
+    .tool h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .tool .plan { display: inline-block; font-size: 0.75rem; font-weight: 800; color: var(--accent); background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 999px; padding: 0.15rem 0.65rem; margin-bottom: 0.9rem; }
+    .tool ul { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; color: var(--text-muted); font-size: 0.92rem; }
+    .tool li strong { color: var(--text); }
+
+    .uses { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .use { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s var(--ease); }
+    .use:hover { border-color: var(--accent-border); }
+    .use-top { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .use-num { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+    .use h3 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .use .what { margin-bottom: 1rem; max-width: 760px; }
+    .setup { display: flex; gap: 0.6rem; align-items: flex-start; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 10px; padding: 0.75rem 0.9rem; margin-bottom: 1rem; font-size: 0.88rem; }
+    .setup svg { flex-shrink: 0; margin-top: 0.2rem; }
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.9rem 5.5rem 0.9rem 0.95rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.82rem; color: var(--code); white-space: pre-wrap; line-height: 1.6; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); color: var(--text); border: none; border-radius: 6px; padding: 0.3rem 0.75rem; font: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .copy-btn.copied { background: var(--accent); color: #00222a; }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 0 2.5rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('usos')">Ver os 5 usos</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">IA aplicada · Produtividade</span>
+          <h1>5 jeitos de transformar a IA no seu <span class="accent">funcionário pessoal</span></h1>
+          <p class="sub">No ChatGPT Work ou no Claude Cowork, a IA para de só conversar e passa a trabalhar por você. Cada uso abaixo tem o prompt pronto para copiar.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="scrollToSection('usos')">Ver os 5 usos <span aria-hidden="true">↓</span></button>
+            <button class="btn btn-ghost" onclick="scrollToSection('comecar')">Como ativar</button>
+          </div>
+          <div class="hero-meta">
+            <span><strong>5</strong> prompts prontos</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>ChatGPT</strong> e <strong>Claude</strong></span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>Plano pago</strong> mínimo</span>
+          </div>
+        </div>
+        <aside class="side-card">
+          <h2>Os 5 usos</h2>
+          <ol>
+            <li>Caçar preço</li>
+            <li>Preparar reunião</li>
+            <li>Caçar reembolso</li>
+            <li>Relatório da semana</li>
+            <li>Dia de viagem</li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="comecar" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de começar</span>
+        <h2>Como ativar o <span class="accent">modo que trabalha</span></h2>
+        <p>Os dois funcionam com a mesma lógica: você pede, a IA abre sites, lê seus arquivos e apps conectados e entrega o trabalho pronto.</p>
+      </div>
+      <div class="tools">
+        <div class="tool fade-in">
+          <h3>ChatGPT Work</h3>
+          <span class="plan">Completo a partir do Plus</span>
+          <ul>
+            <li><strong>Onde:</strong> no alternador <strong>Chat | Work</strong>, no topo da tela.</li>
+            <li><strong>Plano:</strong> no grátis e no Go vem limitado, só no app do computador. No Plus e no Pro funciona no computador, na web e no celular.</li>
+            <li><strong>Conectar apps:</strong> em <strong>Plugins</strong>, na barra lateral (agenda, e-mail, Drive).</li>
+            <li><strong>Agendar:</strong> em <strong>Agendado</strong>, na barra lateral.</li>
+          </ul>
+        </div>
+        <div class="tool fade-in">
+          <h3>Claude Cowork</h3>
+          <span class="plan">A partir do Pro</span>
+          <ul>
+            <li><strong>Onde:</strong> no <strong>Cowork</strong>, no app do Claude para computador.</li>
+            <li><strong>Plano:</strong> todos os planos pagos (Pro, Max, Team e Enterprise). Não existe no grátis.</li>
+            <li><strong>Conectar apps:</strong> em <strong>Personalizar</strong> e depois <strong>Conectores</strong> (agenda, e-mail, Drive).</li>
+            <li><strong>Agendar:</strong> peça direto no chat, por exemplo "faça isso toda sexta às 17h".</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="usos">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Os 5 usos</span>
+        <h2>Copie o prompt e <span class="accent">deixe trabalhando</span></h2>
+        <p>Troque o que está entre colchetes pelos seus dados.</p>
+      </div>
+      <ol class="uses">
+        <li class="use fade-in">
+          <div class="use-top"><span class="use-num">1</span><h3>Caçar preço</h3></div>
+          <p class="what">Você passa a lista do que quer comprar e a IA confere o preço em todas as lojas. Quando algum baixar, ela te avisa.</p>
+          <div class="setup"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Para o aviso chegar sozinho, agende para rodar todo dia.</span></div>
+          <div class="code">Aqui está a lista do que eu quero comprar: [itens, com modelo e tamanho]. Pesquise o preço de cada item nas principais lojas do Brasil, me mostre o menor preço com o link da loja e o frete. Rode essa busca todo dia de manhã e me avise só quando algum preço baixar.</div>
+        </li>
+
+        <li class="use fade-in">
+          <div class="use-top"><span class="use-num">2</span><h3>Preparar reunião</h3></div>
+          <p class="what">A IA lê a sua agenda, pesquisa quem vai estar em cada reunião e a empresa de cada pessoa, e entrega um resumo antes de você acordar.</p>
+          <div class="setup"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Conecte a sua agenda antes (Plugins no ChatGPT, Conectores no Claude).</span></div>
+          <div class="code">Me prepara pra todas as reuniões de amanhã. Para cada uma, pesquise quem vai participar e a empresa de cada pessoa, e monte um resumo de uma página com: quem é quem, o que a empresa faz, notícias recentes, pontos de atenção e 3 perguntas que eu posso fazer.</div>
+        </li>
+
+        <li class="use fade-in">
+          <div class="use-top"><span class="use-num">3</span><h3>Caçar reembolso</h3></div>
+          <p class="what">Você manda os seus últimos pedidos, a IA lê a política de troca de cada loja, acha o que ainda dá para devolver e escreve o pedido.</p>
+          <div class="setup"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Anexe os comprovantes ou cole os e-mails de confirmação dos pedidos.</span></div>
+          <div class="code">Aqui estão meus pedidos dos últimos 30 dias: [anexe ou cole]. Para cada loja, leia a política de troca e devolução e me diga em quais eu ainda posso pedir troca ou reembolso e até quando. Considere também os 7 dias de arrependimento do Código de Defesa do Consumidor para compras pela internet. Depois escreva a mensagem de pedido pronta para cada loja.</div>
+        </li>
+
+        <li class="use fade-in">
+          <div class="use-top"><span class="use-num">4</span><h3>Relatório da semana</h3></div>
+          <p class="what">Toda sexta a IA puxa os dados dos seus apps, monta o relatório do que aconteceu e salva numa pasta para você.</p>
+          <div class="setup"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>Conecte os apps de onde vêm os dados e agende para toda sexta.</span></div>
+          <div class="code">Toda sexta às 17h, puxe os dados da semana de [apps conectados, ex.: e-mail, agenda, planilha de vendas] e monte um relatório com: o que aconteceu, os números principais comparados com a semana anterior e o que ficou pendente. Salve o relatório na pasta [nome da pasta].</div>
+        </li>
+
+        <li class="use fade-in">
+          <div class="use-top"><span class="use-num">5</span><h3>Dia de viagem</h3></div>
+          <p class="what">Você manda a confirmação do voo e a IA monta o seu dia inteiro: horário de saída, sala VIP, portão e até um horário de sono contra o jet lag.</p>
+          <div class="setup"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>Cole o e-mail de confirmação ou anexe o PDF da reserva.</span></div>
+          <div class="code">Aqui está a confirmação do meu voo: [cole]. Monte o meu dia de viagem: que horas sair de casa considerando o trânsito, terminal e portão, quais salas VIP eu posso usar com [cartão ou programa de milhas], e um horário de sono para os próximos dias pra diminuir o jet lag.</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · Planos conferidos nas páginas oficiais do ChatGPT e do Claude</div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code').forEach(function (box) {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.type = 'button';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar prompt');
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('load', function () {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
