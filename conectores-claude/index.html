@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>5 Conectores do Claude · Bruno Perobelli</title>
+  <meta name="description" content="Os 5 conectores mais poderosos do Claude: Perplexity, Firecrawl, PostHog, Playwright e Composio, com o passo a passo de instalação de cada um.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+      --accent: #A3E635;
+      --accent-dim: rgba(163,230,53,0.10);
+      --accent-border: rgba(163,230,53,0.35);
+      --code: #d9f99d;
+      --warn: #FBBF24;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; line-height: 1.65; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--accent); color: #000; padding: 0.5rem 1rem; z-index: 100; }
+    .skip-link:focus { left: 1rem; top: 1rem; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,0,35,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+    .nav-badge { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer; min-height: 36px; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .hero { position: relative; padding: 8.5rem 0 4.5rem; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.3; pointer-events: none; }
+    .hero-blob.b1 { width: 520px; height: 520px; background: var(--accent); top: -200px; left: -180px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -160px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; } }
+    .eyebrow { display: inline-block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.68rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { color: var(--text-muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 2rem; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 46px; padding: 0.7rem 1.3rem; border-radius: 10px; font: inherit; font-weight: 800; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s; }
+    .btn-primary { background: var(--accent); color: #102000; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 800; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { display: flex; justify-content: space-between; gap: 0.6rem; font-size: 0.9rem; line-height: 1.45; }
+
+    section { padding: 5rem 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #antes, #conectores, #avancado { scroll-margin-top: 72px; }
+    .section-header { max-width: 700px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+    .section-header h2 .accent { color: var(--accent); font-style: italic; }
+    .section-header p { color: var(--text-muted); }
+
+    .steps-path { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 768px) { .steps-path { grid-template-columns: repeat(3, 1fr); } }
+    .path-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; }
+    .path-card .n { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; align-items: center; justify-content: center; background: var(--accent); color: #102000; font-weight: 900; font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .path-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .path-card p { color: var(--text-muted); font-size: 0.9rem; }
+
+    .conn-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .conn { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s var(--ease); }
+    .conn:hover { border-color: var(--accent-border); }
+    .conn-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .conn-num { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+    .conn h3 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .level { font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid; }
+    .level.easy { color: var(--accent); border-color: var(--accent-border); background: var(--accent-dim); }
+    .level.hard { color: var(--warn); border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.08); }
+    .conn .what { color: var(--text); margin-bottom: 1rem; max-width: 760px; }
+    .conn ol.how { margin: 0 0 1rem 1.2rem; color: var(--text-muted); font-size: 0.92rem; display: flex; flex-direction: column; gap: 0.3rem; }
+    .conn ol.how strong { color: var(--text); }
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.8rem 5.5rem 0.8rem 0.9rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8rem; color: var(--code); word-break: break-all; white-space: pre-wrap; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); color: var(--text); border: none; border-radius: 6px; padding: 0.3rem 0.75rem; font: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .copy-btn.copied { background: var(--accent); color: #102000; }
+    .conn .link { display: inline-block; margin-top: 0.9rem; color: var(--accent); font-size: 0.85rem; font-weight: 700; text-decoration: none; }
+    .conn .link:hover { text-decoration: underline; }
+
+    .note { display: flex; gap: 0.75rem; align-items: flex-start; margin-top: 1.5rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.15rem; }
+    .note.warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.35); }
+    .note svg { flex-shrink: 0; margin-top: 0.2rem; }
+    .note p { font-size: 0.9rem; }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 0 2.5rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('conectores')">Ver os 5 conectores</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Claude · Conectores</span>
+          <h1>Os 5 conectores mais poderosos <span class="accent">do Claude</span></h1>
+          <p class="sub">Conector é o que liga o Claude a outra ferramenta para ele trabalhar lá dentro por você. Aqui está o que cada um faz e como instalar, do mais fácil ao mais avançado.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="scrollToSection('conectores')">Ver os conectores <span aria-hidden="true">↓</span></button>
+            <button class="btn btn-ghost" onclick="scrollToSection('antes')">Como instalar um conector</button>
+          </div>
+          <div class="hero-meta">
+            <span><strong>5</strong> conectores</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>3</strong> instalam em 1 minuto</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>Links oficiais</strong> de cada um</span>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h2>Os 5 conectores</h2>
+          <ul>
+            <li><span>Perplexity · pesquisa</span><span class="level hard">Avançado</span></li>
+            <li><span>Firecrawl · copia sites</span><span class="level easy">Fácil</span></li>
+            <li><span>PostHog · erros e clientes</span><span class="level easy">Fácil</span></li>
+            <li><span>Playwright · navegador</span><span class="level hard">Avançado</span></li>
+            <li><span>Composio · todos os apps</span><span class="level easy">Fácil</span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="antes" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de começar</span>
+        <h2>Como adicionar um conector <span class="accent">no Claude</span></h2>
+        <p>Os conectores marcados como Fácil seguem sempre este caminho. Leva menos de um minuto.</p>
+      </div>
+      <div class="steps-path">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Abra os conectores</h3>
+          <p>No Claude, clique em <strong>Personalizar</strong> (Customize) na barra lateral e depois em <strong>Conectores</strong> (Connectors).</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>Adicione um personalizado</h3>
+          <p>Clique no <strong>+</strong> e em <strong>Adicionar conector personalizado</strong> (Add custom connector). Dê um nome e cole o link do conector.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Conecte sua conta</h3>
+          <p>Clique em <strong>Conectar</strong> e entre com a sua conta da ferramenta no navegador. Pronto: é só pedir no chat.</p>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Plano:</strong> conectores personalizados funcionam nos planos pagos do Claude (Pro, Max, Team e Enterprise). No plano gratuito dá para ter só um por vez.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="conectores">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Os 5 conectores</span>
+        <h2>O que cada um faz e <span class="accent">como instalar</span></h2>
+        <p>Na ordem do vídeo. Os marcados como Avançado precisam do Claude no computador; o passo a passo deles está mais abaixo.</p>
+      </div>
+
+      <ol class="conn-list">
+        <li class="conn fade-in">
+          <div class="conn-top"><span class="conn-num">1</span><h3>Perplexity</h3><span class="level hard">Avançado</span></div>
+          <p class="what">Dá ao Claude um motor de pesquisa muito forte. Você pede uma pesquisa profunda sobre qualquer assunto e ele traz informação atualizada da internet inteira.</p>
+          <ol class="how">
+            <li>Crie uma <strong>chave de API</strong> na sua conta do Perplexity (o uso da API é pago à parte).</li>
+            <li>Instale pelo arquivo de configuração do Claude no computador. Veja o <strong>passo a passo avançado</strong> abaixo.</li>
+          </ol>
+          <a class="link" href="https://www.perplexity.ai/account/api" target="_blank" rel="noopener">Criar chave de API no Perplexity ↗</a>
+        </li>
+
+        <li class="conn fade-in">
+          <div class="conn-top"><span class="conn-num">2</span><h3>Firecrawl</h3><span class="level easy">Fácil</span></div>
+          <p class="what">Deixa o Claude enxergar a internet. Ele copia qualquer site, puxa as cores e as imagens de uma marca e pesquisa o seu concorrente na hora.</p>
+          <ol class="how">
+            <li>Siga o caminho de <strong>Antes de começar</strong> e dê o nome <strong>Firecrawl</strong>.</li>
+            <li>Cole o link abaixo e entre com a sua conta do Firecrawl (dá para criar na hora).</li>
+          </ol>
+          <div class="code">https://mcp.firecrawl.dev/v2/mcp-oauth</div>
+          <a class="link" href="https://docs.firecrawl.dev/developer-guides/mcp-setup-guides/claude-ai" target="_blank" rel="noopener">Guia oficial do Firecrawl ↗</a>
+        </li>
+
+        <li class="conn fade-in">
+          <div class="conn-top"><span class="conn-num">3</span><h3>PostHog</h3><span class="level easy">Fácil</span></div>
+          <p class="what">Vira o seu detetive particular: mostra onde o seu site tem erro e em que ponto você está perdendo cliente. Serve para quem já usa o PostHog no site ou no produto.</p>
+          <ol class="how">
+            <li>Em <strong>Conectores</strong>, procure <strong>PostHog</strong> no catálogo do Claude e clique em <strong>Conectar</strong>.</li>
+            <li>Se não aparecer, adicione como conector personalizado com o link abaixo e entre com a sua conta do PostHog.</li>
+          </ol>
+          <div class="code">https://mcp.posthog.com/mcp</div>
+          <a class="link" href="https://posthog.com/docs/model-context-protocol/claude-desktop" target="_blank" rel="noopener">Guia oficial do PostHog ↗</a>
+        </li>
+
+        <li class="conn fade-in">
+          <div class="conn-top"><span class="conn-num">4</span><h3>Playwright</h3><span class="level hard">Avançado</span></div>
+          <p class="what">Dá mãos ao Claude. Ele controla o seu navegador, preenche formulários, testa sites e usa até ferramentas que não têm conexão com IA.</p>
+          <ol class="how">
+            <li>Funciona no <strong>Claude do computador</strong> (Claude Desktop), com o Node.js instalado.</li>
+            <li>Veja o <strong>passo a passo avançado</strong> abaixo.</li>
+          </ol>
+          <a class="link" href="https://playwright.dev/mcp/clients/claude-desktop" target="_blank" rel="noopener">Guia oficial do Playwright ↗</a>
+        </li>
+
+        <li class="conn fade-in">
+          <div class="conn-top"><span class="conn-num">5</span><h3>Composio</h3><span class="level easy">Fácil</span></div>
+          <p class="what">Em vez de instalar app por app, conecta o Claude em todos os aplicativos que você usa de uma vez só.</p>
+          <ol class="how">
+            <li>Siga o caminho de <strong>Antes de começar</strong> e dê o nome <strong>Composio</strong>.</li>
+            <li>Cole o link abaixo e clique em <strong>Conectar</strong>. Na primeira vez que você pedir algo de um app, o Claude manda um link para você entrar naquele app.</li>
+          </ol>
+          <div class="code">https://connect.composio.dev/mcp</div>
+          <a class="link" href="https://composio.dev/claude" target="_blank" rel="noopener">Guia oficial da Composio ↗</a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="avancado" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Passo a passo avançado</span>
+        <h2>Perplexity e Playwright <span class="accent">no Claude do computador</span></h2>
+        <p>Esses dois rodam no seu computador, então a instalação é por um arquivo de configuração. Dá para colocar os dois de uma vez.</p>
+      </div>
+      <div class="steps-path">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Instale o Node.js</h3>
+          <p>Baixe a versão LTS em <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> e instale como qualquer programa. É gratuito.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>Abra a configuração</h3>
+          <p>No Claude do computador, vá em <strong>Configurações</strong>, depois <strong>Desenvolvedor</strong> e clique em <strong>Editar configuração</strong>. Abre o arquivo <strong>claude_desktop_config.json</strong>.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Cole, salve e reinicie</h3>
+          <p>Cole o texto abaixo, troque <strong>SUA_CHAVE_PERPLEXITY</strong> pela sua chave, salve o arquivo e feche e abra o Claude de novo.</p>
+        </div>
+      </div>
+      <div class="code fade-in" style="margin-top:1.5rem">{
+  "mcpServers": {
+    "perplexity": {
+      "command": "npx",
+      "args": ["-y", "@perplexity-ai/mcp-server"],
+      "env": { "PERPLEXITY_API_KEY": "SUA_CHAVE_PERPLEXITY" }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
+}</div>
+      <div class="note warn fade-in">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" aria-hidden="true"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+        <p><strong>Atenção:</strong> se o arquivo já tiver outros conectores, não apague nada. Coloque só as linhas de "perplexity" e "playwright" dentro do "mcpServers" que já existe. Quer só um dos dois? Apague o bloco do outro.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · Links e instruções das documentações oficiais de cada ferramenta</div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code').forEach(function (box) {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.type = 'button';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar texto');
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('load', function () {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
