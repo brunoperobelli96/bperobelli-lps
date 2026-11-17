@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Certificados de IA Grátis · Bruno Perobelli</title>
+  <meta name="description" content="7 certificados de IA em 7 dias e 8 certificados em 8 horas. Todos gratuitos, com o link direto de cada curso.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+      --accent: #F472B6;
+      --accent-dim: rgba(244,114,182,0.10);
+      --accent-border: rgba(244,114,182,0.35);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; line-height: 1.65; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--accent); color: #000; padding: 0.5rem 1rem; z-index: 100; }
+    .skip-link:focus { left: 1rem; top: 1rem; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,0,35,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+    .nav-badge { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer; min-height: 36px; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .hero { position: relative; padding: 8.5rem 0 4.5rem; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.35; pointer-events: none; }
+    .hero-blob.b1 { width: 520px; height: 520px; background: var(--accent); top: -180px; left: -160px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -160px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; } }
+    .eyebrow { display: inline-block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.68rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { color: var(--text-muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 2rem; }
+
+    .choice-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 2rem; }
+    @media (min-width: 640px) { .choice-grid { grid-template-columns: 1fr 1fr; } }
+    .choice { text-align: left; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.4rem 1.4rem 1.25rem; color: var(--text); font: inherit; cursor: pointer; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease); min-height: 44px; }
+    .choice:hover, .choice:focus-visible { border-color: var(--accent-border); transform: translateY(-4px); box-shadow: 0 14px 40px -18px var(--accent); outline: none; }
+    .choice .big { display: block; font-size: 2.4rem; font-weight: 900; letter-spacing: -0.04em; line-height: 1; color: var(--accent); }
+    .choice .title { display: block; font-size: 1.15rem; font-weight: 800; margin: 0.4rem 0 0.35rem; }
+    .choice .desc { display: block; color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; }
+    .choice .go { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.9rem; color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 800; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { display: flex; gap: 0.6rem; font-size: 0.9rem; line-height: 1.45; }
+    .side-card li::before { content: ''; flex-shrink: 0; width: 6px; height: 6px; margin-top: 0.5rem; border-radius: 50%; background: var(--accent); }
+
+    section { padding: 5rem 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #sete-dias, #oito-horas { scroll-margin-top: 72px; }
+    .section-header { max-width: 680px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+    .section-header h2 .accent { color: var(--accent); font-style: italic; }
+    .section-header p { color: var(--text-muted); }
+
+    .course-list { list-style: none; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .course-list { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .course-list { grid-template-columns: 1fr 1fr 1fr; } }
+    .course { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.35rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .course:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .course-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.8rem; }
+    .step { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+    .provider { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); background: rgba(255,255,255,0.05); border: 1px solid var(--hairline); padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; }
+    .course h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+    .course p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.55; flex: 1; }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.9rem 0 1rem; }
+    .tag { font-size: 0.72rem; color: var(--text); background: var(--accent-dim); border: 1px solid var(--accent-border); padding: 0.15rem 0.55rem; border-radius: 6px; }
+    .course a.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 44px; padding: 0.6rem 1rem; border-radius: 8px; background: var(--accent); color: #1a0010; font-weight: 800; font-size: 0.88rem; text-decoration: none; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+    .course a.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -10px var(--accent); }
+
+    .note { display: flex; gap: 0.75rem; align-items: flex-start; margin-top: 2rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.15rem; }
+    .note svg { flex-shrink: 0; margin-top: 0.15rem; }
+    .note p { font-size: 0.9rem; color: var(--text); }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 0 2.5rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('sete-dias')">15 certificados grátis</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Carreira · Certificados de IA</span>
+          <h1>Certificados de IA de graça, com o link <span class="accent">de cada um</span></h1>
+          <p class="sub">Duas trilhas prontas. Escolha uma e comece hoje: cada card leva direto para a página oficial do curso.</p>
+
+          <div class="choice-grid">
+            <button class="choice" onclick="scrollToSection('sete-dias')">
+              <span class="big">7 em 7</span>
+              <span class="title">7 certificados em 7 dias</span>
+              <span class="desc">Um por dia, do mais fácil ao mais difícil. Os três primeiros não pedem código.</span>
+              <span class="go">Ver a trilha <span aria-hidden="true">↓</span></span>
+            </button>
+            <button class="choice" onclick="scrollToSection('oito-horas')">
+              <span class="big">8 em 8</span>
+              <span class="title">8 certificados em 8 horas</span>
+              <span class="desc">Anthropic, Google, Microsoft, Meta, J.P. Morgan e mais. Cursos curtos de empresas gigantes.</span>
+              <span class="go">Ver a lista <span aria-hidden="true">↓</span></span>
+            </button>
+          </div>
+
+          <div class="hero-meta">
+            <span><strong>15</strong> certificados</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>100%</strong> gratuitos</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>Link oficial</strong> em cada um</span>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h2>O que você encontra aqui</h2>
+          <ul>
+            <li>Trilha de 7 dias, em ordem de dificuldade</li>
+            <li>Lista de 8 cursos curtos de empresas grandes</li>
+            <li>Anthropic, Google, Microsoft, Meta, Salesforce</li>
+            <li>Simulações de trabalho da Deloitte e do J.P. Morgan</li>
+            <li>Link direto para a inscrição de cada curso</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="sete-dias" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Trilha 1</span>
+        <h2>7 certificados em <span class="accent">7 dias</span></h2>
+        <p>Um curso por dia. Cada um é um pouco mais difícil que o anterior: do dia 1 ao 3 sem programar, do dia 4 em diante você já escreve código.</p>
+      </div>
+      <ol class="course-list">
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 1</span><span class="provider">Google</span></div>
+          <h3>Introdução à IA Generativa</h3>
+          <p>O que é IA generativa, como funciona e onde ela é usada. Ponto de partida ideal.</p>
+          <div class="tags"><span class="tag">~45 min</span><span class="tag">Sem código</span><span class="tag">Selo no final</span></div>
+          <a class="btn" href="https://www.skills.google/course_templates/536" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 2</span><span class="provider">Anthropic</span></div>
+          <h3>Building Effective Human-Agent Teams</h3>
+          <p>Como montar um time em que pessoas e agentes de IA trabalham juntos, com papéis claros.</p>
+          <div class="tags"><span class="tag">~45 min</span><span class="tag">Sem código</span><span class="tag">Selo no final</span></div>
+          <a class="btn" href="https://academy.claude.com/courses/building-effective-human-agent-teams" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 3</span><span class="provider">MongoDB</span></div>
+          <h3>Agentes de IA com MongoDB</h3>
+          <p>O que são agentes de IA, a IA que executa tarefas sozinha, e como eles guardam informação.</p>
+          <div class="tags"><span class="tag">~1 hora</span><span class="tag">Teste no final</span><span class="tag">Selo no final</span></div>
+          <a class="btn" href="https://learn.mongodb.com/courses/ai-agents-with-mongodb" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 4</span><span class="provider">LangChain</span></div>
+          <h3>LangChain Essentials</h3>
+          <p>Suas primeiras linhas de código com uma das ferramentas mais usadas para montar agentes.</p>
+          <div class="tags"><span class="tag">~1 hora</span><span class="tag">Com código</span></div>
+          <a class="btn" href="https://academy.langchain.com/courses/langchain-essentials-python" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 5</span><span class="provider">Anthropic</span></div>
+          <h3>Claude Code 101</h3>
+          <p>Aprenda a usar o Claude para programar, programando junto com ele.</p>
+          <div class="tags"><span class="tag">~1,5 hora</span><span class="tag">Com código</span></div>
+          <a class="btn" href="https://academy.claude.com/courses/claude-code-101" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 6</span><span class="provider">Hugging Face</span></div>
+          <h3>Curso de Agentes</h3>
+          <p>Você constrói o seu próprio agente e só ganha o certificado se passar no desafio final.</p>
+          <div class="tags"><span class="tag">3 a 4 horas</span><span class="tag">Desafio final</span></div>
+          <a class="btn" href="https://huggingface.co/learn/agents-course/unit0/introduction" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">Dia 7</span><span class="provider">Anthropic</span></div>
+          <h3>Model Context Protocol: tópicos avançados</h3>
+          <p>Como o Claude se conecta com outros aplicativos. O mais difícil da trilha.</p>
+          <div class="tags"><span class="tag">~3 horas</span><span class="tag">Avançado</span></div>
+          <a class="btn" href="https://academy.claude.com/courses/model-context-protocol-advanced-topics" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="oito-horas">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Trilha 2</span>
+        <h2>8 certificados em <span class="accent">8 horas</span></h2>
+        <p>Cursos curtos de empresas gigantes. Cada um combina com um tipo de vaga que o mercado está procurando hoje.</p>
+      </div>
+      <ol class="course-list">
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">1</span><span class="provider">Anthropic</span></div>
+          <h3>Claude Code in Action</h3>
+          <p>Como usar o Claude Code em tarefas mais longas, com menos supervisão e em equipe.</p>
+          <a class="btn" href="https://academy.claude.com/courses/claude-code-in-action" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">2</span><span class="provider">Meta</span></div>
+          <h3>Anúncios com IA: Meta Advantage+</h3>
+          <p>As ferramentas de IA da Meta para melhorar o resultado das campanhas de anúncio.</p>
+          <a class="btn" href="https://www.facebookblueprint.com/student/page/578894-optimize-your-campaign-with-meta-advantage" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">3</span><span class="provider">Google</span></div>
+          <h3>Introdução à IA Generativa</h3>
+          <p>O mesmo curso do dia 1 da outra trilha. Se já fez, pode pular.</p>
+          <a class="btn" href="https://www.skills.google/course_templates/536" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">4</span><span class="provider">Deloitte</span></div>
+          <h3>Simulação de trabalho em segurança digital</h3>
+          <p>Tarefas reais do time de cibersegurança da Deloitte, feitas no seu ritmo.</p>
+          <a class="btn" href="https://www.theforage.com/simulations/deloitte-au/cyber-c1e3" target="_blank" rel="noopener">Acessar simulação <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">5</span><span class="provider">Microsoft</span></div>
+          <h3>Introdução à IA generativa e agentes</h3>
+          <p>Como a IA generativa funciona, como escrever bons pedidos e o que são agentes.</p>
+          <a class="btn" href="https://learn.microsoft.com/training/modules/fundamentals-generative-ai" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">6</span><span class="provider">Salesforce</span></div>
+          <h3>Generative AI Basics</h3>
+          <p>O que a IA generativa consegue fazer e a tecnologia por trás dela, em cerca de 20 minutos.</p>
+          <a class="btn" href="https://trailhead.salesforce.com/content/learn/modules/generative-ai-basics" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">7</span><span class="provider">Simplilearn</span></div>
+          <h3>Curso gratuito de Inteligência Artificial</h3>
+          <p>Fundamentos de IA para iniciantes, com certificado de conclusão do SkillUp.</p>
+          <a class="btn" href="https://www.simplilearn.com/learn-ai-basics-skillup" target="_blank" rel="noopener">Acessar curso <span aria-hidden="true">↗</span></a>
+        </li>
+        <li class="course fade-in">
+          <div class="course-top"><span class="step">8</span><span class="provider">J.P. Morgan</span></div>
+          <h3>Simulação de banco de investimento</h3>
+          <p>Análise de fusões e aquisições direto de um banco. Certificado de conclusão do J.P. Morgan.</p>
+          <a class="btn" href="https://www.theforage.com/simulations/jpmorgan/investment-banking-hkyd" target="_blank" rel="noopener">Acessar simulação <span aria-hidden="true">↗</span></a>
+        </li>
+      </ol>
+
+      <div class="note fade-in">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Dica:</strong> a maioria dos cursos está em inglês. Abra no Chrome e use o tradutor da página para acompanhar em português.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · Links oficiais de cada plataforma</div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  window.addEventListener('load', function () {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.choice',        { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5, stagger:0.1 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
