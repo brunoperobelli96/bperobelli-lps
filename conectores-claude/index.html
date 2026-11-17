@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090023">
-  <title>5 Conectores do Claude · Bruno Perobelli</title>
-  <meta name="description" content="Os 5 conectores mais poderosos do Claude: Perplexity, Firecrawl, PostHog, Playwright e Composio, com o passo a passo de instalação de cada um.">
+  <title>Configure o Claude: 3 Passos e 5 Conectores · Bruno Perobelli</title>
+  <meta name="description" content="Os 3 passos para configurar o Claude e os 5 conectores mais poderosos: Perplexity, Firecrawl, PostHog, Playwright e Composio, com o passo a passo de instalação de cada um.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -73,7 +73,11 @@
 
     section { padding: 5rem 0; }
     section.elevated { background: var(--bg-elevated); }
-    #antes, #conectores, #avancado { scroll-margin-top: 72px; }
+    #passos, #antes, #conectores, #avancado { scroll-margin-top: 72px; }
+    .passo-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .passo { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.5rem; }
+    .passo .conn-top { margin-bottom: 0.5rem; }
+    .passo .why { color: var(--text-muted); margin-bottom: 1rem; max-width: 760px; }
     .section-header { max-width: 700px; margin-bottom: 2.5rem; }
     .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
     .section-header h2 .accent { color: var(--accent); font-style: italic; }
@@ -128,7 +132,7 @@
       <span class="nav-mark">BP</span>
       Bruno Perobelli <small>· IA aplicada</small>
     </a>
-    <button class="nav-badge" onclick="scrollToSection('conectores')">Ver os 5 conectores</button>
+    <button class="nav-badge" onclick="scrollToSection('passos')">3 passos e 5 conectores</button>
   </div>
 </nav>
 
@@ -140,24 +144,31 @@
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow">Claude · Conectores</span>
-          <h1>Os 5 conectores mais poderosos <span class="accent">do Claude</span></h1>
-          <p class="sub">Conector é o que liga o Claude a outra ferramenta para ele trabalhar lá dentro por você. Aqui está o que cada um faz e como instalar, do mais fácil ao mais avançado.</p>
+          <span class="eyebrow">Claude · Configuração</span>
+          <h1>3 passos para configurar o Claude e os 5 conectores <span class="accent">mais poderosos</span></h1>
+          <p class="sub">Primeiro, os 3 passos que você precisa fazer assim que começar a usar o Claude. Depois, os 5 conectores que ligam o Claude a outras ferramentas para ele trabalhar lá dentro por você.</p>
           <div class="hero-cta">
-            <button class="btn btn-primary" onclick="scrollToSection('conectores')">Ver os conectores <span aria-hidden="true">↓</span></button>
-            <button class="btn btn-ghost" onclick="scrollToSection('antes')">Como instalar um conector</button>
+            <button class="btn btn-primary" onclick="scrollToSection('passos')">Ver os 3 passos <span aria-hidden="true">↓</span></button>
+            <button class="btn btn-ghost" onclick="scrollToSection('conectores')">Ver os 5 conectores</button>
           </div>
           <div class="hero-meta">
+            <span><strong>3</strong> passos de configuração</span>
+            <span class="sep" aria-hidden="true"></span>
             <span><strong>5</strong> conectores</span>
             <span class="sep" aria-hidden="true"></span>
             <span><strong>3</strong> instalam em 1 minuto</span>
-            <span class="sep" aria-hidden="true"></span>
-            <span><strong>Links oficiais</strong> de cada um</span>
+
           </div>
         </div>
 
         <aside class="side-card">
-          <h2>Os 5 conectores</h2>
+          <h2>3 passos</h2>
+          <ul style="margin-bottom:1.25rem">
+            <li><span>1 · Conectar seus apps</span></li>
+            <li><span>2 · Ativar as skills</span></li>
+            <li><span>3 · Proteger seus dados</span></li>
+          </ul>
+          <h2>5 conectores</h2>
           <ul>
             <li><span>Perplexity · pesquisa</span><span class="level hard">Avançado</span></li>
             <li><span>Firecrawl · copia sites</span><span class="level easy">Fácil</span></li>
@@ -170,10 +181,57 @@
     </div>
   </header>
 
-  <section id="antes" class="elevated">
+  <section id="passos" class="elevated">
     <div class="wrap">
       <div class="section-header fade-in">
-        <span class="eyebrow">Antes de começar</span>
+        <span class="eyebrow">Parte 1 · Configuração</span>
+        <h2>3 passos assim que você <span class="accent">abrir o Claude</span></h2>
+        <p>Leva uns 5 minutos e muda o que o Claude consegue fazer por você. Os nomes dos menus podem aparecer em inglês dependendo do idioma do seu Claude.</p>
+      </div>
+      <ol class="passo-list">
+        <li class="passo fade-in">
+          <div class="conn-top"><span class="conn-num">Passo 1</span><h3>Conecte os seus aplicativos</h3></div>
+          <p class="why">É isso que faz o Claude parar de só conversar e começar a fazer as coisas por você: ler seus e-mails, ver sua agenda, achar arquivos no seu Drive.</p>
+          <ol class="how">
+            <li>Na barra do lado esquerdo, clique em <strong>Personalizar</strong> (Customize).</li>
+            <li>Clique em <strong>Conectores</strong> (Connectors). Aparece o catálogo com os apps mais usados.</li>
+            <li>Escolha os que você usa todo dia, como <strong>Gmail</strong>, <strong>Google Agenda</strong> e <strong>Google Drive</strong>, e clique em <strong>Conectar</strong>.</li>
+            <li>Entre com a sua conta e autorize o acesso. Repita para cada app.</li>
+            <li>Teste no chat com o pedido abaixo.</li>
+          </ol>
+          <div class="code">Resuma os meus e-mails não lidos de hoje e me diga quais precisam de resposta. Depois me mostre o que tenho na agenda amanhã.</div>
+        </li>
+        <li class="passo fade-in">
+          <div class="conn-top"><span class="conn-num">Passo 2</span><h3>Ative as skills</h3></div>
+          <p class="why">Skill é um manual que ensina o Claude a fazer as coisas do seu jeito: escrever, fazer marketing, montar currículo, criar planilha. Ele usa sozinho quando o pedido combina.</p>
+          <ol class="how">
+            <li>No mesmo menu <strong>Personalizar</strong>, clique em <strong>Skills</strong>.</li>
+            <li>Ative as skills prontas que fazem sentido para você, como as de criar documentos, planilhas e apresentações.</li>
+            <li>Quer uma skill sua? Em qualquer chat, digite <strong>/skill-creator</strong> e descreva como você quer que ele faça uma tarefa.</li>
+          </ol>
+          <div class="code">/skill-creator Crie uma skill para escrever meus e-mails de trabalho: frases curtas, tom direto e simpático, sempre terminando com um próximo passo claro.</div>
+        </li>
+        <li class="passo fade-in">
+          <div class="conn-top"><span class="conn-num">Passo 3</span><h3>Proteja os seus dados</h3></div>
+          <p class="why">Existe uma opção que deixa a Anthropic usar as suas conversas para treinar a IA. Se você não quer isso, desligue.</p>
+          <ol class="how">
+            <li>Clique no seu nome, no canto inferior esquerdo, e depois em <strong>Configurações</strong> (Settings).</li>
+            <li>Abra <strong>Privacidade</strong> (Privacy).</li>
+            <li>Desligue <strong>Ajudar a melhorar o Claude</strong> (Help improve Claude). Confira mesmo se você acha que já desligou.</li>
+          </ol>
+          <div class="note" style="margin-top:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <p>Desligar não muda nada no funcionamento do Claude. Só impede que as suas conversas novas sejam usadas para treinar os próximos modelos.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="antes">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Parte 2 · Conectores · Antes de começar</span>
         <h2>Como adicionar um conector <span class="accent">no Claude</span></h2>
         <p>Os conectores marcados como Fácil seguem sempre este caminho. Leva menos de um minuto.</p>
       </div>
@@ -201,7 +259,7 @@
     </div>
   </section>
 
-  <section id="conectores">
+  <section id="conectores" class="elevated">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">Os 5 conectores</span>
@@ -266,7 +324,7 @@
     </div>
   </section>
 
-  <section id="avancado" class="elevated">
+  <section id="avancado">
     <div class="wrap">
       <div class="section-header fade-in">
         <span class="eyebrow">Passo a passo avançado</span>
