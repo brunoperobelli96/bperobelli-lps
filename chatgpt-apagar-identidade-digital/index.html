@@ -172,6 +172,16 @@
     .como-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
     .como-card p { font-size: 0.825rem; color: var(--text-muted); line-height: 1.6; }
 
+    .escolha { padding: 0 0 3rem; }
+    .escolha-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .escolha-grid { grid-template-columns: 1fr 1fr; } }
+    .escolha-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; text-align: left; width: 100%; min-height: 44px; background: var(--surface); border: 1px solid var(--text-faint); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.4rem; color: inherit; font: inherit; cursor: pointer; transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, box-shadow 0.3s; }
+    .escolha-btn:hover, .escolha-btn:focus-visible { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 14px 40px -18px var(--accent); outline: none; }
+    .escolha-btn .tag-etapa { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    .escolha-btn .titulo { font-size: 1.3rem; font-weight: 800; line-height: 1.2; }
+    .escolha-btn .desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+    .escolha-btn .ir { margin-top: 0.5rem; color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+    #fotos, #prompts { scroll-margin-top: 72px; }
     footer { background: #06001e; border-top: 1px solid var(--text-faint); padding: 2rem 0; text-align: center; }
     .footer-logo { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
     footer p { font-size: 0.75rem; color: var(--text-faint); }
@@ -230,6 +240,25 @@
       </div>
     </div>
   </header>
+
+  <section class="escolha" aria-label="Escolha o que você quer apagar">
+    <div class="wrap">
+      <div class="escolha-grid">
+        <button class="escolha-btn" onclick="scrollToSection('fotos')">
+          <span class="tag-etapa">3 prompts</span>
+          <span class="titulo">Apagar suas fotos</span>
+          <span class="desc">Ache todas as fotos suas que estão na internet e peça a remoção de cada uma.</span>
+          <span class="ir">Ver os prompts das fotos <span aria-hidden="true">↓</span></span>
+        </button>
+        <button class="escolha-btn" onclick="scrollToSection('prompts')">
+          <span class="tag-etapa">4 prompts</span>
+          <span class="titulo">Apagar seus dados expostos</span>
+          <span class="desc">Descubra os sites que mostram seus dados pessoais e tire tudo do ar, com monitoramento semanal.</span>
+          <span class="ir">Ver os prompts dos dados <span aria-hidden="true">↓</span></span>
+        </button>
+      </div>
+    </div>
+  </section>
 
   <section id="fotos">
     <div class="wrap">
@@ -382,6 +411,13 @@
 </footer>
 
 <script>
+function scrollToSection(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var top = el.getBoundingClientRect().top + window.scrollY - 72;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+}
+
 function gerarPDF() {
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'mm', format: 'a4' });
