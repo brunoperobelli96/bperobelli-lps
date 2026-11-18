@@ -351,7 +351,7 @@ footer{
         placeholder="Buscar comando..."
         autocomplete="off"
         spellcheck="false"
-        aria-label="Buscar entre os 193 comandos"
+        aria-label="Buscar entre os 206 comandos"
       >
       <button class="search-clear" id="searchClear" aria-label="Limpar busca">✕</button>
       <svg class="search-icon" id="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -359,7 +359,7 @@ footer{
       </svg>
     </div>
     <div class="hero-meta">
-      <span><strong>+193</strong> comandos</span>
+      <span><strong>+206</strong> comandos</span>
       <span class="sep" aria-hidden="true"></span>
       <span><strong>4</strong> categorias</span>
       <span class="sep" aria-hidden="true"></span>
@@ -370,8 +370,8 @@ footer{
 
 <div class="tabs-wrap" id="comandos">
   <div class="tabs" role="tablist" aria-label="Filtrar por categoria">
-    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">193</span></button>
-    <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">129</span></button>
+    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">206</span></button>
+    <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">142</span></button>
     <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">22</span></button>
     <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">26</span></button>
     <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">16</span></button>
@@ -649,6 +649,19 @@ const DATA = [
   { num:191, cmd:"UDA", pt:"Analisa a sua situação com um método militar de decisão: o que observar, onde focar, o que decidir e que ação tomar", en:"Analyzes your situation with a military decision framework: what to observe, focus on, decide and do", cat:"negocios" },
   { num:192, cmd:"scaffold", pt:"Quebra qualquer projeto em um plano de ação com todos os passos mapeados", en:"Breaks any project into a full action plan with every step mapped out", cat:"pesquisa" },
   { num:193, cmd:"ultrathink", pt:"Liga o raciocínio máximo: o ChatGPT pensa muito mais fundo antes de responder", en:"Maximum reasoning mode: thinks much deeper before answering", cat:"pesquisa" },
+  { num:194, cmd:"/IDENTITYLOCK", pt:"Escreva junto com o pedido de edição: o ChatGPT preserva o seu rosto e os seus traços", en:"Preserves your face and features when editing", cat:"visuais" },
+  { num:195, cmd:"/POSEONLY", pt:"Muda a pose sem mexer em roupa, rosto e cabelo", en:"Change the pose, keep outfit, face and hair", cat:"visuais" },
+  { num:196, cmd:"/PORTRAIT-GLOWUP", pt:"Melhora luz, nitidez e qualidade do retrato mantendo quem você é", en:"Improve light, sharpness and quality, keeping identity", cat:"visuais" },
+  { num:197, cmd:"/CINEMATIC-PORTRAIT", pt:"Retrato com cara de cena de filme: sombra marcada, luz lateral e fundo escuro", en:"Cinematic portrait with side light and dark background", cat:"visuais" },
+  { num:198, cmd:"/HEADSHOT-PRO", pt:"Foto profissional com luz de estúdio, fundo limpo e aparência natural", en:"Studio headshot with clean background", cat:"visuais" },
+  { num:199, cmd:"/SKIN-RETOUCH", pt:"Suaviza a pele sem apagar poros, textura nem marcas naturais", en:"Smooth skin while keeping texture", cat:"visuais" },
+  { num:200, cmd:"/BACKGROUND-BLUR", pt:"Desfoca o fundo de um jeito natural, sem recorte artificial", en:"Natural background blur", cat:"visuais" },
+  { num:201, cmd:"/FACE-LIGHTING", pt:"Melhora a iluminação do rosto", en:"Improve face lighting", cat:"visuais" },
+  { num:202, cmd:"/EYE-ENHANCE", pt:"Realça os olhos de leve, sem mudar cor nem formato", en:"Subtly enhance eyes", cat:"visuais" },
+  { num:203, cmd:"/COLOR-GRADE", pt:"Ajusta cor, contraste e tonalidade da foto", en:"Adjust color, contrast and tone", cat:"visuais" },
+  { num:204, cmd:"/REMOVE-OBJECT", pt:"Apaga da foto o objeto que você indicar depois do comando", en:"Remove a specific object", cat:"visuais" },
+  { num:205, cmd:"/FASHION-EDITORIAL", pt:"Transforma a foto num ensaio de revista de moda", en:"Fashion editorial look", cat:"visuais" },
+  { num:206, cmd:"/SPLIT-FACE", pt:"Divide o rosto ao meio para comparar a edição com o original", en:"Split face to compare versions", cat:"visuais" },
 ];
 
 /* ── State ── */
