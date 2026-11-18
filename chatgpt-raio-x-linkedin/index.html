@@ -119,7 +119,7 @@
                 <span class="meta-label">categorias avaliadas</span>
               </div>
               <div class="meta-item">
-                <span class="meta-val">2</span>
+                <span class="meta-val">7</span>
                 <span class="meta-label">prompts no kit</span>
               </div>
               <div class="meta-item">
@@ -252,11 +252,58 @@ Ao escrever, evite clichê de LinkedIn (apaixonado por resultados, hands-on, sin
       </div>
     </section>
 
+    <section id="prompts-rapidos">
+      <div class="wrap">
+        <div class="section-header fade-in">
+          <p class="eyebrow">PROMPTS RÁPIDOS</p>
+          <h2>Mais 5 prompts para <span class="accent">ajustar cada parte</span> do perfil</h2>
+          <p class="section-lead">Sem tempo para o raio-x completo? Cole o texto do seu perfil e vá por partes. Funcionam igual no ChatGPT e no Claude.</p>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          <div class="prompt-card fade-in">
+            <div class="prompt-num">Prompt 3</div>
+            <h3>Raio-X Rápido em Texto</h3>
+            <div class="prompt-box">"Atue como um recrutador experiente da minha área. Analise meu perfil do LinkedIn e aponte o que está genérico, confuso ou incompleto. Liste os 5 ajustes que mais aumentariam minhas chances, do mais importante para o menos, com o motivo e um exemplo reescrito de cada. Não invente informações.
+
+Meu perfil: [COLE O TEXTO DO SEU LINKEDIN]"</div>
+          </div>
+          <div class="prompt-card fade-in">
+            <div class="prompt-num">Prompt 4</div>
+            <h3>Título que o Recrutador Encontra</h3>
+            <div class="prompt-box">"Atue como especialista em recrutamento no LinkedIn. Com base nas minhas experiências e no cargo que eu quero, crie 5 opções de título com até 220 caracteres e as palavras-chave que recrutadores da minha área pesquisam. Diga qual você escolheria e por quê. Não inclua nada que eu não saiba fazer.
+
+Cargo desejado e experiências: [INFORME O CARGO E COLE SUAS EXPERIÊNCIAS]"</div>
+          </div>
+          <div class="prompt-card fade-in">
+            <div class="prompt-num">Prompt 5</div>
+            <h3>Nova Seção Sobre</h3>
+            <div class="prompt-box">"Atue como redator especialista em LinkedIn. Reescreva minha seção Sobre em primeira pessoa, com até 260 palavras: quem eu sou, que problemas eu resolvo, meus diferenciais e que oportunidade eu busco. Tom profissional e humano, com palavras-chave da minha área e sem clichês como "apaixonado por desafios".
+
+Meu Sobre atual: [COLE O TEXTO DA SUA SEÇÃO SOBRE]"</div>
+          </div>
+          <div class="prompt-card fade-in">
+            <div class="prompt-num">Prompt 6</div>
+            <h3>Experiência com Foco em Resultado</h3>
+            <div class="prompt-box">"Atue como especialista em carreira no LinkedIn. Reescreva cada experiência abaixo com verbos de ação, as principais responsabilidades e os resultados em número, porcentagem ou impacto. Onde faltar um número, me pergunte em vez de inventar. Texto claro, direto e pensado para recrutadores.
+
+Minhas experiências: [COLE O TEXTO DAS SUAS EXPERIÊNCIAS]"</div>
+          </div>
+          <div class="prompt-card fade-in">
+            <div class="prompt-num">Prompt 7</div>
+            <h3>Palavras-Chave Certas</h3>
+            <div class="prompt-box">"Atue como especialista em otimização de perfil no LinkedIn. Com base no meu cargo e na minha área, liste as 10 palavras-chave que recrutadores mais pesquisam e mostre onde encaixar cada uma no meu perfil (título, Sobre, experiências e competências) de um jeito natural, sem repetir à toa.
+
+Meu cargo e área: [INFORME SEU CARGO E ÁREA]"</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="cta-section">
       <div class="wrap">
         <p class="eyebrow" style="display:block; text-align:center;">COMECE AGORA</p>
         <h2>Reúna os arquivos e abra o <span class="accent">ChatGPT</span></h2>
-        <p>Dois prompts, menos de cinco minutos de preparo, perfil profissional do outro lado.</p>
+        <p>Sete prompts, menos de cinco minutos de preparo, perfil profissional do outro lado.</p>
         <a href="#prompts" class="hero-cta">Pegar os Prompts Grátis</a>
       </div>
     </section>
@@ -329,6 +376,11 @@ Ao escrever, evite clichê de LinkedIn (apaixonado por resultados, hands-on, sin
       const prompts = [
         { num: 'Prompt 1', titulo: 'Raio-X Completo do Perfil' },
         { num: 'Prompt 2', titulo: 'Correção e Reescrita do Perfil' },
+        { num: 'Prompt 3', titulo: 'Raio-X Rápido em Texto' },
+        { num: 'Prompt 4', titulo: 'Título que o Recrutador Encontra' },
+        { num: 'Prompt 5', titulo: 'Nova Seção Sobre' },
+        { num: 'Prompt 6', titulo: 'Experiência com Foco em Resultado' },
+        { num: 'Prompt 7', titulo: 'Palavras-Chave Certas' },
       ];
 
       document.querySelectorAll('.prompt-box').forEach((box, i) => {
