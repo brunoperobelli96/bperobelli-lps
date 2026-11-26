@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Um Fim de Semana pra Dominar o Claude · Bruno Perobelli</title>
+  <meta name="description" content="Plano de fim de semana em 5 etapas, com prompts prontos, pra usar o Claude melhor que 90% das pessoas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --accent: #FDBA74;
+      --accent-dim: rgba(253,186,116,0.10);
+      --accent-border: rgba(253,186,116,0.35);
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 1rem; }
+    .skip-link { position: absolute; top: -100%; left: 1rem; background: var(--accent); color: #fff; padding: 0.5rem 1rem; font-weight: 700; border-radius: 0 0 8px 8px; text-decoration: none; z-index: 9999; }
+    .skip-link:focus { top: 0; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(9,0,35,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); padding: 0.875rem 0; }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; background: var(--brand); color: #fff; font-weight: 800; font-size: 0.8rem; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
+    .nav-badge { font: inherit; font-size: 0.75rem; font-weight: 700; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); padding: 0.45rem 0.85rem; border-radius: 999px; white-space: nowrap; cursor: pointer; min-height: 36px; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+    .eyebrow { display: inline-block; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.9rem; }
+    .hero { position: relative; overflow: hidden; padding: clamp(3.5rem, 9vw, 6.5rem) 0 clamp(3rem, 7vw, 5rem); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.22; pointer-events: none; }
+    .blob.b1 { width: 560px; height: 560px; background: var(--accent); top: -220px; left: -160px; }
+    .blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -140px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; gap: 3.5rem; } }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-muted); max-width: 540px; margin-bottom: 2rem; }
+    .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .btn { font: inherit; font-weight: 700; font-size: 0.95rem; min-height: 48px; padding: 0.75rem 1.4rem; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.2s; }
+    .btn-primary { background: var(--accent); color: #3a1a00; border: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(253,186,116,0.35); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .arr { width: 16px; height: 16px; }
+    .hero-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+    .side-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; position: relative; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { display: flex; gap: 0.625rem; font-size: 0.875rem; color: var(--text-muted); line-height: 1.45; }
+    .side-card li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 0.45rem; }
+    section { padding: clamp(3rem, 7vw, 5rem) 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #sabado, #domingo { scroll-margin-top: 72px; }
+    .step .selo { display: inline-flex; }
+    .section-header { max-width: 660px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.85rem; }
+    .section-header .lead { color: var(--text-muted); }
+    .stats { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+    .stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.4rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .stat:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .stat .valor { font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem; }
+    .stat p { font-size: 0.9rem; color: var(--text-muted); }
+    .selo { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; padding: 0.25rem 0.6rem; border-radius: 999px; margin-bottom: 0.75rem; }
+    .selo.ok { background: rgba(16,185,129,0.12); color: #34D399; border: 1px solid rgba(16,185,129,0.35); }
+    .selo.partes { background: rgba(245,158,11,0.12); color: #FBBF24; border: 1px solid rgba(245,158,11,0.35); }
+    .steps { display: flex; flex-direction: column; gap: 1rem; }
+    .step { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s var(--ease); }
+    .step:hover { border-color: var(--accent-border); }
+    .step-head { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font-weight: 800; display: grid; place-items: center; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; line-height: 1.3; }
+    .step p { font-size: 0.92rem; color: var(--text-muted); }
+    .step p + p { margin-top: 0.5rem; }
+    .step strong { color: var(--text); }
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.9rem 5.5rem 0.9rem 1rem; margin-top: 0.9rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.78rem; color: #FED7AA; white-space: pre-wrap; word-break: break-word; }
+    .prompt { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-radius: 8px; padding: 0.9rem 5.5rem 0.9rem 1rem; margin-top: 0.9rem; font-size: 0.9rem; color: var(--text); font-style: italic; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); border: none; border-radius: 6px; color: var(--text); cursor: pointer; font-family: 'Figtree', sans-serif; font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; font-style: normal; }
+    .copy-btn:hover { background: var(--accent); color: #3a1a00; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+    .note { display: flex; gap: 0.75rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1.5rem; }
+    .note svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); margin-top: 0.15rem; }
+    .note p { font-size: 0.9rem; color: var(--text-muted); }
+    .note strong { color: var(--text); }
+    .os { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 0.9rem; }
+    @media (min-width: 640px) { .os { grid-template-columns: 1fr 1fr; } }
+    .os div { background: rgba(0,0,20,0.4); border: 1px solid var(--hairline); border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text-muted); }
+    .os b { display: block; color: var(--text); font-size: 0.8rem; margin-bottom: 0.2rem; }
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    footer { background: var(--bg-elevated); border-top: 1px solid var(--hairline); padding: 2rem 0; text-align: center; }
+    .footer-logo { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .footer-note { font-size: 0.78rem; color: var(--text-muted); }
+    .footer-note a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" type="button" onclick="scrollToSection('sabado')">Ver o plano</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="blob b1" aria-hidden="true"></div>
+    <div class="blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Claude · Plano de fim de semana</span>
+          <h1>Um fim de semana pra usar o Claude <span class="accent">melhor que 90% das pessoas</span></h1>
+          <p class="sub">Cinco etapas, do sábado de manhã ao domingo à tarde, com os prompts prontos pra copiar. No domingo à noite o Claude já sabe quem você é, tem acesso aos seus arquivos e entregou uma coisa que você precisava.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" type="button" onclick="scrollToSection('sabado')">
+              Começar pelo sábado
+              <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button class="btn btn-ghost" type="button" onclick="scrollToSection('domingo')">Pular pro domingo</button>
+          </div>
+          <div class="hero-meta">
+            <span>5 etapas</span><span class="sep" aria-hidden="true"></span>
+            <span>Prompts prontos</span><span class="sep" aria-hidden="true"></span>
+            <span>2 dias</span>
+          </div>
+        </div>
+        <aside class="side-card">
+          <p class="side-card-title">O plano</p>
+          <ul>
+            <li>Sábado de manhã: o documento Sobre mim</li>
+            <li>Sábado à tarde: o seu segundo cérebro</li>
+            <li>Sábado à noite: projetos separados</li>
+            <li>Domingo de manhã: conectar os seus aplicativos</li>
+            <li>Domingo à tarde: uma skill numa tarefa de verdade</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="sabado" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Sábado</span>
+        <h2>O Claude aprende quem você é</h2>
+        <p class="lead">Três etapas pra parar de se explicar toda vez e dar pro Claude material de verdade pra trabalhar.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Manhã: o documento Sobre mim</h3>
+              <p>Abra uma conversa nova, cole o prompt e ligue o microfone pra responder falando, que é bem mais rápido.</p>
+              <div class="prompt">Me faça 50 perguntas sobre o meu trabalho, os meus objetivos e as minhas preferências, uma de cada vez. No final, transforme as minhas respostas num documento chamado Sobre mim, curto e organizado por assunto.</div>
+              <p style="margin-top:0.9rem;"><strong>O pulo do gato:</strong> copie o documento e cole nas preferências do Claude, em <strong>Configurações</strong>, no campo das preferências pessoais. A partir daí ele vale em toda conversa, sem anexar nada.</p>
+              <span class="selo partes" style="margin-top:0.75rem;">◐ Confirmado em partes, teremos que testar!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Tarde: o seu segundo cérebro</h3>
+              <p>Junte numa pasta só as suas anotações, os documentos e as tarefas do momento. Quando for começar uma tarefa, entregue pro Claude os arquivos daquilo.</p>
+              <div class="prompt">Vou te mandar os arquivos da tarefa [nome da tarefa]. Leia tudo antes de começar, me diga em 5 tópicos o que entendeu e o que ainda está faltando pra você fazer um bom trabalho.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">3</span>
+            <div>
+              <h3>Noite: projetos separados</h3>
+              <p>Projeto é uma pastinha dentro do Claude com os arquivos e as instruções de um assunto. Crie três: trabalho, negócio e vida pessoal. Pra escrever as instruções de cada um, peça ajuda pro próprio Claude:</p>
+              <div class="prompt">Com base no que você já sabe de mim, escreva as instruções de um projeto do Claude pro meu [trabalho / negócio / vida pessoal]. Diga o que você precisa saber desse assunto, como eu gosto das respostas e o que nunca fazer.</div>
+              <span class="selo ok" style="margin-top:0.75rem;">✓ Confirmado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="domingo">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Domingo</span>
+        <h2>O Claude começa a trabalhar por você</h2>
+        <p class="lead">Duas etapas pra ele achar sozinho o que precisa e entregar uma coisa pronta.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">4</span>
+            <div>
+              <h3>Manhã: conecte os seus aplicativos</h3>
+              <p>Na barra do lado esquerdo, clique em <strong>Personalizar</strong> e depois em <strong>Conectores</strong>. Comece por onde você guarda os seus documentos, tipo o Google Drive.</p>
+              <div class="prompt">Procure no meu Google Drive os documentos sobre [assunto] e me faça um resumo do que tem lá, com o link de cada arquivo.</div>
+              <span class="selo ok" style="margin-top:0.75rem;">✓ Confirmado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">5</span>
+            <div>
+              <h3>Tarde: uma skill numa tarefa de verdade</h3>
+              <p>Skill é um manual que ensina o Claude a fazer uma tarefa do jeito certo. Em <strong>Personalizar</strong>, clique em <strong>Skills</strong> e ative uma pra algo que você faz toda semana. Faz apresentação? Use assim:</p>
+              <div class="prompt">Use a skill de apresentações pra montar a minha próxima apresentação com estas anotações: [cole suas anotações]. Quero no máximo 10 slides, com um título forte em cada um.</div>
+              <span class="selo ok" style="margin-top:0.75rem;">✓ Confirmado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Domingo à noite:</strong> o Claude sabe quem você é, tem os seus arquivos organizados, enxerga os seus aplicativos e já entregou uma tarefa real. A partir daí, cada conversa começa muito mais perto do resultado.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · Bruno Perobelli</div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code, .prompt').forEach(box => {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar texto');
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5  });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out',
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
