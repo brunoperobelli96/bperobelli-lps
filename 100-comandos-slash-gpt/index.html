@@ -351,7 +351,7 @@ footer{
         placeholder="Buscar comando..."
         autocomplete="off"
         spellcheck="false"
-        aria-label="Buscar entre os 206 comandos"
+        aria-label="Buscar entre os 214 comandos"
       >
       <button class="search-clear" id="searchClear" aria-label="Limpar busca">✕</button>
       <svg class="search-icon" id="searchIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -359,7 +359,7 @@ footer{
       </svg>
     </div>
     <div class="hero-meta">
-      <span><strong>+206</strong> comandos</span>
+      <span><strong>+214</strong> comandos</span>
       <span class="sep" aria-hidden="true"></span>
       <span><strong>4</strong> categorias</span>
       <span class="sep" aria-hidden="true"></span>
@@ -370,11 +370,11 @@ footer{
 
 <div class="tabs-wrap" id="comandos">
   <div class="tabs" role="tablist" aria-label="Filtrar por categoria">
-    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">206</span></button>
+    <button class="tab active" data-cat="all"      role="tab" aria-selected="true" >Todos           <span class="tab-count">214</span></button>
     <button class="tab"        data-cat="visuais"  role="tab" aria-selected="false">Visuais          <span class="tab-count">142</span></button>
     <button class="tab"        data-cat="estudo"   role="tab" aria-selected="false">Explicações & Estudo <span class="tab-count">22</span></button>
-    <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">26</span></button>
-    <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">16</span></button>
+    <button class="tab"        data-cat="negocios" role="tab" aria-selected="false">Análise & Negócios   <span class="tab-count">30</span></button>
+    <button class="tab"        data-cat="pesquisa" role="tab" aria-selected="false">Pesquisa & Produtividade <span class="tab-count">20</span></button>
   </div>
 </div>
 
@@ -662,6 +662,14 @@ const DATA = [
   { num:204, cmd:"/REMOVE-OBJECT", pt:"Apaga da foto o objeto que você indicar depois do comando", en:"Remove a specific object", cat:"visuais" },
   { num:205, cmd:"/FASHION-EDITORIAL", pt:"Transforma a foto num ensaio de revista de moda", en:"Fashion editorial look", cat:"visuais" },
   { num:206, cmd:"/SPLIT-FACE", pt:"Divide o rosto ao meio para comparar a edição com o original", en:"Split face to compare versions", cat:"visuais" },
+  { num:207, cmd:"/truth", pt:"Tira a educação e fala o que realmente pensa, sem rodeio", en:"Brutally honest answer", cat:"negocios" },
+  { num:208, cmd:"/nofluff", pt:"Corta a resposta pela metade e tira toda a enrolação", en:"No filler, half the length", cat:"pesquisa" },
+  { num:209, cmd:"/devil", pt:"Para de concordar com tudo e ataca sua ideia por todos os lados", en:"Attack the idea from every angle", cat:"negocios" },
+  { num:210, cmd:"/odds", pt:"Estima a chance, em porcentagem, de algo dar certo", en:"Estimate the odds of success", cat:"negocios" },
+  { num:211, cmd:"/decode", pt:"Lê contrato e letra miúda e mostra o que torcem pra você não ler", en:"Decode the fine print", cat:"negocios" },
+  { num:212, cmd:"/genius", pt:"Pensa com muito mais calma antes de entregar a resposta", en:"Think much longer before answering", cat:"pesquisa" },
+  { num:213, cmd:"/shrink", pt:"Funciona como terapeuta e explica por que você faz o que faz", en:"Explain why you do what you do", cat:"pesquisa" },
+  { num:214, cmd:"/rewire", pt:"Usa o que sabe sobre você pra montar a sua rotina ideal", en:"Build your ideal routine", cat:"pesquisa" },
 ];
 
 /* ── State ── */
