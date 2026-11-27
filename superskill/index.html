@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>A SUPERSKILL: a skill que acha qualquer skill pro seu Claude · Bruno Perobelli</title>
+  <meta name="description" content="A find-skills procura no diretório aberto skills.sh a skill certa para o que você quer fazer e instala no seu Claude Code. O link, o comando pronto para colar e como pedir.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+      --accent: #34D399;
+      --accent-dim: rgba(52,211,153,0.10);
+      --accent-border: rgba(52,211,153,0.35);
+      --code: #a7f3d0;
+      --on-accent: #022c1c;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; line-height: 1.65; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--accent); color: var(--on-accent); padding: 0.5rem 1rem; z-index: 100; }
+    .skip-link:focus { left: 1rem; top: 1rem; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,0,35,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+    .nav-badge { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer; min-height: 36px; white-space: nowrap; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .hero { position: relative; padding: 8.5rem 0 4.5rem; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.3; pointer-events: none; }
+    .hero-blob.b1 { width: 520px; height: 520px; background: var(--accent); top: -200px; left: -180px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -160px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; } }
+    .eyebrow { display: inline-block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.68rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { color: var(--text-muted); font-size: 1.1rem; max-width: 560px; margin-bottom: 2rem; }
+    .hero .sub strong { color: var(--text); }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 46px; padding: 0.7rem 1.3rem; border-radius: 10px; font: inherit; font-weight: 800; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s; }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 800; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .side-card li { display: flex; gap: 0.6rem; font-size: 0.92rem; line-height: 1.45; }
+    .side-card li .ok { color: var(--accent); font-weight: 900; }
+
+    section { padding: 5rem 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #oque, #instalar, #pedir, #dicas { scroll-margin-top: 72px; }
+    .section-header { max-width: 700px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+    .section-header h2 .accent { color: var(--accent); font-style: italic; }
+    .section-header p { color: var(--text-muted); }
+
+    .steps-path { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 768px) { .steps-path { grid-template-columns: repeat(3, 1fr); } }
+    .path-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .path-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .path-card .n { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); font-weight: 900; font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .path-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .path-card p { color: var(--text-muted); font-size: 0.9rem; }
+    .path-card p strong { color: var(--text); }
+
+    .numeros { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media (min-width: 640px) { .numeros { grid-template-columns: repeat(3, 1fr); } }
+    .numero { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.1rem 1.25rem; }
+    .numero b { display: block; font-size: 1.9rem; font-weight: 900; letter-spacing: -0.03em; color: var(--accent); line-height: 1.1; }
+    .numero span { color: var(--text-muted); font-size: 0.88rem; }
+
+    .passo-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .passo { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.5rem; }
+    .passo-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .passo-num { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+    .passo h3 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .passo .why { color: var(--text-muted); margin-bottom: 1rem; max-width: 760px; }
+    .passo .why strong { color: var(--text); }
+
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.8rem 5.5rem 0.8rem 0.9rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8rem; color: var(--code); word-break: break-all; white-space: pre-wrap; }
+    .code + .code { margin-top: 0.75rem; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); color: var(--text); border: none; border-radius: 6px; padding: 0.3rem 0.75rem; font: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .copy-btn.copied { background: var(--accent); color: var(--on-accent); }
+    .link { display: inline-block; margin-top: 0.9rem; margin-right: 1.25rem; color: var(--accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+
+    .pedidos { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 900px) { .pedidos { grid-template-columns: repeat(2, 1fr); } }
+    .pedido { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .pedido:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .pedido h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 800; margin-bottom: 0.75rem; }
+
+    .note { display: flex; gap: 0.75rem; align-items: flex-start; margin-top: 1.5rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.15rem; }
+    .note svg { flex-shrink: 0; margin-top: 0.2rem; }
+    .note p { font-size: 0.9rem; }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 0 2.5rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+    .footer-note a { color: var(--accent); }
+
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('instalar')">Instalar agora</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Claude Code · Skills</span>
+          <h1>A skill que acha <span class="accent">qualquer outra skill</span> pra você</h1>
+          <p class="sub">A <strong>find-skills</strong> procura no skills.sh, o diretório aberto de skills, a melhor skill para o que você quer fazer e instala no seu Claude Code. Você só diz o que precisa.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="scrollToSection('instalar')">Instalar agora <span aria-hidden="true">↓</span></button>
+            <button class="btn btn-ghost" onclick="scrollToSection('pedir')">Ver como pedir</button>
+          </div>
+          <div class="hero-meta">
+            <span><strong>1</strong> comando para instalar</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>4,6 mi</strong> de instalações</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>nº 1</strong> do skills.sh</span>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h2>O que tem aqui</h2>
+          <ul>
+            <li><span class="ok" aria-hidden="true">✓</span><span>O link oficial da find-skills</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>O comando pronto para colar no terminal</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>Pedidos prontos para usar no Claude Code</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>Como buscar skill sem nem abrir o Claude</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>Como escolher uma skill que vale instalar</span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="oque" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Você pede, ela <span class="accent">procura e instala</span></h2>
+        <p>Skill é um manual que ensina o Claude a fazer uma tarefa do jeito certo. O problema é achar a skill boa no meio de mais de um milhão. A find-skills faz essa busca por você.</p>
+      </div>
+      <div class="steps-path">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Você diz o que quer</h3>
+          <p>Em português mesmo, do seu jeito. Por exemplo: <strong>"quero fazer vídeos pras minhas redes"</strong>.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>Ela procura no diretório</h3>
+          <p>Olha o ranking do skills.sh e escolhe pelas <strong>instalações</strong>, por <strong>quem publicou</strong> e pelas estrelas no GitHub. Depois te mostra as que servem.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Ela instala</h3>
+          <p>Você escolhe e a skill vai direto para o seu Claude Code, com um comando só. A partir daí, o Claude já sabe fazer aquilo.</p>
+        </div>
+      </div>
+      <div class="numeros fade-in">
+        <div class="numero"><b>1,49 mi</b><span>skills no ranking do skills.sh</span></div>
+        <div class="numero"><b>4,6 mi</b><span>instalações da find-skills</span></div>
+        <div class="numero"><b>nº 1</b><span>do ranking de todos os tempos</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Instalação · 1 minuto</span>
+        <h2>Instale com <span class="accent">um comando só</span></h2>
+        <p>A find-skills é publicada pela Vercel (vercel-labs) e é aberta no GitHub.</p>
+      </div>
+      <ol class="passo-list">
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 1</span><h3>Tenha o Node.js</h3></div>
+          <p class="why">O comando de instalação usa o <strong>npx</strong>, que vem junto com o Node.js. Se você já usa o Claude Code, provavelmente já tem. Se não tiver, baixe a versão LTS em <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a>. É gratuito.</p>
+        </li>
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 2</span><h3>Cole o comando no terminal</h3></div>
+          <p class="why">Abra o terminal, cole a linha abaixo e aperte Enter. É o comando que aparece na página oficial da skill.</p>
+          <div class="code">npx skills add https://github.com/vercel-labs/skills --skill find-skills</div>
+          <a class="link" href="https://skills.sh/vercel-labs/skills/find-skills" target="_blank" rel="noopener">Página da find-skills no skills.sh ↗</a>
+          <a class="link" href="https://github.com/vercel-labs/skills" target="_blank" rel="noopener">Código no GitHub ↗</a>
+        </li>
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 3</span><h3>Abra o Claude Code e peça</h3></div>
+          <p class="why">Pronto. Agora é só pedir uma skill para o que você quer fazer. Os pedidos prontos estão logo abaixo.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="pedir" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Pedidos prontos</span>
+        <h2>O que digitar <span class="accent">no Claude Code</span></h2>
+        <p>Copie, troque o assunto pelo seu e mande. Quanto mais claro o que você quer, melhor a skill que ela acha.</p>
+      </div>
+      <div class="pedidos">
+        <div class="pedido fade-in">
+          <h3>Do vídeo</h3>
+          <div class="code">Ache uma skill para eu fazer vídeos para as minhas redes sociais. Me mostre as 3 melhores, com o número de instalações e quem publicou, e instale a que você recomendar.</div>
+        </div>
+        <div class="pedido fade-in">
+          <h3>Para o seu trabalho</h3>
+          <div class="code">Procure no skills.sh uma skill que me ajude a montar propostas comerciais em PDF. Explique em uma frase o que cada opção faz antes de instalar.</div>
+        </div>
+        <div class="pedido fade-in">
+          <h3>Antes de começar uma tarefa</h3>
+          <div class="code">Antes de começar, veja se existe uma skill que faça isso melhor: quero criar uma planilha de controle de gastos com gráficos.</div>
+        </div>
+        <div class="pedido fade-in">
+          <h3>Sem abrir o Claude</h3>
+          <div class="code">npx skills find video</div>
+          <p class="why" style="color:var(--text-muted);font-size:0.88rem;margin-top:0.6rem">Busca direto no terminal. Troque "video" pelo assunto.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dicas">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de instalar qualquer skill</span>
+        <h2>Como saber se uma skill <span class="accent">vale a pena</span></h2>
+        <p>Diretório aberto quer dizer que qualquer pessoa publica. Os mesmos critérios que a find-skills usa servem para você conferir.</p>
+      </div>
+      <div class="steps-path">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Instalações</h3>
+          <p>Prefira skills com <strong>mais de mil instalações</strong>. Muita gente usando é sinal de que funciona.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>Quem publicou</h3>
+          <p>Fontes conhecidas, como <strong>Vercel</strong> e <strong>Anthropic</strong>, são a aposta mais segura.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Auditoria</h3>
+          <p>A página de cada skill no skills.sh mostra <strong>verificações de segurança</strong>. Dê uma olhada antes de instalar.</p>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Dica:</strong> peça para o Claude mostrar as opções antes de instalar. Assim você vê o número de instalações e quem publicou cada uma, e decide.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · <a href="https://skills.sh/vercel-labs/skills/find-skills" target="_blank" rel="noopener">Fonte: skills.sh</a> · números de 27/11/2026</div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code').forEach(function (box) {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.type = 'button';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar texto');
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('load', function () {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
