@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>Arena Skill no Claude · Bruno Perobelli</title>
+  <meta name="description" content="Como instalar e usar a Arena Skill, a skill gratuita que coloca até 100 Claudes pra competir na mesma tarefa até sobrar só a melhor resposta.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --accent: #F2C46D;
+      --accent-dim: rgba(242,196,109,0.10);
+      --accent-border: rgba(242,196,109,0.35);
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Figtree', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 1rem; }
+    .skip-link { position: absolute; top: -100%; left: 1rem; background: var(--accent); color: #1a1200; padding: 0.5rem 1rem; font-weight: 700; border-radius: 0 0 8px 8px; text-decoration: none; z-index: 9999; }
+    .skip-link:focus { top: 0; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 2rem); }
+    .nav { position: sticky; top: 0; z-index: 100; background: rgba(9,0,35,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); padding: 0.875rem 0; }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--text); font-weight: 700; font-size: 0.95rem; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; background: var(--brand); color: #fff; font-weight: 800; font-size: 0.8rem; border-radius: 8px; display: grid; place-items: center; flex-shrink: 0; }
+    .nav-badge { font: inherit; font-size: 0.75rem; font-weight: 700; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); padding: 0.45rem 0.85rem; border-radius: 999px; white-space: nowrap; cursor: pointer; min-height: 36px; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+    .eyebrow { display: inline-block; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 0.9rem; }
+    .hero { position: relative; overflow: hidden; padding: clamp(3.5rem, 9vw, 6.5rem) 0 clamp(3rem, 7vw, 5rem); }
+    .blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.2; pointer-events: none; }
+    .blob.b1 { width: 560px; height: 560px; background: var(--accent); top: -220px; left: -160px; }
+    .blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -140px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; gap: 3.5rem; } }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--text-muted); max-width: 540px; margin-bottom: 2rem; }
+    .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .btn { font: inherit; font-weight: 700; font-size: 0.95rem; min-height: 48px; padding: 0.75rem 1.4rem; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.2s; }
+    .btn-primary { background: var(--accent); color: #1a1200; border: none; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(242,196,109,0.35); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .arr { width: 16px; height: 16px; }
+    .hero-meta { display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+    .side-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; position: relative; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .side-card li { display: flex; gap: 0.625rem; font-size: 0.875rem; color: var(--text-muted); line-height: 1.45; }
+    .side-card li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 0.45rem; }
+    section { padding: clamp(3rem, 7vw, 5rem) 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #como-funciona, #instalar, #usar, #dicas { scroll-margin-top: 72px; }
+    .section-header { max-width: 660px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.85rem; }
+    .section-header .lead { color: var(--text-muted); }
+    .cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .cards { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .cards { grid-template-columns: repeat(4, 1fr); } }
+    .card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .card .n { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin: 0.3rem 0 0.4rem; }
+    .card p { font-size: 0.88rem; color: var(--text-muted); }
+    .stats { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media (min-width: 640px) { .stats { grid-template-columns: repeat(3, 1fr); } }
+    .stat { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.4rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .stat:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .stat .valor { font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem; }
+    .stat p { font-size: 0.9rem; color: var(--text-muted); }
+    .selo { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; padding: 0.25rem 0.6rem; border-radius: 999px; margin-top: 0.9rem; background: rgba(16,185,129,0.12); color: #34D399; border: 1px solid rgba(16,185,129,0.35); }
+    .steps { display: flex; flex-direction: column; gap: 1rem; }
+    .step { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; transition: border-color 0.3s var(--ease); }
+    .step:hover { border-color: var(--accent-border); }
+    .step-head { display: flex; gap: 1rem; align-items: flex-start; }
+    .step-head > div { min-width: 0; flex: 1; }
+    .step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font-weight: 800; display: grid; place-items: center; }
+    .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; line-height: 1.3; }
+    .step p { font-size: 0.92rem; color: var(--text-muted); }
+    .step p + p { margin-top: 0.5rem; }
+    .step strong { color: var(--text); }
+    .step code, .card code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.8rem; color: #FDE7B8; }
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.9rem 5.5rem 0.9rem 1rem; margin-top: 0.9rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.78rem; color: #FDE7B8; white-space: pre-wrap; word-break: break-word; }
+    .prompt { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-radius: 8px; padding: 0.9rem 5.5rem 0.9rem 1rem; margin-top: 0.9rem; font-size: 0.9rem; color: var(--text); font-style: italic; word-break: break-word; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); border: none; border-radius: 6px; color: var(--text); cursor: pointer; font-family: 'Figtree', sans-serif; font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; font-style: normal; }
+    .copy-btn:hover { background: var(--accent); color: #1a1200; }
+    .copy-btn.copied { background: #10B981; color: #fff; }
+    .note { display: flex; gap: 0.75rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1.5rem; }
+    .note svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent); margin-top: 0.15rem; }
+    .note p { font-size: 0.9rem; color: var(--text-muted); }
+    .note strong { color: var(--text); }
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    footer { background: var(--bg-elevated); border-top: 1px solid var(--hairline); padding: 2rem 0; text-align: center; }
+    .footer-logo { display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text-muted); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .footer-note { font-size: 0.78rem; color: var(--text-muted); }
+    .footer-note a { color: var(--accent); word-break: break-word; }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" type="button" onclick="scrollToSection('instalar')">Como instalar</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="blob b1" aria-hidden="true"></div>
+    <div class="blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Claude · Skill gratuita</span>
+          <h1>Coloque 100 Claudes pra brigar pela <span class="accent">melhor resposta</span></h1>
+          <p class="sub">A Arena Skill pega a sua tarefa e entrega pra até 100 agentes do Claude, cada um com uma estratégia diferente. Eles se enfrentam em chaves de mata-mata, um juiz avalia cada duelo e só a resposta mais forte chega até você.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" type="button" onclick="scrollToSection('instalar')">
+              Ver como instalar
+              <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button class="btn btn-ghost" type="button" onclick="scrollToSection('como-funciona')">Como funciona</button>
+          </div>
+          <div class="hero-meta">
+            <span>Gratuita</span><span class="sep" aria-hidden="true"></span>
+            <span>Até 100 agentes</span><span class="sep" aria-hidden="true"></span>
+            <span>Claude Code</span>
+          </div>
+        </div>
+        <aside class="side-card">
+          <p class="side-card-title">O que você vai encontrar aqui</p>
+          <ul>
+            <li>Como funciona o torneio</li>
+            <li>Como instalar no Claude Code</li>
+            <li>Os comandos pra rodar a arena</li>
+            <li>Quando vale usar 100 ou 16 agentes</li>
+            <li>Os cuidados pra não queimar seu limite</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="como-funciona" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Um mata-mata de respostas</h2>
+        <p class="lead">Sabe quando você pede de novo, e de novo, e a resposta do Claude continua fraca? A Arena faz o contrário: em vez de uma tentativa por vez, ela roda dezenas ao mesmo tempo e deixa as respostas competirem.</p>
+      </div>
+      <div class="cards">
+        <div class="card fade-in">
+          <span class="n">Etapa 01</span>
+          <h3>A tarefa</h3>
+          <p>Você pede algo pro Claude e não gosta do resultado. Roda <code>/arena</code> e a sua última tarefa vira o desafio. A resposta que você recusou vira a marca a ser batida.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="n">Etapa 02</span>
+          <h3>100 estratégias</h3>
+          <p>Cada agente recebe a mesma tarefa com uma carta diferente: um jeito de raciocinar, um fluxo de trabalho e uma estratégia. Ninguém resolve igual.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="n">Etapa 03</span>
+          <h3>Os duelos</h3>
+          <p>Os agentes se enfrentam em pares. Um ataca a solução do outro, o outro defende, e um juiz dá nota com critérios claros. Quem perde sai.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="n">Etapa 04</span>
+          <h3>Sobra um</h3>
+          <p>Rodada após rodada, a chave vai afunilando até a final. A solução campeã é a que você recebe.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat fade-in">
+          <div class="valor">100</div>
+          <p>agentes no modo padrão, em 7 rodadas de mata-mata.</p>
+        </div>
+        <div class="stat fade-in">
+          <div class="valor">16</div>
+          <p>agentes no modo rápido, pra tarefas do dia a dia.</p>
+        </div>
+        <div class="stat fade-in">
+          <div class="valor">0</div>
+          <p>arquivos do seu projeto alterados. Ela só escreve numa pasta própria, a <code>.arena</code>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Passo a passo</span>
+        <h2>Instale no Claude Code</h2>
+        <p class="lead">O Claude Code é o Claude trabalhando direto no seu computador. A Arena precisa dele porque é ele que consegue criar os agentes. Você também precisa do Python instalado (python.org/downloads).</p>
+        <span class="selo">✓ Testado e funcionando</span>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Cole o link com o pedido</h3>
+              <p>Abra o Claude Code, cole isto e mande. Ele mesmo faz a instalação.</p>
+              <div class="prompt">https://github.com/Jakeschincariol/arena-skill instala essa skill</div>
+            </div>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Ou instale com estas duas linhas</h3>
+              <div class="code">/plugin marketplace add Jakeschincariol/arena-skill
+/plugin install arena-skill@arena-skill</div>
+              <p style="margin-top:0.75rem;">Instalando como plugin, o comando passa a ser <code>/arena-skill:arena</code>.</p>
+            </div>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">3</span>
+            <div>
+              <h3>Confira se deu certo</h3>
+              <p>Feche e abra o Claude Code de novo. Digite <strong>/arena</strong> e veja se a skill aparece na lista.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="usar" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Como usar</span>
+        <h2>Os comandos da arena</h2>
+        <p class="lead">Antes de começar, a skill mostra quantas chamadas vai fazer e pede a sua confirmação.</p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">1</span>
+            <div>
+              <h3>Depois de uma resposta fraca</h3>
+              <p>Usa o seu último pedido como tarefa e a resposta que você não gostou como a marca a bater. São 100 agentes.</p>
+              <div class="code">/arena</div>
+            </div>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">2</span>
+            <div>
+              <h3>Modo rápido</h3>
+              <p>16 agentes. Bem mais barato e já resolve a maioria das tarefas. Comece por aqui.</p>
+              <div class="code">/arena --quick</div>
+            </div>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">3</span>
+            <div>
+              <h3>Você escolhe o tamanho</h3>
+              <p>Troque o número pela quantidade de agentes que quiser.</p>
+              <div class="code">/arena --agents 32</div>
+            </div>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-head">
+            <span class="step-num">★</span>
+            <div>
+              <h3>Exemplo de tarefa completa</h3>
+              <p>Os agentes não veem a sua conversa. Por isso, escreva o pedido inteiro, com contexto e critério de qualidade.</p>
+              <div class="prompt">/arena --quick Escreva 1 gancho de até 5 segundos pra um vídeo de Instagram sobre [tema]. Meu público é [quem]. O gancho precisa gerar curiosidade sem prometer o que o vídeo não entrega e precisa funcionar falado, sem depender de texto na tela.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="dicas">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de rodar</span>
+        <h2>Três cuidados</h2>
+      </div>
+      <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <div class="card fade-in">
+          <span class="n">Cuidado 01</span>
+          <h3>A skill é grátis, o uso não</h3>
+          <p>Cada agente consome o seu limite do Claude. Uma arena de 100 faz cerca de 595 chamadas. A de 16 faz cerca de 91. Guarde a de 100 pro que vale muito.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="n">Cuidado 02</span>
+          <h3>Tarefa ruim, campeão ruim</h3>
+          <p>Se o pedido é vago, 100 agentes vão disputar uma resposta vaga. Diga o objetivo, o público e o que é uma boa resposta pra você.</p>
+        </div>
+        <div class="card fade-in">
+          <span class="n">Cuidado 03</span>
+          <h3>O juiz também é o Claude</h3>
+          <p>A campeã é a melhor resposta que o torneio encontrou, não uma verdade garantida. Revise antes de usar, principalmente números e fatos.</p>
+        </div>
+      </div>
+      <div class="note fade-in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <p><strong>Dica:</strong> o Claude Code vai pedir permissão várias vezes durante a arena. Se quiser que ela rode sem parar, ative o modo que aceita as edições automaticamente antes de começar.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">
+      Guia gratuito · <a href="https://github.com/Jakeschincariol/arena-skill" target="_blank" rel="noopener">Fonte: github.com/Jakeschincariol/arena-skill</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code, .prompt').forEach(box => {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar texto');
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5  });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.utils.toArray('.fade-in').forEach(el => {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out',
+          scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
