@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090023">
+  <title>MiroFish: milhares de pessoas testando a sua ideia · Bruno Perobelli</title>
+  <meta name="description" content="O passo a passo para instalar o MiroFish, o programa de código aberto que cria milhares de pessoas simuladas para reagir à sua ideia. Com a configuração pronta, como usar com o Claude e um pedido para testar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #090023;
+      --bg-elevated: #0e0030;
+      --surface: #130040;
+      --text: #f0eaff;
+      --text-muted: #8b7faa;
+      --text-faint: #3d3560;
+      --brand: #8A45FB;
+      --hairline: rgba(255,255,255,0.07);
+      --ease: cubic-bezier(0.22,1,0.36,1);
+      --accent: #FF8A65;
+      --accent-dim: rgba(255,138,101,0.10);
+      --accent-border: rgba(255,138,101,0.35);
+      --code: #ffd2c2;
+      --on-accent: #3a1206;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { background: var(--bg); color: var(--text); font-family: 'Figtree', system-ui, sans-serif; font-size: 1rem; line-height: 1.65; overflow-x: hidden; }
+    a { color: inherit; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+    .skip-link { position: absolute; left: -9999px; top: 0; background: var(--accent); color: var(--on-accent); padding: 0.5rem 1rem; z-index: 100; }
+    .skip-link:focus { left: 1rem; top: 1rem; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(9,0,35,0.82); backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); }
+    .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 1rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+    .nav-logo small { color: var(--text-muted); font-weight: 400; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 8px; background: var(--brand); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; }
+    .nav-badge { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); font: inherit; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; border-radius: 999px; cursor: pointer; min-height: 36px; white-space: nowrap; }
+    @media (max-width: 639px) { .nav-logo small { display: none; } }
+
+    .hero { position: relative; padding: 8.5rem 0 4.5rem; overflow: hidden; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.3; pointer-events: none; }
+    .hero-blob.b1 { width: 520px; height: 520px; background: var(--accent); top: -200px; left: -180px; }
+    .hero-blob.b2 { width: 420px; height: 420px; background: var(--brand); bottom: -160px; right: -120px; }
+    .hero-grid { position: relative; display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1fr 320px; } }
+    .eyebrow { display: inline-block; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; font-size: 0.68rem; font-weight: 700; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 1.25rem; }
+    .hero h1 .accent { color: var(--accent); font-style: italic; }
+    .hero .sub { color: var(--text-muted); font-size: 1.1rem; max-width: 580px; margin-bottom: 2rem; }
+    .hero .sub strong { color: var(--text); }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 46px; padding: 0.7rem 1.3rem; border-radius: 10px; font: inherit; font-weight: 800; font-size: 0.95rem; cursor: pointer; border: 1px solid transparent; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s; }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px var(--accent); }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--hairline); }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent-border); }
+    .hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; color: var(--text-muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); font-weight: 800; }
+    .hero-meta .sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-faint); }
+    @media (max-width: 639px) { .hero-meta .sep { display: none; } }
+
+    .side-card { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 1.5rem; overflow: hidden; }
+    .side-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .side-card h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; }
+    .side-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+    .side-card li { display: flex; gap: 0.6rem; font-size: 0.92rem; line-height: 1.45; }
+    .side-card li .ok { color: var(--accent); font-weight: 900; }
+
+    section { padding: 5rem 0; }
+    section.elevated { background: var(--bg-elevated); }
+    #oque, #instalar, #testar, #cuidados { scroll-margin-top: 72px; }
+    .section-header { max-width: 720px; margin-bottom: 2.5rem; }
+    .section-header h2 { font-size: clamp(1.7rem, 3.8vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 0.75rem; }
+    .section-header h2 .accent { color: var(--accent); font-style: italic; }
+    .section-header p { color: var(--text-muted); }
+    .section-header p strong { color: var(--text); }
+
+    .steps-path { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .steps-path { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .steps-path.cinco { grid-template-columns: repeat(5, 1fr); } .steps-path.tres { grid-template-columns: repeat(3, 1fr); } }
+    .path-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .path-card:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .path-card .n { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; align-items: center; justify-content: center; background: var(--accent); color: var(--on-accent); font-weight: 900; font-size: 0.85rem; margin-bottom: 0.6rem; }
+    .path-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .path-card p { color: var(--text-muted); font-size: 0.9rem; }
+    .path-card p strong { color: var(--text); }
+    .path-card a { color: var(--accent); font-weight: 700; text-decoration: none; }
+    .path-card a:hover { text-decoration: underline; }
+
+    .numeros { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media (min-width: 640px) { .numeros { grid-template-columns: repeat(3, 1fr); } }
+    .numero { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.1rem 1.25rem; }
+    .numero b { display: block; font-size: 1.9rem; font-weight: 900; letter-spacing: -0.03em; color: var(--accent); line-height: 1.1; }
+    .numero span { color: var(--text-muted); font-size: 0.88rem; }
+
+    .passo-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; }
+    .passo { background: var(--surface); border: 1px solid var(--hairline); border-top: 2px solid var(--accent); border-radius: 14px; padding: 1.5rem; }
+    .passo-top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .passo-num { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+    .passo h3 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; }
+    .passo .why { color: var(--text-muted); margin-bottom: 1rem; max-width: 760px; }
+    .passo .why strong { color: var(--text); }
+    .passo .why a { color: var(--accent); font-weight: 700; }
+
+    .code { position: relative; background: rgba(0,0,20,0.6); border: 1px solid var(--hairline); border-left: 2px solid var(--accent); border-radius: 6px; padding: 0.8rem 5.5rem 0.8rem 0.9rem; font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace; font-size: 0.8rem; color: var(--code); word-break: break-all; white-space: pre-wrap; }
+    .code + .code { margin-top: 0.75rem; }
+    .code.texto { font-family: 'Figtree', system-ui, sans-serif; font-size: 0.92rem; line-height: 1.55; color: var(--text); word-break: normal; overflow-wrap: anywhere; }
+    .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; min-height: 32px; background: var(--text-faint); color: var(--text); border: none; border-radius: 6px; padding: 0.3rem 0.75rem; font: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .copy-btn.copied { background: var(--accent); color: var(--on-accent); }
+    .link { display: inline-block; margin-top: 0.9rem; margin-right: 1.25rem; color: var(--accent); font-size: 0.88rem; font-weight: 700; text-decoration: none; }
+    .link:hover { text-decoration: underline; }
+
+    .destaque { position: relative; background: var(--surface); border: 1px solid var(--accent-border); border-radius: 16px; padding: 1.75rem; overflow: hidden; }
+    .destaque::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--brand)); }
+    .destaque .why { color: var(--text-muted); margin-bottom: 1rem; }
+    .destaque .why strong { color: var(--text); }
+    .ressalvas { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.25rem; }
+    .ressalvas li { display: flex; gap: 0.6rem; color: var(--text-muted); font-size: 0.92rem; }
+    .ressalvas li strong { color: var(--text); }
+    .ressalvas li .b { color: var(--accent); font-weight: 900; flex-shrink: 0; }
+
+    .pedidos { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 900px) { .pedidos { grid-template-columns: repeat(2, 1fr); } }
+    .pedido { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 1.25rem; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease); }
+    .pedido:hover { border-color: var(--accent-border); transform: translateY(-3px); }
+    .pedido h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 800; margin-bottom: 0.75rem; }
+
+    .escolhas { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+    @media (min-width: 768px) { .escolhas { grid-template-columns: 1.3fr 1fr; } }
+    .escolha { background: rgba(0,0,20,0.35); border: 1px solid var(--hairline); border-radius: 10px; padding: 1rem 1.1rem; }
+    .escolha h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .escolha h4 span { color: var(--text-muted); font-weight: 500; }
+    .escolha p { color: var(--text-muted); font-size: 0.9rem; }
+    .escolha p + p { margin-top: 0.5rem; }
+    .escolha p strong { color: var(--text); }
+    .escolha a, .note a { color: var(--accent); font-weight: 700; }
+    .passo .pedidos { margin-top: 0.25rem; }
+    .passo .pedido { background: rgba(0,0,20,0.35); }
+    .manual { margin-top: 1.5rem; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; }
+    .manual-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 56px; padding: 1rem 1.25rem; background: none; border: none; color: var(--text); font: inherit; font-weight: 800; font-size: 0.98rem; text-align: left; cursor: pointer; }
+    .manual-toggle .mais { color: var(--accent); font-size: 1.4rem; line-height: 1; transition: transform 0.3s var(--ease); }
+    .manual-toggle[aria-expanded="true"] .mais { transform: rotate(45deg); }
+    .manual-painel { max-height: 0; overflow: hidden; transition: max-height 0.45s var(--ease); }
+    .manual-painel.open { max-height: 1400px; }
+    .manual-corpo { padding: 0 1.25rem 1.25rem; }
+    .manual-corpo .why { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.9rem; }
+    .manual-corpo .why a { color: var(--accent); font-weight: 700; }
+    .manual-corpo code, .note code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.85em; color: var(--code); }
+    .linkbtn { background: none; border: none; padding: 0; font: inherit; font-weight: 700; color: var(--accent); cursor: pointer; text-decoration: underline; }
+    .note code { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 0.85em; color: var(--code); }
+    .note { display: flex; gap: 0.75rem; align-items: flex-start; margin-top: 1.5rem; background: var(--accent-dim); border: 1px solid var(--accent-border); border-radius: 12px; padding: 1rem 1.15rem; }
+    .note svg { flex-shrink: 0; margin-top: 0.2rem; }
+    .note p { font-size: 0.9rem; }
+
+    footer { border-top: 1px solid var(--hairline); padding: 2rem 0 2.5rem; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 700; }
+    .footer-note { color: var(--text-muted); font-size: 0.82rem; }
+    .footer-note a { color: var(--accent); }
+
+    @media (max-width: 639px) {
+      .code { padding: 2.7rem 0.85rem 0.85rem; }
+      .passo { padding: 1.15rem; }
+      .passo .pedido, .escolha { padding: 0.85rem; }
+      .manual-corpo { padding: 0 1rem 1rem; }
+    }
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    @media (prefers-reduced-motion: reduce) { .fade-in { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Pular para o conteúdo</a>
+
+<nav class="nav" aria-label="Principal">
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="nav-logo">
+      <span class="nav-mark">BP</span>
+      Bruno Perobelli <small>· IA aplicada</small>
+    </a>
+    <button class="nav-badge" onclick="scrollToSection('instalar')">Passo a passo</button>
+  </div>
+</nav>
+
+<main id="main">
+
+  <header class="hero">
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Código aberto · Teste de ideias</span>
+          <h1>Milhares de pessoas testando a sua ideia, <span class="accent">sem nenhuma existir</span></h1>
+          <p class="sub">O <strong>MiroFish</strong> cria milhares de pessoas simuladas, cada uma com personalidade, memória e opinião própria, e solta todas numa rede social de mentira pra reagir à sua ideia. No fim, um agente escreve um relatório e você ainda conversa com quem quiser.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="scrollToSection('instalar')">Ver o passo a passo <span aria-hidden="true">↓</span></button>
+            <button class="btn btn-ghost" onclick="scrollToSection('testar')">Ver o pedido pronto</button>
+          </div>
+          <div class="hero-meta">
+            <span><strong>~87 mil</strong> estrelas no GitHub</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span><strong>Código aberto</strong> (AGPL-3.0)</span>
+            <span class="sep" aria-hidden="true"></span>
+            <span>Roda no <strong>seu computador</strong></span>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h2>O que tem aqui</h2>
+          <ul>
+            <li><span class="ok" aria-hidden="true">✓</span><span>Como o MiroFish funciona, em 5 etapas</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>A instalação em 3 passos, sem terminal</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>O pedido pronto para o Claude Code instalar</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>A configuração com o Claude ou o Qwen</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>Um pedido pronto para testar a sua ideia</span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <section id="oque" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Como funciona</span>
+        <h2>Da sua ideia ao <span class="accent">relatório</span></h2>
+        <p>Você descreve a ideia em português, do seu jeito, ou sobe um material (um relatório, uma notícia). O MiroFish faz o resto nestas 5 etapas.</p>
+      </div>
+      <div class="steps-path cinco">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Monta a memória</h3>
+          <p>Lê o seu material, tira as informações importantes e monta um mapa do assunto.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>Cria as pessoas</h3>
+          <p>Gera os personagens, cada um com <strong>personalidade, memória e jeito de agir</strong> próprios.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Simula</h3>
+          <p>Solta todo mundo em <strong>duas redes sociais simuladas</strong> ao mesmo tempo. Eles postam, comentam, discutem e mudam de opinião.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">4</span>
+          <h3>Escreve o relatório</h3>
+          <p>Um agente analisa tudo e conta <strong>quem gostou, quem rejeitou e por quê</strong>.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">5</span>
+          <h3>Você conversa</h3>
+          <p>Pergunte direto para <strong>qualquer pessoa da simulação</strong> ou para o agente do relatório.</p>
+        </div>
+      </div>
+      <div class="numeros fade-in">
+        <div class="numero"><b>~87 mil</b><span>estrelas no GitHub</span></div>
+        <div class="numero"><b>nº 1</b><span>do GitHub Trending em março de 2026</span></div>
+        <div class="numero"><b>Shanda</b><span>o grupo chinês apoia e incuba o projeto</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="instalar">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Passo a passo · sem terminal</span>
+        <h2>Instale em <span class="accent">3 passos</span></h2>
+        <p>Você não precisa saber programar. Quem digita os comandos é o <strong>Claude Code</strong>: você só pega duas chaves e cola um pedido pronto.</p>
+      </div>
+      <ol class="passo-list">
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 1</span><h3>Pegue as duas chaves</h3></div>
+          <p class="why">Chave é uma espécie de senha que deixa o MiroFish usar um serviço em seu nome. Você vai precisar de duas. Guarde as duas num bloco de notas por enquanto.</p>
+          <div class="escolhas">
+            <div class="escolha">
+              <h4>Chave da IA <span>(escolha uma)</span></h4>
+              <p><strong>Claude:</strong> crie a conta no <a href="https://platform.claude.com/" target="_blank" rel="noopener">Claude Console</a>, coloque créditos e crie uma chave em <strong>API Keys</strong>. O uso é cobrado por consumo.</p>
+              <p><strong>Qwen:</strong> é a IA que o próprio projeto recomenda. A chave sai do <a href="https://bailian.console.aliyun.com/" target="_blank" rel="noopener">Alibaba Bailian</a>.</p>
+            </div>
+            <div class="escolha">
+              <h4>Chave do Zep <span>(grátis)</span></h4>
+              <p>O Zep guarda a memória das pessoas simuladas. Crie a conta em <a href="https://app.getzep.com/" target="_blank" rel="noopener">app.getzep.com</a> e gere a chave. Segundo o projeto, o plano grátis do mês dá para o uso simples.</p>
+            </div>
+          </div>
+        </li>
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 2</span><h3>Peça para o Claude Code instalar</h3></div>
+          <p class="why">Abra o <strong>Claude Code</strong> (no app do Claude para computador, na aba <strong>Code</strong>), copie o pedido abaixo e mande. Ele confere o que falta no seu computador, instala e baixa o MiroFish. Se ele pedir permissão para rodar algum comando, é só aprovar.</p>
+          <div class="code texto">Instale o MiroFish no meu computador: https://github.com/666ghj/MiroFish
+1. Confira se eu tenho Node.js 18 ou mais novo, Python 3.11 ou 3.12 e o uv. Se faltar algum, me explique em uma frase e instale.
+2. Baixe o projeto com git clone e entre na pasta.
+3. Crie o arquivo .env a partir do .env.example e me diga onde ele está. Não me peça as chaves aqui no chat: eu mesmo colo no arquivo.
+4. Quando eu avisar que colei as chaves, rode npm run setup:all e depois npm run dev.
+5. Quando estiver rodando, me diga para abrir http://localhost:3000.</div>
+        </li>
+        <li class="passo fade-in">
+          <div class="passo-top"><span class="passo-num">Passo 3</span><h3>Cole as chaves e abra</h3></div>
+          <p class="why">Abra o arquivo <strong>.env</strong> que o Claude Code indicou (pode ser no Bloco de Notas ou no TextEdit), apague o que estiver lá e cole as linhas da IA que você escolheu, trocando <strong>sua_chave</strong> pelas suas chaves. Salve, avise o Claude Code e, quando ele terminar, abra <strong>http://localhost:3000</strong> no navegador. É ali que você escreve a ideia.</p>
+          <div class="pedidos">
+            <div class="pedido">
+              <h3>Se você escolheu o Claude</h3>
+              <div class="code">LLM_API_KEY=sua_chave_do_claude
+LLM_BASE_URL=https://api.anthropic.com/v1/
+LLM_MODEL_NAME=claude-haiku-5-5
+ZEP_API_KEY=sua_chave_do_zep</div>
+            </div>
+            <div class="pedido">
+              <h3>Se você escolheu o Qwen</h3>
+              <div class="code">LLM_API_KEY=sua_chave_do_qwen
+LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+LLM_MODEL_NAME=qwen-plus
+ZEP_API_KEY=sua_chave_do_zep</div>
+            </div>
+          </div>
+          <div class="note">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <p><strong>Sobre o Claude:</strong> o Haiku 5.5 é o modelo mais barato (dá para trocar por claude-sonnet-5-5 ou claude-opus-5-5, que custam mais). Não é o caminho padrão do projeto: a Anthropic diz que essa entrada serve principalmente para testar e comparar modelos. O MiroFish se adapta quando a IA recusa o formato que ele pede, então deve funcionar. <a href="https://platform.claude.com/docs/en/api/openai-sdk" target="_blank" rel="noopener">Documentação da Anthropic</a></p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="manual fade-in">
+        <button class="manual-toggle" type="button" aria-expanded="false" aria-controls="manual-painel" onclick="abrirManual(this)">
+          <span>Prefere fazer na mão? Os comandos para quem já usa o terminal</span>
+          <span class="mais" aria-hidden="true">+</span>
+        </button>
+        <div class="manual-painel" id="manual-painel">
+          <div class="manual-corpo">
+            <p class="why">Pré-requisitos: Node.js 18+, Python 3.11 ou 3.12 e <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener">uv</a>. Rode na ordem, preenchendo o .env (passo 3 acima) antes do setup.</p>
+            <div class="code">git clone https://github.com/666ghj/MiroFish.git</div>
+            <div class="code">cd MiroFish</div>
+            <div class="code">cp .env.example .env</div>
+            <div class="code">npm run setup:all</div>
+            <div class="code">npm run dev</div>
+            <p class="why" style="margin-top:1rem">Com Docker: depois do <code>cp .env.example .env</code>, rode <code>docker compose up -d</code>. Site em localhost:3000, simulação em localhost:5001.</p>
+            <a class="link" href="https://github.com/666ghj/MiroFish" target="_blank" rel="noopener">MiroFish no GitHub ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testar" class="elevated">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Pedido pronto</span>
+        <h2>O que escrever <span class="accent">pra testar</span></h2>
+        <p>Diga quem é o público, o que você quer lançar e o que quer descobrir. Quanto mais específico, mais útil o relatório.</p>
+      </div>
+      <div class="pedidos">
+        <div class="pedido fade-in">
+          <h3>Do vídeo</h3>
+          <div class="code texto">Quero lançar um app de finanças pessoais para jovens de 18 a 25 anos que guarda dinheiro sozinho a cada compra. Simule como esse público reage ao lançamento e me diga o que faria eles assinarem.</div>
+        </div>
+        <div class="pedido fade-in">
+          <h3>Para o seu negócio</h3>
+          <div class="code texto">Vou lançar [o que você vai lançar] para [quem é o público], por [preço]. Simule como esse público reage, quais objeções aparecem e o que mudaria a opinião de quem rejeitou.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cuidados">
+    <div class="wrap">
+      <div class="section-header fade-in">
+        <span class="eyebrow">Antes de confiar no resultado</span>
+        <h2>Termômetro, <span class="accent">não bola de cristal</span></h2>
+        <p>O MiroFish mostra onde a ideia quebra antes de você investir. Use sabendo destes três limites.</p>
+      </div>
+      <div class="steps-path tres">
+        <div class="path-card fade-in">
+          <span class="n">1</span>
+          <h3>Não são clientes de verdade</h3>
+          <p>São <strong>papéis interpretados pela mesma IA</strong>. Ninguém provou ainda que as previsões acertam.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">2</span>
+          <h3>A IA muda a resposta</h3>
+          <p>Trocar a IA por trás pode mudar o resultado. Rode mais de uma vez antes de tirar conclusão.</p>
+        </div>
+        <div class="path-card fade-in">
+          <span class="n">3</span>
+          <h3>Gasta bastante</h3>
+          <p>O próprio projeto avisa que o consumo de IA é alto. <strong>Comece com menos de 40 rodadas</strong> de simulação.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="https://bperobelli.com.br" class="footer-logo">
+      <span class="nav-mark" style="width:24px;height:24px;font-size:0.6rem;">BP</span>
+      Bruno Perobelli
+    </a>
+    <div class="footer-note">Guia gratuito · <a href="https://github.com/666ghj/MiroFish" target="_blank" rel="noopener">Fonte: github.com/666ghj/MiroFish</a> · conferido em 28/11/2026</div>
+  </div>
+</footer>
+
+<script>
+  function abrirManual(btn) {
+    const painel = document.getElementById('manual-painel');
+    const aberto = painel.classList.toggle('open');
+    btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+  }
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY - 72;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.code').forEach(function (box) {
+    const text = box.textContent.trim();
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.type = 'button';
+    btn.textContent = 'Copiar';
+    btn.setAttribute('aria-label', 'Copiar texto');
+    btn.addEventListener('click', function () {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copiado!';
+        btn.classList.add('copied');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+    box.appendChild(btn);
+  });
+
+  window.addEventListener('load', function () {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+      gsap.registerPlugin(ScrollTrigger);
+      gsap.from('.hero .eyebrow', { opacity:0, x:-16, duration:0.7, ease:'power3.out', delay:0.05 });
+      gsap.from('.hero h1',       { opacity:0, y:30,  duration:1,   ease:'power3.out', delay:0.15 });
+      gsap.from('.hero .sub',     { opacity:0, y:20,  duration:0.9, ease:'power3.out', delay:0.35 });
+      gsap.from('.hero-cta',      { opacity:0, y:16,  duration:0.8, ease:'power3.out', delay:0.5 });
+      gsap.from('.hero-meta',     { opacity:0, y:14,  duration:0.8, ease:'power3.out', delay:0.65 });
+      gsap.utils.toArray('.fade-in').forEach(function (el) {
+        gsap.to(el, { opacity:1, y:0, duration:0.75, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 90%', once:true } });
+      });
+    } else {
+      document.querySelectorAll('.fade-in').forEach(function (el) { el.style.opacity = 1; el.style.transform = 'none'; });
+    }
+  });
+</script>
+
+</body>
+</html>
